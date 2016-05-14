@@ -69,6 +69,7 @@ public class ResourcesManager
     public ITextureRegion soundoff_region;
     public ITextureRegion hammer_region;
     public ITextureRegion rad_region;
+    public ITextureRegion wall_region;
 
     BitmapTextureAtlas splashTextureAtlas;
     BuildableBitmapTextureAtlas menuTextureAtlas;
@@ -79,6 +80,7 @@ public class ResourcesManager
     BuildableBitmapTextureAtlas soundoffTextureAtlas;
     BuildableBitmapTextureAtlas hammerTextureAtlas;
     BuildableBitmapTextureAtlas radTextureAtlas;
+    BuildableBitmapTextureAtlas wallTextureAtlas;
 
 
 
@@ -206,7 +208,12 @@ public class ResourcesManager
 
     public void loadGameResources()
     {
-        loadGameGraphics();
+        try {
+            loadGameGraphics();
+        } catch (ITextureAtlasBuilder.TextureAtlasBuilderException e)
+         {
+            e.printStackTrace();
+        }
         try {
             loadGameAudio();
         } catch (IOException e) {
@@ -214,8 +221,16 @@ public class ResourcesManager
         }
     }
 
-    private void loadGameGraphics()
-    {
+    private void loadGameGraphics() throws ITextureAtlasBuilder.TextureAtlasBuilderException
+{
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/menu/");
+        wallTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 128, 128, TextureOptions.REPEATING_BILINEAR);
+        wall_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(wallTextureAtlas, activity, "wall2.jpg");
+        wall_region.setTextureSize(64,256);
+        wallTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
+        wallTextureAtlas.load();
+
+
         //TODO: Load new Sprites for GameGaphics like the walls...
     }
 

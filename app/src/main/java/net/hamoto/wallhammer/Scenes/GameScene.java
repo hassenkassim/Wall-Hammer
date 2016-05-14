@@ -1,7 +1,5 @@
 package net.hamoto.wallhammer.Scenes;
 
-import android.hardware.SensorManager;
-
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -13,10 +11,9 @@ import net.hamoto.wallhammer.Manager.ResourcesManager;
 
 import org.andengine.audio.music.Music;
 import org.andengine.engine.camera.hud.HUD;
-import org.andengine.entity.Entity;
+import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.MoveXModifier;
-import org.andengine.entity.modifier.MoveYModifier;
 import org.andengine.entity.modifier.RotationModifier;
 import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.entity.scene.IOnSceneTouchListener;
@@ -30,6 +27,9 @@ import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.align.HorizontalAlign;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * @author Hassen Kassim
@@ -49,25 +49,67 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     private int score = 0;
     TouchEvent  GameSceneTouchEvent;
     Scene GameScene;
-
     PhysicsWorld world;
+
+    private ArrayList<Sprite> walls;
+    final private int COUNT_WALL = 5;
 
     @Override
     public void createScene()
     {
-        initPhysics();
-        createBackground();
-        addSprites();
-        createHUD();
-        startbackgroundmusic();
-        setTouchAreaBindingOnActionDownEnabled(true);
-        createTouchFunction();
+
+        initPhysics(); //Physik Welt initiieren
+        createBackground(); //Hintergrund erstellen
+        addSprites(); //Figuren Einfuegen
+        startWalls(COUNT_WALL); //Waende einfuegen starten 100 Waende generieren TODO: Ineffizient! Neuer Algorithmus mit weniger OverHead
+        createHUD(); //Score anzeigen
+        startbackgroundmusic(); //Hintergrundmusik starten
+        createTouchFunction(); //Touch aktivieren
     }
+
 
     private void initPhysics()
     {
         world = new PhysicsWorld(new Vector2(0, -9.81f), false);
         this.registerUpdateHandler(world);
+    }
+
+
+    private void startWalls(int count){
+        //create initial 'count' Walls
+        walls = new ArrayList<Sprite>();
+        int x = 1500;
+        for(int i = 0; i < count; i++){
+            createWall(x,300, 64,256);
+            x = x + randInt(300,1200);
+        }
+
+        //collision check
+        this.registerUpdateHandler(new IUpdateHandler() {
+            @Override
+            public void onUpdate(float pSecondsElapsed) {
+                for(int i = 0; i< COUNT_WALL; i++){
+                    if(hammer.collidesWith(walls.get(i))){
+                        //TODO:Explosion einbauen?
+                        walls.get(i).setVisible(false);
+                    }
+                }
+            }
+
+            @Override
+            public void reset() {
+
+            }
+        });
+    }
+
+    private void createWall(int x, int y, int width, int height){
+        Sprite wall = new Sprite(x, y, width, height, ResourcesManager.getInstance().wall_region, engine.getVertexBufferObjectManager());
+        walls.add(wall);
+        final FixtureDef WALL_FIX = PhysicsFactory.createFixtureDef(0.0f,0.0f,0.0f);
+        Body wallBody = PhysicsFactory.createBoxBody(world, wall, BodyDef.BodyType.DynamicBody, WALL_FIX);
+        wall.registerEntityModifier(new SequenceEntityModifier(new MoveXModifier(wall.getX()/300,wall.getX(),-128)));
+        attachChild(wall);
     }
 
     private void createBackground()
@@ -110,8 +152,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         groundsprite = new Sprite(0, 0, 3000, 256, ResourcesManager.getInstance().ground_region, engine.getVertexBufferObjectManager());
         groundsprite.setY(-25f);
         groundsprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(1f,128,-128))));
-        final FixtureDef WALL_FIX = PhysicsFactory.createFixtureDef(0.0f,0.0f,0.0f);
-        Body groundBody = PhysicsFactory.createBoxBody(world, groundsprite, BodyDef.BodyType.StaticBody, WALL_FIX);
+        final FixtureDef GROUND_FIX = PhysicsFactory.createFixtureDef(0.0f,0.0f,0.0f);
+        Body groundBody = PhysicsFactory.createBoxBody(world, groundsprite, BodyDef.BodyType.StaticBody, GROUND_FIX);
         attachChild(groundsprite);
 
     }
@@ -126,8 +168,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     private void addHammer(){
         hammer = new Sprite(0, 0, 357, 400, ResourcesManager.getInstance().hammer_region, engine.getVertexBufferObjectManager());
         hammer.setScale(0.5f);
-        hammer.setPosition(130, 500);
-        final FixtureDef HAMMER_FIX = PhysicsFactory.createFixtureDef(100.0f, 0.5f, 0.0f);
+        hammer.setPosition(130, 300);
+        final FixtureDef HAMMER_FIX = PhysicsFactory.createFixtureDef(100.0f, 0.2f, 0.0f);
         Body hammerBody = PhysicsFactory.createBoxBody(world, hammer, BodyDef.BodyType.DynamicBody, HAMMER_FIX);
         attachChild(hammer);
         world.registerPhysicsConnector(new PhysicsConnector(hammer, hammerBody, true, false));
@@ -170,6 +212,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
     private void createTouchFunction()
     {
+        setTouchAreaBindingOnActionDownEnabled(true);
         this.setOnSceneTouchListener(this);
     }
 
@@ -177,7 +220,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
         MainActivity.gameToast("Touch TEST");
         if(pSceneTouchEvent.isActionDown()) { //Jump only if the user tapped, not moved his finger or something
-
+            walls.get(0).setPosition(walls.get(0).getX(),walls.get(0).getY()+200);
             hammer.setPosition(300,300);
             /*final Entity hammer = this.hammer;//Get player entity here.
             final float jumpDuration = 1;
@@ -194,6 +237,33 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         return false;
     }
 
+
+    /**
+     * Returns a pseudo-random number between min and max, inclusive.
+     * The difference between min and max can be at most
+     * <code>Integer.MAX_VALUE - 1</code>.
+     *
+     * @param min Minimum value
+     * @param max Maximum value.  Must be greater than min.
+     * @return Integer between min and max, inclusive.
+     * @see java.util.Random#nextInt(int)
+     */
+    public static int randInt(int min, int max) {
+
+        // NOTE: This will (intentionally) not run as written so that folks
+        // copy-pasting have to think about how to initialize their
+        // Random instance.  Initialization of the Random instance is outside
+        // the main scope of the question, but some decent options are to have
+        // a field that is initialized once and then re-used as needed or to
+        // use ThreadLocalRandom (if using at least Java 1.7).
+        Random rand = new Random();
+
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+
+        return randomNum;
+    }
 
 
 }

@@ -6,8 +6,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
-import com.badlogic.gdx.math.Vector2;
-
 import net.hamoto.wallhammer.Manager.SceneManager;
 import net.hamoto.wallhammer.Manager.ResourcesManager;
 
@@ -38,7 +36,6 @@ import java.io.IOException;
 
 public class MainActivity extends BaseGameActivity {
 
-    PhysicsWorld world;
     Camera camera;
     ResourcesManager resourcesManager;
     static Activity main;
