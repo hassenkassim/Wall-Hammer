@@ -35,7 +35,7 @@ public class MainScene extends BaseScene
     Sprite rad;
     ButtonSprite musicon;
     ButtonSprite musicoff;
-    public static Music music;
+    public static Music musicMain;
 
     @Override
     public void createScene()
@@ -62,12 +62,12 @@ public class MainScene extends BaseScene
     }
 
     private void startbackgroundmusic(){
-        music = ResourcesManager.getInstance().music;
-        music.setLooping(true);
-        music.play();
+        musicMain = ResourcesManager.getInstance().musicMain;
+        musicMain.setLooping(true);
+        musicMain.play();
 
         if(!MainActivity.musicon){
-            music.pause();
+            musicMain.pause();
         }
     }
 
@@ -113,7 +113,7 @@ public class MainScene extends BaseScene
         musicon.setOnClickListener(new ButtonSprite.OnClickListener() {
             @Override
             public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                music.pause();
+                musicMain.pause();
                 MainActivity.musicon = false;
                 activity.getSharedPreferences(MainActivity.SETTING, activity.MODE_PRIVATE).edit().putBoolean(MainActivity.SETTING_MUSIC, false).apply();
                 musicon.setEnabled(false);
@@ -131,7 +131,7 @@ public class MainScene extends BaseScene
         musicoff.setOnClickListener(new ButtonSprite.OnClickListener() {
             @Override
             public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                music.resume();
+                musicMain.resume();
                 musicon.setEnabled(true);
                 musicon.setVisible(true);
                 musicoff.setEnabled(false);
@@ -180,7 +180,7 @@ public class MainScene extends BaseScene
                     case MENU_PLAY:
                         MainActivity.gameToast("PLAY");
                         //TODO CALL GAME SCENE
-                        music.pause();
+                        musicMain.pause();
                         SceneManager.getInstance().setScene(SceneManager.SceneType.SCENE_GAME);
                         return true;
                     case MENU_OPTIONS:

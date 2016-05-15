@@ -1,5 +1,7 @@
 package net.hamoto.wallhammer.Scenes;
 
+import android.util.Log;
+
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -30,6 +32,9 @@ import org.andengine.util.adt.align.HorizontalAlign;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 /**
  * @author Hassen Kassim
@@ -44,12 +49,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     Sprite groundsprite;
     Sprite hammer;
     Sprite rad;
-    public static Music music;
+    public static Music musicGame;
+    public static Music musicGameOver;
     private Text scoreText;
+    private Text gameOverText;
     private int score = 0;
     TouchEvent  GameSceneTouchEvent;
     Scene GameScene;
     PhysicsWorld world;
+    public int time = 0;
 
     private ArrayList<Sprite> walls;
     final private int COUNT_WALL = 5;
@@ -65,6 +73,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         createHUD(); //Score anzeigen
         startbackgroundmusic(); //Hintergrundmusik starten
         createTouchFunction(); //Touch aktivieren
+        //addToScore(time);
     }
 
 
@@ -92,6 +101,22 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
                     if(hammer.collidesWith(walls.get(i))){
                         //TODO:Explosion einbauen?
                         walls.get(i).setVisible(false);
+                        musicGame.stop();
+
+                        if(MainActivity.musicon){
+                            musicGameOver.play();
+                        }
+                        groundsprite.clearEntityModifiers();
+                        cloud1sprite.clearEntityModifiers();
+                        rad.clearEntityModifiers();
+                        walls.get(0).clearEntityModifiers();
+                        walls.get(1).clearEntityModifiers();
+                        walls.get(2).clearEntityModifiers();
+                        walls.get(3).clearEntityModifiers();
+                        walls.get(4).clearEntityModifiers();
+                        gameOverText = new Text(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2, resourcesManager.font, "Game Over", new TextOptions(HorizontalAlign.LEFT), vbom);
+                        attachChild(gameOverText);
+
                     }
                 }
             }
@@ -127,24 +152,26 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         camera.setHUD(gameHUD);
     }
 
-    private void addToScore(int i)
-    {
-        score += i;
-        scoreText.setText("Score: " + score);
-    }
+
+    //private void addToScore(int i)
+    //{
+    //    score += i;
+    //    scoreText.setText("Score: " + score);
+    //}
 
     private void addSprites(){
         addGround();
         addCloud();
         addHammer();
-        //addRad();
+        addRad();
     }
 
     private void startbackgroundmusic(){
-        music = ResourcesManager.getInstance().music2;
-        music.setLooping(true);
+        musicGame = ResourcesManager.getInstance().musicGame;
+        musicGameOver = ResourcesManager.getInstance().musicGameOver;
+        musicGame.setLooping(true);
         if(MainActivity.musicon){
-            music.play();
+            musicGame.play();
         }
     }
 
@@ -154,6 +181,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         groundsprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(1f,128,-128))));
         final FixtureDef GROUND_FIX = PhysicsFactory.createFixtureDef(0.0f,0.0f,0.0f);
         Body groundBody = PhysicsFactory.createBoxBody(world, groundsprite, BodyDef.BodyType.StaticBody, GROUND_FIX);
+        //world.registerPhysicsConnector(new PhysicsConnector(groundsprite, groundBody, true, false));
         attachChild(groundsprite);
 
     }
@@ -168,7 +196,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     private void addHammer(){
         hammer = new Sprite(0, 0, 357, 400, ResourcesManager.getInstance().hammer_region, engine.getVertexBufferObjectManager());
         hammer.setScale(0.5f);
-        hammer.setPosition(130, 300);
+        hammer.setPosition(130, 190);
         final FixtureDef HAMMER_FIX = PhysicsFactory.createFixtureDef(100.0f, 0.2f, 0.0f);
         Body hammerBody = PhysicsFactory.createBoxBody(world, hammer, BodyDef.BodyType.DynamicBody, HAMMER_FIX);
         attachChild(hammer);
@@ -180,16 +208,22 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         rad.setScale(0.5f);
         rad.setPosition(148, 125);
         rad.registerEntityModifier(new LoopEntityModifier(new RotationModifier(1f, 0f, 359f)));
+        //final FixtureDef RAD_FIX = PhysicsFactory.createFixtureDef(100.0f, 0.2f, 0.0f);
+        //Body radBody = PhysicsFactory.createBoxBody(world, rad, BodyDef.BodyType.DynamicBody, RAD_FIX);
+        //world.registerPhysicsConnector(new PhysicsConnector(rad, radBody, true, false));
         attachChild(rad);
+
     }
 
 
     @Override
     public void onBackKeyPressed()
     {
-        music.stop();
+        musicGame.stop();
+        musicGameOver.stop();
         if(MainActivity.musicon){
-            MainScene.music.resume();
+            MainScene.musicMain.resume();
+
         }
         SceneManager.getInstance().loadMainScene(engine);
     }
@@ -220,8 +254,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
         MainActivity.gameToast("Touch TEST");
         if(pSceneTouchEvent.isActionDown()) { //Jump only if the user tapped, not moved his finger or something
-            walls.get(0).setPosition(walls.get(0).getX(),walls.get(0).getY()+200);
-            hammer.setPosition(300,300);
+            //walls.get(0).setPosition(walls.get(0).getX(),walls.get(0).getY()+200);
+            hammer.setPosition(hammer.getX(),hammer.getY()+200);
             /*final Entity hammer = this.hammer;//Get player entity here.
             final float jumpDuration = 1;
             final float startY = hammer.getY();

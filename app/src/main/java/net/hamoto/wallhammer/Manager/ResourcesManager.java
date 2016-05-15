@@ -50,8 +50,9 @@ public class ResourcesManager
     public VertexBufferObjectManager vbom;
     TextureManager texmng;
 
-    public Music music;
-    public Music music2;
+    public Music musicMain;
+    public Music musicGame;
+    public Music musicGameOver;
 
     public Font font;
 
@@ -172,10 +173,6 @@ public class ResourcesManager
         radTextureAtlas.load();
     }
 
-    public void loadMainAudio() throws IOException {
-        music = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity,"mfx/music.ogg");
-    }
-
     private void loadFonts()
     {
         FontFactory.setAssetBasePath("fonts/");
@@ -216,6 +213,7 @@ public class ResourcesManager
         }
         try {
             loadGameAudio();
+            loadGameOverAudio();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -234,8 +232,16 @@ public class ResourcesManager
         //TODO: Load new Sprites for GameGaphics like the walls...
     }
 
+    public void loadMainAudio() throws IOException {
+        musicMain = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity,"mfx/musicMain.ogg");
+    }
+
     public void loadGameAudio() throws IOException {
-        music2 = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity,"mfx/musik_tolgaa.ogg");
+        musicGame = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity,"mfx/musicGame.ogg");
+    }
+
+    public void loadGameOverAudio() throws IOException {
+        musicGameOver = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity,"mfx/musicGameOver.ogg");
     }
 
     public void unloadGameRecources()
@@ -249,8 +255,8 @@ public class ResourcesManager
     public void loadSplashScreen()
     {
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-        splashTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 700, 700, TextureOptions.BILINEAR);
-        splash_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTextureAtlas, activity, "splash.jpg", 0, 0);
+        splashTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 661, 935, TextureOptions.BILINEAR);
+        splash_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTextureAtlas, activity, "splashWallhammer.png", 0, 0);
         splashTextureAtlas.load();
     }
 
