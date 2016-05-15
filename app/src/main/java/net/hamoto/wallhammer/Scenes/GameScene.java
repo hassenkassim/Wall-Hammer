@@ -53,11 +53,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     public static Music musicGameOver;
     private Text scoreText;
     private Text gameOverText;
-    private int score = 0;
+    private long score = 0;
     TouchEvent  GameSceneTouchEvent;
     Scene GameScene;
     PhysicsWorld world;
-    public int time = 0;
+    private int counter = 0;
+
 
     private ArrayList<Sprite> walls;
     final private int COUNT_WALL = 5;
@@ -73,7 +74,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         createHUD(); //Score anzeigen
         startbackgroundmusic(); //Hintergrundmusik starten
         createTouchFunction(); //Touch aktivieren
-        //addToScore(time);
+        addToScore(counter);
     }
 
 
@@ -153,11 +154,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     }
 
 
-    //private void addToScore(int i)
-    //{
-    //    score += i;
-    //    scoreText.setText("Score: " + score);
-    //}
+    private void addToScore(int i)
+    {
+        score += i;
+        scoreText.setText("Score: " + score);
+    }
 
     private void addSprites(){
         addGround();
@@ -181,7 +182,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         groundsprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(1f,128,-128))));
         final FixtureDef GROUND_FIX = PhysicsFactory.createFixtureDef(0.0f,0.0f,0.0f);
         Body groundBody = PhysicsFactory.createBoxBody(world, groundsprite, BodyDef.BodyType.StaticBody, GROUND_FIX);
-        //world.registerPhysicsConnector(new PhysicsConnector(groundsprite, groundBody, true, false));
         attachChild(groundsprite);
 
     }
