@@ -58,6 +58,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     Scene GameScene;
     PhysicsWorld world;
     private int counter = 0;
+    private int curwall;
+    private int lastwall;
 
 
     private ArrayList<Sprite> walls;
@@ -72,7 +74,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         addSprites(); //Figuren Einfuegen
         startWalls(COUNT_WALL); //Waende einfuegen starten 100 Waende generieren TODO: Ineffizient! Neuer Algorithmus mit weniger OverHead
         createHUD(); //Score anzeigen
-        startbackgroundmusic(); //Hintergrundmusik starten
+        //startbackgroundmusic(); //Hintergrundmusik starten
         createTouchFunction(); //Touch aktivieren
         addToScore(counter);
     }
@@ -92,13 +94,30 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         for(int i = 0; i < count; i++){
             createWall(x, 300, 64, 256);
             x = x + randInt(300, 1200);
-
         }
+
+        curwall = 0;
+        lastwall = walls.size()-1;
 
         //collision check
         this.registerUpdateHandler(new IUpdateHandler() {
             @Override
             public void onUpdate(float pSecondsElapsed) {
+
+                if(walls.get(curwall).getX() + walls.get(curwall).getWidth() < 0){
+                    //MainActivity.gameToast("Wall weg");
+                    float from = walls.get(lastwall).getX() + randInt(300,1000);
+                    float to = -128;
+                    walls.get(curwall).registerEntityModifier(new SequenceEntityModifier(new MoveXModifier(from/300, from,to)));
+                    //curwall und lastwall aktualisieren
+                    if(curwall == walls.size()-1) curwall = 0;
+                    else curwall++;
+                    if(lastwall == walls.size()-1) lastwall = 0;
+                    else lastwall++;
+
+                }
+
+                /*
                 for(int i = 0; i< COUNT_WALL; i++){
                     //if(hammer.collidesWith(walls.get(i))){
                     //  //TODO:Explosion einbauen?
@@ -123,10 +142,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
                  if(walls.get(i).getX() + walls.get(i).getWidth() < 0){
                      MainActivity.gameToast("Wall weg");
                      walls.get(i).setX(walls.get(i + 1).getX() + randInt(50,200));
-                     walls.get(i).registerEntityModifier(new SequenceEntityModifier(new MoveXModifier(walls.get(i).getX()/300,walls.get(i).getX(),-128)));
+
+                     float from = walls.get(curwall++).getX() + randInt(50,200);
+                     float to = -128;
+                     walls.get(i).registerEntityModifier(new SequenceEntityModifier(new MoveXModifier(from/300, from,to)));
                  }
 
-                }
+                }*/
             }
 
             @Override

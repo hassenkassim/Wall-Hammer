@@ -29,7 +29,6 @@ import java.io.IOException;
  * @author Hassen Kassim
  * @author www.hamoto.net
  * @version 1.0
- * @added 04/28/2016
  *
  * The ResourcesManager is responsible for loading/unloading the game resources (art, fonts, audio).
  */
@@ -93,7 +92,7 @@ public class ResourcesManager
     //---------------------------------------------
 
     /**
-     * @param engine
+     * @param engine Gameengine
      * @param activity
      * @param camera
      * @param vbom
