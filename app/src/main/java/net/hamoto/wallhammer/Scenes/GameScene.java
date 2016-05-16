@@ -85,13 +85,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     }
 
 
-    private void startWalls(int count){
+    public void startWalls(int count){
         //create initial 'count' Walls
         walls = new ArrayList<Sprite>();
         int x = 1500;
         for(int i = 0; i < count; i++){
-            createWall(x,300, 64,256);
-            x = x + randInt(300,1200);
+            createWall(x, 300, 64, 256);
+            x = x + randInt(300, 1200);
+
         }
 
         //collision check
@@ -99,26 +100,32 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
             @Override
             public void onUpdate(float pSecondsElapsed) {
                 for(int i = 0; i< COUNT_WALL; i++){
-                    if(hammer.collidesWith(walls.get(i))){
-                        //TODO:Explosion einbauen?
-                        walls.get(i).setVisible(false);
-                        musicGame.stop();
+                    //if(hammer.collidesWith(walls.get(i))){
+                    //  //TODO:Explosion einbauen?
+                    //  walls.get(i).setVisible(false);
+                    //  musicGame.stop();
+                    //
+                    //  if(MainActivity.musicon){
+                    //      musicGameOver.play();
+                    //  }
+                    //  groundsprite.clearEntityModifiers();
+                    //  cloud1sprite.clearEntityModifiers();
+                    //  rad.clearEntityModifiers();
+                    //  walls.get(0).clearEntityModifiers();
+                    //  walls.get(1).clearEntityModifiers();
+                    //  walls.get(2).clearEntityModifiers();
+                    //  walls.get(3).clearEntityModifiers();
+                    //  walls.get(4).clearEntityModifiers();
+                    //  gameOverText = new Text(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2, resourcesManager.font, "Game Over", new TextOptions(HorizontalAlign.LEFT), vbom);
+                    //  attachChild(gameOverText);
 
-                        if(MainActivity.musicon){
-                            musicGameOver.play();
-                        }
-                        groundsprite.clearEntityModifiers();
-                        cloud1sprite.clearEntityModifiers();
-                        rad.clearEntityModifiers();
-                        walls.get(0).clearEntityModifiers();
-                        walls.get(1).clearEntityModifiers();
-                        walls.get(2).clearEntityModifiers();
-                        walls.get(3).clearEntityModifiers();
-                        walls.get(4).clearEntityModifiers();
-                        gameOverText = new Text(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2, resourcesManager.font, "Game Over", new TextOptions(HorizontalAlign.LEFT), vbom);
-                        attachChild(gameOverText);
+                    //}
+                 if(walls.get(i).getX() + walls.get(i).getWidth() < 0){
+                     MainActivity.gameToast("Wall weg");
+                     walls.get(i).setX(walls.get(i + 1).getX() + randInt(50,200));
+                     walls.get(i).registerEntityModifier(new SequenceEntityModifier(new MoveXModifier(walls.get(i).getX()/300,walls.get(i).getX(),-128)));
+                 }
 
-                    }
                 }
             }
 
@@ -127,6 +134,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
             }
         });
+
     }
 
     private void createWall(int x, int y, int width, int height){
@@ -137,6 +145,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         wall.registerEntityModifier(new SequenceEntityModifier(new MoveXModifier(wall.getX()/300,wall.getX(),-128)));
         attachChild(wall);
     }
+
+
 
     private void createBackground()
     {
@@ -255,7 +265,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         MainActivity.gameToast("Touch TEST");
         if(pSceneTouchEvent.isActionDown()) { //Jump only if the user tapped, not moved his finger or something
             //walls.get(0).setPosition(walls.get(0).getX(),walls.get(0).getY()+200);
-            hammer.setPosition(hammer.getX(),hammer.getY()+200);
+            hammer.setPosition(hammer.getX(),hammer.getY() + 200);
             /*final Entity hammer = this.hammer;//Get player entity here.
             final float jumpDuration = 1;
             final float startY = hammer.getY();
