@@ -31,10 +31,9 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.align.HorizontalAlign;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
-import java.util.Timer;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 /**
  * @author Hassen Kassim
@@ -54,12 +53,17 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     private Text scoreText;
     private Text gameOverText;
     private long score = 0;
-    TouchEvent  GameSceneTouchEvent;
+    TouchEvent GameSceneTouchEvent;
     Scene GameScene;
     PhysicsWorld world;
     private int counter = 0;
     private int curwall;
     private int lastwall;
+
+    private Date lasttouch;
+    private Date actualtouch;
+
+
 
 
     private ArrayList<Sprite> walls;
@@ -68,7 +72,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     @Override
     public void createScene()
     {
-
         initPhysics(); //Physik Welt initiieren
         createBackground(); //Hintergrund erstellen
         addSprites(); //Figuren Einfuegen
@@ -114,7 +117,18 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
                     else curwall++;
                     if(lastwall == walls.size()-1) lastwall = 0;
                     else lastwall++;
+                }
 
+                if(lasttouch!=null){
+                    if(hammer.collidesWith(walls.get(curwall))){
+                        actualtouch = new Date();
+                        actualtouch.getTime();
+                        long a = actualtouch.getTime() - lasttouch.getTime();
+                        if(a<500&&a>200) Log.i("AUSGABE:","KORREKT: " + a);
+                        else Log.i("AUSGABE:","NOOO: " + a);
+                        lasttouch=null;
+                        //MainActivity.gameToast("collision");
+                    }
                 }
 
                 /*
@@ -284,10 +298,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
     @Override
     public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
-        MainActivity.gameToast("Touch TEST");
-        if(pSceneTouchEvent.isActionDown()) { //Jump only if the user tapped, not moved his finger or something
+        if(pSceneTouchEvent.isActionDown()) {
+            lasttouch = new Date();
+            lasttouch.getTime();
+            //MainActivity.gameToast("" + lasttouch);
+            //Jump only if the user tapped, not moved his finger or something
             //walls.get(0).setPosition(walls.get(0).getX(),walls.get(0).getY()+200);
-            hammer.setPosition(hammer.getX(),hammer.getY() + 200);
+            //hammer.setPosition(hammer.getX(),hammer.getY() + 200);
             /*final Entity hammer = this.hammer;//Get player entity here.
             final float jumpDuration = 1;
             final float startY = hammer.getY();
@@ -330,6 +347,5 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
         return randomNum;
     }
-
 
 }
