@@ -43,7 +43,6 @@ public class SplashScene extends BaseScene
     {
         world = new PhysicsWorld(new Vector2(0.0f,-100.0f), false);
         this.registerUpdateHandler(world);
-        //setBackground(new Background(Color.WHITE));
 
         splashBackground = new Sprite(0, 0, resourcesManager.splashBackground_region, vbom)
         {
