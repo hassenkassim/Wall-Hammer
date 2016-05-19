@@ -1,6 +1,9 @@
 package net.hamoto.wallhammer.Scenes;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -50,7 +53,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     final private int DELAYMS = 2000;
     final private int TOUCHTIME_MIN = 200;
     final private int TOUCHTIME_MAX = 500;
-
+    final private String FACEBOOK = "com.facebook.katana";
+    final private String TWITTER = "com.twitter.android";
 
     public static Music musicGame;
     public static Music musicGameOver;
@@ -61,6 +65,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     private Sprite hammer;
     private Sprite rad;
     private Text scoreText;
+    private Text scoreGameOverText;
     private long score = 0;
     private PhysicsWorld world;
     private int counter = 0;
@@ -90,7 +95,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         initWalls(COUNT_WALL); //Waende einfuegen starten COUNT_WALL Waende generieren
         createTouchFunction(); //Touch aktivieren
         createGameOverText(); //GameOverText generieren
-
     }
 
 
@@ -250,15 +254,16 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
                 switch(pMenuItem.getID())
                 {
                     case GAME_BACK:
-                        MainActivity.gameToast("Back");
+                        //MainActivity.gameToast("Back");
                         //TODO CALL MENU SCENE
-                        SceneManager.getInstance().loadMainScene(engine);
+                        onBackKeyPressed();
                         return true;
                     case GAME_PLAYAGAIN:
                         SceneManager.getInstance().loadGameScene(engine);
                         //TODO CALL GAME SCENE
                     case GAME_SHARE:
-                        MainActivity.gameToast("Share");
+                        //MainActivity.gameToast("Share");
+                        SharingToSocialMedia("NOPE");
                         return true;
                     default:
                         return false;
@@ -267,6 +272,44 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         });
 
         setChildScene(gameChildScene);
+    }
+
+    /*
+    Facebook - "com.facebook.katana"
+    Twitter - "com.twitter.android"
+    Instagram - "com.instagram.android"
+    Pinterest - "com.pinterest"
+     */
+    public void SharingToSocialMedia(String application) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Neues Highscore!");
+        intent.putExtra(Intent.EXTRA_TEXT, "Ich hab einen neuen Highscore aufgestellt: " + score + ". \n Kannst du es mit mir aufnehmen?");
+        if(application.equals("NOPE")){
+            activity.startActivity(intent);
+        } else{
+            boolean installed = appInstalledOrNot(application);
+            if (installed) {
+                intent.setPackage(application);
+                activity.startActivity(intent);
+            } else {
+                MainActivity.gameToast("App not installed yet");
+            }
+        }
+    }
+
+    private boolean appInstalledOrNot(String uri) {
+        PackageManager pm = activity.getPackageManager();
+        boolean app_installed;
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            app_installed = true;
+        }
+        catch (PackageManager.NameNotFoundException e) {
+            app_installed = false;
+        }
+        return app_installed;
     }
 
 
@@ -328,21 +371,22 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     {
         gameOverText = new Text(0, 0, resourcesManager.font, "GAME OVER!", vbom);
         highscoreText = new Text(0, 0, resourcesManager.font, "Highscore: 0", vbom);
-        scoreText = new Text(0, 0, resourcesManager.font, "Score: 0", vbom);
+        scoreGameOverText = new Text(0, 0, resourcesManager.font, "Score: 0", vbom);
     }
 
     private void displayGameOverText()
     {
+        clearHUD();
         camera.setChaseEntity(null);
         gameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 300);
         highscoreText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 220);
-        scoreText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 160);
+        scoreGameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 160);
         highscoreText.setText("Highscore: " + highscore);
-        scoreText.setText("Score: " + score);
+        scoreGameOverText.setText("Score: " + score);
         gameOverText.setScale(1,2);
         attachChild(gameOverText);
         attachChild(highscoreText);
-        attachChild(scoreText);
+        attachChild(scoreGameOverText);
         gameOverDisplayed = true;
         musicGame.stop();
     }
@@ -399,6 +443,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         return false;
     }
 
+    private void clearHUD(){
+        if(gameHUD!=null){
+            gameHUD.detachChildren();
+            gameHUD.detachSelf();
+//            gameHUD.dispose();
+        }
+    }
+
 
     /**
      * Returns a pseudo-random number between min and max, inclusive.
@@ -436,6 +488,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     @Override
     public void disposeScene()
     {
+        clearHUD();
         this.detachSelf();
         this.dispose();
     }

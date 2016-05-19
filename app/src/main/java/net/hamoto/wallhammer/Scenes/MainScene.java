@@ -1,5 +1,7 @@
 package net.hamoto.wallhammer.Scenes;
 
+import android.content.Context;
+
 import net.hamoto.wallhammer.MainActivity;
 import net.hamoto.wallhammer.Manager.SceneManager;
 import net.hamoto.wallhammer.Manager.ResourcesManager;
@@ -115,7 +117,7 @@ public class MainScene extends BaseScene
             public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
                 musicMain.pause();
                 MainActivity.musicon = false;
-                activity.getSharedPreferences(MainActivity.SETTING, activity.MODE_PRIVATE).edit().putBoolean(MainActivity.SETTING_MUSIC, false).apply();
+                activity.getSharedPreferences(MainActivity.SETTING, Context.MODE_PRIVATE).edit().putBoolean(MainActivity.SETTING_MUSIC, false).apply();
                 musicon.setEnabled(false);
                 musicon.setVisible(false);
                 musicoff.setEnabled(true);
@@ -137,7 +139,7 @@ public class MainScene extends BaseScene
                 musicoff.setEnabled(false);
                 musicoff.setVisible(false);
                 MainActivity.musicon = true;
-                activity.getSharedPreferences(MainActivity.SETTING, activity.MODE_PRIVATE).edit().putBoolean(MainActivity.SETTING_MUSIC, true).apply();
+                activity.getSharedPreferences(MainActivity.SETTING, Context.MODE_PRIVATE).edit().putBoolean(MainActivity.SETTING_MUSIC, true).apply();
             }
         });
         registerTouchArea(musicoff);
@@ -178,13 +180,13 @@ public class MainScene extends BaseScene
                 switch(pMenuItem.getID())
                 {
                     case MENU_PLAY:
-                        MainActivity.gameToast("PLAY");
+                        //MainActivity.gameToast("PLAY");
                         //TODO CALL GAME SCENE
                         musicMain.pause();
                         SceneManager.getInstance().setScene(SceneManager.SceneType.SCENE_GAME);
                         return true;
                     case MENU_OPTIONS:
-                        MainActivity.gameToast("OPTIONS");
+                        //MainActivity.gameToast("OPTIONS");
                         //TODO CALL SETTING SCENE
                         return true;
                     default:

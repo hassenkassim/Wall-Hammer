@@ -20,6 +20,11 @@ public class LoadingScene extends BaseScene
     @Override
     public void createScene()
     {
+        if(camera.hasHUD()){
+            camera.getHUD().detachChildren();
+            camera.getHUD().detachSelf();
+            camera.getHUD().dispose();
+        }
         createBackground();
         addSplashLogo();
         addLoadingText();
