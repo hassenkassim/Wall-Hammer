@@ -31,7 +31,6 @@ import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.align.HorizontalAlign;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
@@ -43,43 +42,36 @@ import java.util.Random;
  */
 public class GameScene extends BaseScene implements IOnSceneTouchListener
 {
-    private HUD gameHUD;
-    Sprite cloud1sprite;
-    Sprite groundsprite;
-    Sprite hammer;
-    Sprite rad;
+    final private int COUNT_WALL = 5;
+
     public static Music musicGame;
     public static Music musicGameOver;
+
+    private HUD gameHUD;
+    private Sprite cloud1sprite;
+    private Sprite groundsprite;
+    private Sprite hammer;
+    private Sprite rad;
     private Text scoreText;
-    private Text gameOverText;
     private long score = 0;
-    TouchEvent GameSceneTouchEvent;
-    Scene GameScene;
-    PhysicsWorld world;
+    private PhysicsWorld world;
     private int counter = 0;
     private int curwall;
     private int lastwall;
-
     private Date lasttouch;
     private Date actualtouch;
-
-
-
-
     private ArrayList<Sprite> walls;
-    final private int COUNT_WALL = 5;
 
     @Override
     public void createScene()
     {
         initPhysics(); //Physik Welt initiieren
         createBackground(); //Hintergrund erstellen
-        addSprites(); //Figuren Einfuegen
-        startWalls(COUNT_WALL); //Waende einfuegen starten 100 Waende generieren TODO: Ineffizient! Neuer Algorithmus mit weniger OverHead
         createHUD(); //Score anzeigen
-        //startbackgroundmusic(); //Hintergrundmusik starten
+        startBackgroundMusic(); //Hintergrundmusik starten
+        addSprites(); //Figuren Einfuegen
+        initWalls(COUNT_WALL); //Waende einfuegen starten COUNT_WALL Waende generieren
         createTouchFunction(); //Touch aktivieren
-        addToScore(counter);
     }
 
 
@@ -88,101 +80,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         world = new PhysicsWorld(new Vector2(0, -9.81f), false);
         this.registerUpdateHandler(world);
     }
-
-
-    public void startWalls(int count){
-        //create initial 'count' Walls
-        walls = new ArrayList<Sprite>();
-        int x = 1500;
-        for(int i = 0; i < count; i++){
-            createWall(x, 300, 64, 256);
-            x = x + randInt(300, 1200);
-        }
-
-        curwall = 0;
-        lastwall = walls.size()-1;
-
-        //collision check
-        this.registerUpdateHandler(new IUpdateHandler() {
-            @Override
-            public void onUpdate(float pSecondsElapsed) {
-
-                if(walls.get(curwall).getX() + walls.get(curwall).getWidth() < 0){
-                    //MainActivity.gameToast("Wall weg");
-                    float from = walls.get(lastwall).getX() + randInt(300,1000);
-                    float to = -128;
-                    walls.get(curwall).registerEntityModifier(new SequenceEntityModifier(new MoveXModifier(from/300, from,to)));
-                    //curwall und lastwall aktualisieren
-                    if(curwall == walls.size()-1) curwall = 0;
-                    else curwall++;
-                    if(lastwall == walls.size()-1) lastwall = 0;
-                    else lastwall++;
-                }
-
-                if(lasttouch!=null){
-                    if(hammer.collidesWith(walls.get(curwall))){
-                        actualtouch = new Date();
-                        actualtouch.getTime();
-                        long a = actualtouch.getTime() - lasttouch.getTime();
-                        if(a<500&&a>200) Log.i("AUSGABE:","KORREKT: " + a);
-                        else Log.i("AUSGABE:","NOOO: " + a);
-                        lasttouch=null;
-                        //MainActivity.gameToast("collision");
-                    }
-                }
-
-                /*
-                for(int i = 0; i< COUNT_WALL; i++){
-                    //if(hammer.collidesWith(walls.get(i))){
-                    //  //TODO:Explosion einbauen?
-                    //  walls.get(i).setVisible(false);
-                    //  musicGame.stop();
-                    //
-                    //  if(MainActivity.musicon){
-                    //      musicGameOver.play();
-                    //  }
-                    //  groundsprite.clearEntityModifiers();
-                    //  cloud1sprite.clearEntityModifiers();
-                    //  rad.clearEntityModifiers();
-                    //  walls.get(0).clearEntityModifiers();
-                    //  walls.get(1).clearEntityModifiers();
-                    //  walls.get(2).clearEntityModifiers();
-                    //  walls.get(3).clearEntityModifiers();
-                    //  walls.get(4).clearEntityModifiers();
-                    //  gameOverText = new Text(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2, resourcesManager.font, "Game Over", new TextOptions(HorizontalAlign.LEFT), vbom);
-                    //  attachChild(gameOverText);
-
-                    //}
-                 if(walls.get(i).getX() + walls.get(i).getWidth() < 0){
-                     MainActivity.gameToast("Wall weg");
-                     walls.get(i).setX(walls.get(i + 1).getX() + randInt(50,200));
-
-                     float from = walls.get(curwall++).getX() + randInt(50,200);
-                     float to = -128;
-                     walls.get(i).registerEntityModifier(new SequenceEntityModifier(new MoveXModifier(from/300, from,to)));
-                 }
-
-                }*/
-            }
-
-            @Override
-            public void reset() {
-
-            }
-        });
-
-    }
-
-    private void createWall(int x, int y, int width, int height){
-        Sprite wall = new Sprite(x, y, width, height, ResourcesManager.getInstance().wall_region, engine.getVertexBufferObjectManager());
-        walls.add(wall);
-        final FixtureDef WALL_FIX = PhysicsFactory.createFixtureDef(0.0f,0.0f,0.0f);
-        Body wallBody = PhysicsFactory.createBoxBody(world, wall, BodyDef.BodyType.DynamicBody, WALL_FIX);
-        wall.registerEntityModifier(new SequenceEntityModifier(new MoveXModifier(wall.getX()/300,wall.getX(),-128)));
-        attachChild(wall);
-    }
-
-
 
     private void createBackground()
     {
@@ -199,11 +96,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         camera.setHUD(gameHUD);
     }
 
-
-    private void addToScore(int i)
-    {
-        score += i;
-        scoreText.setText("Score: " + score);
+    private void startBackgroundMusic(){
+        musicGame = ResourcesManager.getInstance().musicGame;
+        musicGameOver = ResourcesManager.getInstance().musicGameOver;
+        musicGame.setLooping(true);
+        if(MainActivity.musicon){
+            musicGame.play();
+        }
     }
 
     private void addSprites(){
@@ -213,15 +112,76 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         addRad();
     }
 
-    private void startbackgroundmusic(){
-        musicGame = ResourcesManager.getInstance().musicGame;
-        musicGameOver = ResourcesManager.getInstance().musicGameOver;
-        musicGame.setLooping(true);
-        if(MainActivity.musicon){
-            musicGame.play();
+
+    public void initWalls(int count){
+        //create initial 'count' Walls
+        walls = new ArrayList<Sprite>();
+        int x = 1500;
+        for(int i = 0; i < count; i++){
+            createWall(x, 300, 64, 256);
+            x = x + randInt(300, 1200);
         }
+        curwall = 0;
+        lastwall = walls.size()-1;
+        //start the collision check
+        initCollisionCheck();
     }
 
+    private void initCollisionCheck(){
+
+        //collision check
+        this.registerUpdateHandler(new IUpdateHandler() {
+            @Override
+            public void onUpdate(float pSecondsElapsed) {
+
+                if(walls.get(curwall).getX() + walls.get(curwall).getWidth() < 0){
+                    float from = walls.get(lastwall).getX() + randInt(300,1000);
+                    float to = -128;
+                    walls.get(curwall).registerEntityModifier(new SequenceEntityModifier(new MoveXModifier(from/300, from,to)));
+                    //curwall und lastwall aktualisieren
+                    if(curwall == walls.size()-1) curwall = 0;
+                    else curwall++;
+                    if(lastwall == walls.size()-1) lastwall = 0;
+                    else lastwall++;
+                }
+
+                if(lasttouch!=null){
+                    if(hammer.collidesWith(walls.get(curwall))){
+                        actualtouch = new Date();
+                        actualtouch.getTime();
+                        long a = actualtouch.getTime() - lasttouch.getTime();
+                        if(a<500&&a>200) {
+                            //Mauer zerstören
+                            Log.i("AUSGABE:","KORREKT: " + a);
+                        }
+                        else {
+                            //Gameover
+                            gameover();
+                            Log.i("AUSGABE:","NOOO: " + a);
+                        }
+                        lasttouch=null;
+                    }
+                }
+            }
+
+            @Override
+            public void reset() {
+
+            }
+
+        });
+
+    }
+
+    private void gameover(){
+
+    };
+
+
+    private void addToScore(int i) {
+        score += i;
+        scoreText.setText("Score: " + score);
+    }
     private void addGround(){
         groundsprite = new Sprite(0, 0, 3000, 256, ResourcesManager.getInstance().ground_region, engine.getVertexBufferObjectManager());
         groundsprite.setY(-25f);
@@ -231,14 +191,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         attachChild(groundsprite);
 
     }
-
     private void addCloud(){
         cloud1sprite = new Sprite(0, 0, 3072, 512, ResourcesManager.getInstance().cloud1_region, engine.getVertexBufferObjectManager());
         cloud1sprite.setY(600f);
         cloud1sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(10f,256,-256))));
         attachChild(cloud1sprite);
     }
-
     private void addHammer(){
         hammer = new Sprite(0, 0, 357, 400, ResourcesManager.getInstance().hammer_region, engine.getVertexBufferObjectManager());
         hammer.setScale(0.5f);
@@ -248,7 +206,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         attachChild(hammer);
         world.registerPhysicsConnector(new PhysicsConnector(hammer, hammerBody, true, false));
     }
-
     private void addRad(){
         rad = new Sprite(0, 0, 130, 130, ResourcesManager.getInstance().rad_region, engine.getVertexBufferObjectManager());
         rad.setScale(0.5f);
@@ -258,7 +215,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         //Body radBody = PhysicsFactory.createBoxBody(world, rad, BodyDef.BodyType.DynamicBody, RAD_FIX);
         //world.registerPhysicsConnector(new PhysicsConnector(rad, radBody, true, false));
         attachChild(rad);
+    }
 
+    private void createWall(int x, int y, int width, int height){
+        Sprite wall = new Sprite(x, y, width, height, ResourcesManager.getInstance().wall_region, engine.getVertexBufferObjectManager());
+        walls.add(wall);
+        final FixtureDef WALL_FIX = PhysicsFactory.createFixtureDef(0.0f,0.0f,0.0f);
+        Body wallBody = PhysicsFactory.createBoxBody(world, wall, BodyDef.BodyType.DynamicBody, WALL_FIX);
+        wall.registerEntityModifier(new SequenceEntityModifier(new MoveXModifier(wall.getX()/300,wall.getX(),-128)));
+        attachChild(wall);
     }
 
 
@@ -273,22 +238,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         }
         SceneManager.getInstance().loadMainScene(engine);
     }
-
-    @Override
-    public SceneManager.SceneType getSceneType()
-    {
-        return SceneManager.SceneType.SCENE_GAME;
-    }
-
-    @Override
-    public void disposeScene()
-    {
-        this.detachSelf();
-        this.dispose();
-    }
-
-
-
 
     private void createTouchFunction()
     {
@@ -346,6 +295,19 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         int randomNum = rand.nextInt((max - min) + 1) + min;
 
         return randomNum;
+    }
+
+    @Override
+    public SceneManager.SceneType getSceneType()
+    {
+        return SceneManager.SceneType.SCENE_GAME;
+    }
+
+    @Override
+    public void disposeScene()
+    {
+        this.detachSelf();
+        this.dispose();
     }
 
 }
