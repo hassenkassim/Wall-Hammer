@@ -58,7 +58,9 @@ public class ResourcesManager
     //---------------------------------------------
     // TEXTURES & TEXTURE REGIONS
     //---------------------------------------------
-    public ITextureRegion splash_region;
+    public ITextureRegion splashText_region;
+    public ITextureRegion splashLogo_region;
+    public ITextureRegion splashBackground_region;
     public ITextureRegion menu_background_region;
     public ITextureRegion play_region;
     public ITextureRegion options_region;
@@ -71,7 +73,9 @@ public class ResourcesManager
     public ITextureRegion rad_region;
     public ITextureRegion wall_region;
 
-    BitmapTextureAtlas splashTextureAtlas;
+    BitmapTextureAtlas splashTextTextureAtlas;
+    BitmapTextureAtlas splashLogoTextureAtlas;
+    BitmapTextureAtlas splashBackgroundTextureAtlas;
     BuildableBitmapTextureAtlas menuTextureAtlas;
     BuildableBitmapTextureAtlas groundTextureAtlas;
     BuildableBitmapTextureAtlas cloud1TextureAtlas;
@@ -253,16 +257,26 @@ public class ResourcesManager
 
     public void loadSplashScreen()
     {
-        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-        splashTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 661, 935, TextureOptions.BILINEAR);
-        splash_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTextureAtlas, activity, "splashWallhammer.png", 0, 0);
-        splashTextureAtlas.load();
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/splash/");
+        splashBackgroundTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 1280, 720, TextureOptions.BILINEAR);
+        splashBackground_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashBackgroundTextureAtlas, activity, "background.png", 0, 0);
+        splashBackgroundTextureAtlas.load();
+
+        splashLogoTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 595, 595, TextureOptions.BILINEAR);
+        splashLogo_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashLogoTextureAtlas, activity, "SplashLogo.png", 0, 0);
+        splashLogoTextureAtlas.load();
+
+        splashTextTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 3012, 888, TextureOptions.BILINEAR);
+        splashText_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTextTextureAtlas, activity, "Logo.png", 0, 0);
+        splashTextTextureAtlas.load();
     }
 
     public void unloadSplashScreen()
     {
-        splashTextureAtlas.unload();
-        splash_region = null;
+        splashTextTextureAtlas.unload();
+        splashLogoTextureAtlas.unload();
+        splashText_region = null;
+        splashLogo_region = null;
     }
 
 
