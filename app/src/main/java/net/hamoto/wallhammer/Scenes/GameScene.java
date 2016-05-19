@@ -122,7 +122,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         walls = new ArrayList<Sprite>();
         int x = 1500;
         for(int i = 0; i < count; i++){
-            createWall(x, 300, 64, 256);
+            createWall(x, 250, 64, 320);
             x = x + randInt(300, 1200);
         }
         curwall = 0;
@@ -154,7 +154,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
             float from = walls.get(lastwall).getX() + randInt(300,1000);
             float to = -128;
             walls.get(curwall).clearEntityModifiers();
-            walls.get(curwall).registerEntityModifier(new SequenceEntityModifier(new MoveXModifier(from/300, from,to)));
+            walls.get(curwall).registerEntityModifier(new SequenceEntityModifier(new MoveXModifier((from-to)/300, from,to)));
             //curwall und lastwall aktualisieren
             if(curwall == walls.size()-1) curwall = 0;
             else curwall++;
@@ -191,7 +191,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         float from = walls.get(lastwall).getX() + randInt(300,1000);
         float to = -128;
         walls.get(curwall).clearEntityModifiers();
-        walls.get(curwall).registerEntityModifier(new SequenceEntityModifier(new MoveXModifier(from/300, from,to)));
+        walls.get(curwall).registerEntityModifier(new SequenceEntityModifier(new MoveXModifier((from-to)/300, from,to)));
         //curwall und lastwall aktualisieren
         if(curwall == walls.size()-1) curwall = 0;
         else curwall++;
@@ -223,7 +223,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     private void addGround(){
         groundsprite = new Sprite(0, 0, 3000, 256, ResourcesManager.getInstance().ground_region, engine.getVertexBufferObjectManager());
         groundsprite.setY(-25f);
-        groundsprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(1f,128,-128))));
+        groundsprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(256.0f/300.0f,128,-128))));
         final FixtureDef GROUND_FIX = PhysicsFactory.createFixtureDef(0.0f,0.0f,0.0f);
         Body groundBody = PhysicsFactory.createBoxBody(world, groundsprite, BodyDef.BodyType.StaticBody, GROUND_FIX);
         attachChild(groundsprite);
@@ -260,7 +260,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         walls.add(wall);
         final FixtureDef WALL_FIX = PhysicsFactory.createFixtureDef(0.0f,0.0f,0.0f);
         Body wallBody = PhysicsFactory.createBoxBody(world, wall, BodyDef.BodyType.DynamicBody, WALL_FIX);
-        wall.registerEntityModifier(new SequenceEntityModifier(new MoveXModifier(wall.getX()/300,wall.getX(),-128)));
+        wall.registerEntityModifier(new SequenceEntityModifier(new MoveXModifier((wall.getX()+128.0f)/300.0f,wall.getX(),-128)));
         attachChild(wall);
     }
 

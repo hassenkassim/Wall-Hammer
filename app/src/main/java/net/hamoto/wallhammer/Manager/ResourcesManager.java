@@ -223,14 +223,12 @@ public class ResourcesManager
     }
 
     private void loadGameGraphics() throws ITextureAtlasBuilder.TextureAtlasBuilderException
-{
-        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/menu/");
-        wallTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 128, 128, TextureOptions.REPEATING_BILINEAR);
-        wall_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(wallTextureAtlas, activity, "wall2.jpg");
-        wall_region.setTextureSize(64,256);
+    {
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/game/");
+        wallTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 256, 1280, TextureOptions.BILINEAR);
+        wall_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(wallTextureAtlas, activity, "wall.png");
         wallTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         wallTextureAtlas.load();
-
 
         //TODO: Load new Sprites for GameGaphics like the walls...
     }
@@ -251,9 +249,6 @@ public class ResourcesManager
     {
 
     }
-
-
-
 
     public void loadSplashScreen()
     {
