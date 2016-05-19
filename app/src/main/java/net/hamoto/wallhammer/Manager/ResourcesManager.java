@@ -54,6 +54,7 @@ public class ResourcesManager
     public Music musicGameOver;
 
     public Font font;
+    //public Font fontBig;
 
     //---------------------------------------------
     // TEXTURES & TEXTURE REGIONS
@@ -73,7 +74,8 @@ public class ResourcesManager
     public ITextureRegion rad_region;
     public ITextureRegion wall_region;
     public ITextureRegion playAgain_region;
-    public ITextureRegion highscore_region;
+    public ITextureRegion share_region;
+    public ITextureRegion backToMenu_region;
 
 
     BitmapTextureAtlas splashTextTextureAtlas;
@@ -88,6 +90,7 @@ public class ResourcesManager
     BuildableBitmapTextureAtlas hammerTextureAtlas;
     BuildableBitmapTextureAtlas radTextureAtlas;
     BuildableBitmapTextureAtlas wallTextureAtlas;
+
 
 
 
@@ -133,11 +136,12 @@ public class ResourcesManager
     private void loadMainGraphics() throws ITextureAtlasBuilder.TextureAtlasBuilderException {
         texmng = engine.getTextureManager();
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/menu/");
-        menuTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 500, 500, TextureOptions.BILINEAR);
-        play_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "playbtn.png");
-        options_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "options.png");
-        playAgain_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "playbtn.png");
-        highscore_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "options.png");
+        menuTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 600, 600, TextureOptions.BILINEAR);
+        play_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "PlayButton.png");
+        options_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "OptionsButton.png");
+        playAgain_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "PlayAgainButton.png");
+        share_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "ShareButton.png");
+        backToMenu_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "MenuButton.png");
         menuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
         menuTextureAtlas.load();
 
@@ -186,7 +190,9 @@ public class ResourcesManager
         FontFactory.setAssetBasePath("fonts/");
         final ITexture mainFontTexture = new BitmapTextureAtlas(activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
         font = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), "mexcellent_3d.ttf", 50, true, Color.WHITE, 2, Color.BLACK);
+        //fontBig = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), "mexcellent_3d.ttf", 70, true, Color.WHITE, 2, Color.BLACK);
         font.load();
+        //fontBig.load();
     }
 
     public void unloadMainGraphics()

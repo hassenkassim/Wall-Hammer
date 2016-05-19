@@ -21,6 +21,10 @@ import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.scene.menu.MenuScene;
+import org.andengine.entity.scene.menu.item.IMenuItem;
+import org.andengine.entity.scene.menu.item.SpriteMenuItem;
+import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
@@ -65,6 +69,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     private Text gameOverText;
     private Text highscoreText;
     private boolean gameOverDisplayed = false;
+    MenuScene gameChildScene;
+    final int GAME_BACK = 0;
+    final int GAME_PLAYAGAIN = 1;
+    final int GAME_SHARE = 2;
+
 
     @Override
     public void createScene()
@@ -203,14 +212,64 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         addToScore(1);
     }
 
-    private void gameover(){
+    private void gameover() {
         stopGame();
         displayGameOverText();
         Log.i("STATUS: ", "GAMEOVER!");
+        createGameChildScene();
+        musicGameOver.play();
     }
+
+    private void createGameChildScene()
+        {
+        gameChildScene = new MenuScene(camera);
+        gameChildScene.setPosition(0, 0);
+
+        final IMenuItem backGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_BACK, resourcesManager.backToMenu_region, vbom), 1.5f, 1);
+        final IMenuItem playagainGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_PLAYAGAIN, resourcesManager.playAgain_region, vbom), 1.5f, 1);
+        final IMenuItem shareGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_SHARE, resourcesManager.share_region, vbom), 1.5f, 1);
+
+        gameChildScene.addMenuItem(backGameItem);
+        gameChildScene.addMenuItem(playagainGameItem);
+        gameChildScene.addMenuItem(shareGameItem);
+
+        gameChildScene.buildAnimations();
+        gameChildScene.setBackgroundEnabled(false);
+
+        backGameItem.setPosition(backGameItem.getX(), backGameItem.getY() - 120);
+        playagainGameItem.setPosition(playagainGameItem.getX(), playagainGameItem.getY() - 140);
+        shareGameItem.setPosition(shareGameItem.getX(), shareGameItem.getY() - 160);
+
+        gameChildScene.setOnMenuItemClickListener(new MenuScene.IOnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY)
+            {
+                switch(pMenuItem.getID())
+                {
+                    case GAME_BACK:
+                        MainActivity.gameToast("Back");
+                        //TODO CALL MENU SCENE
+                        SceneManager.getInstance().loadMainScene(engine);
+                        return true;
+                    case GAME_PLAYAGAIN:
+                        SceneManager.getInstance().loadGameScene(engine);
+                        //TODO CALL GAME SCENE
+                    case GAME_SHARE:
+                        MainActivity.gameToast("Share");
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+
+        setChildScene(gameChildScene);
+    }
+
 
     private void stopGame(){
         this.setIgnoreUpdate(true);
+        musicGame.stop();
     }
 
 
@@ -272,16 +331,17 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     private void displayGameOverText()
     {
         camera.setChaseEntity(null);
-        gameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 230);
-        highscoreText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 100);
-        scoreText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 20);
-        gameOverText.setScale(1,2);
+        gameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 300);
+        highscoreText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 220);
+        scoreText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 160);
         highscoreText.setText("Highscore: " + highscore);
         scoreText.setText("Score: " + score);
+        gameOverText.setScale(1,2);
         attachChild(gameOverText);
         attachChild(highscoreText);
         attachChild(scoreText);
         gameOverDisplayed = true;
+        musicGame.stop();
     }
 
 
