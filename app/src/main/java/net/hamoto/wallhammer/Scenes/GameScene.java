@@ -134,9 +134,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
             @Override
             public void onUpdate(float pSecondsElapsed) {
 
+
                 if(walls.get(curwall).getX() + walls.get(curwall).getWidth() < 0){
                     float from = walls.get(lastwall).getX() + randInt(300,1000);
                     float to = -128;
+                    walls.get(curwall).clearEntityModifiers();
                     walls.get(curwall).registerEntityModifier(new SequenceEntityModifier(new MoveXModifier(from/300, from,to)));
                     //curwall und lastwall aktualisieren
                     if(curwall == walls.size()-1) curwall = 0;
@@ -152,14 +154,20 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
                         long a = actualtouch.getTime() - lasttouch.getTime();
                         if(a<500&&a>200) {
                             //Mauer zerstören
-                            Log.i("AUSGABE:","KORREKT: " + a);
+                            destroyWall();
+                            Log.i("INFO: ", "Touched " + a + "ms before collision -> Destroy Wall and continue!");
                         }
                         else {
                             //Gameover
                             gameover();
-                            Log.i("AUSGABE:","NOOO: " + a);
+                            Log.i("INFO: ", "Touched " + a + "ms before collision -> GAMEOVER! 1");
                         }
                         lasttouch=null;
+                    }
+                } else {
+                    if (hammer.collidesWith(walls.get(curwall))) {
+                        gameover();
+                        Log.i("INFO: ", "No touch at all -> GAMEOVER! 3");
                     }
                 }
             }
@@ -173,7 +181,31 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
     }
 
+    private void destroyWall(){
+        float from = walls.get(lastwall).getX() + randInt(300,1000);
+        float to = -128;
+        walls.get(curwall).clearEntityModifiers();
+        walls.get(curwall).registerEntityModifier(new SequenceEntityModifier(new MoveXModifier(from/300, from,to)));
+        //curwall und lastwall aktualisieren
+        if(curwall == walls.size()-1) curwall = 0;
+        else curwall++;
+        if(lastwall == walls.size()-1) lastwall = 0;
+        else lastwall++;
+
+        addToScore(1);
+    }
+
     private void gameover(){
+        stopGame();
+        showGameOverScreen();
+        Log.i("STATUS: ", "GAMEOVER!");
+    }
+
+    private void stopGame(){
+        this.setIgnoreUpdate(true);
+    }
+
+    private void showGameOverScreen(){
 
     };
 

@@ -10,8 +10,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3894cbc-2925-4c14-bfbd-527a90a0f218" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/cache.properties.lock" afterPath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/cache.properties.lock" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/fileHashes.bin" afterPath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/fileHashes.bin" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/fileSnapshots.bin" afterPath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/fileSnapshots.bin" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/taskArtifacts.bin" afterPath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/taskArtifacts.bin" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/tasks/_app_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.bin" afterPath="$PROJECT_DIR$/.gradle/2.10/tasks/_app_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.bin" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/tasks/_app_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" afterPath="$PROJECT_DIR$/.gradle/2.10/tasks/_app_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/tasks/_app_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" afterPath="$PROJECT_DIR$/.gradle/2.10/tasks/_app_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/contributors.txt" afterPath="$PROJECT_DIR$/contributors.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/net/hamoto/wallhammer/Scenes/GameScene.java" afterPath="$PROJECT_DIR$/app/src/main/java/net/hamoto/wallhammer/Scenes/GameScene.java" />
     </list>
     <ignored path="Wallhammer.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -39,11 +46,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="GameScene.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="GameScene.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/net/hamoto/wallhammer/Scenes/GameScene.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="174" column="0" selection-start-line="174" selection-start-column="0" selection-end-line="174" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.56953645">
+              <caret line="165" column="21" selection-start-line="165" selection-start-column="21" selection-end-line="165" selection-end-column="21" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#initPhysics#0;class#GameScene#0" expanded="false" />
@@ -51,29 +58,18 @@
                 <element signature="method#createHUD#0;class#GameScene#0" expanded="false" />
                 <element signature="method#startBackgroundMusic#0;class#GameScene#0" expanded="false" />
                 <element signature="method#addSprites#0;class#GameScene#0" expanded="false" />
+                <element signature="e#6745#6746#0" expanded="true" />
+                <element signature="e#6787#6788#0" expanded="true" />
                 <element signature="method#addToScore#0;class#GameScene#0" expanded="false" />
                 <element signature="method#addGround#0;class#GameScene#0" expanded="false" />
                 <element signature="method#addCloud#0;class#GameScene#0" expanded="false" />
                 <element signature="method#addHammer#0;class#GameScene#0" expanded="false" />
                 <element signature="method#addRad#0;class#GameScene#0" expanded="false" />
                 <element signature="method#createWall#0;class#GameScene#0" expanded="false" />
-                <element signature="method#onBackKeyPressed#0;class#GameScene#0" expanded="false" />
-                <element signature="method#createTouchFunction#0;class#GameScene#0" expanded="false" />
-                <element signature="method#onSceneTouchEvent#0;class#GameScene#0" expanded="false" />
                 <element signature="docComment;method#randInt#0;class#GameScene#0" expanded="false" />
                 <element signature="method#randInt#0;class#GameScene#0" expanded="false" />
                 <element signature="method#disposeScene#0;class#GameScene#0" expanded="false" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="contributors.txt" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/contributors.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.09375">
-              <caret line="3" column="13" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -3346,8 +3342,8 @@
         <option value="$PROJECT_DIR$/app/src/main/java/net/hamoto/wallhammer/Scenes/MainScene.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/net/hamoto/wallhammer/Manager/SceneManager.java" />
         <option value="$PROJECT_DIR$/app/.gitignore" />
-        <option value="$PROJECT_DIR$/app/src/main/java/net/hamoto/wallhammer/Scenes/GameScene.java" />
         <option value="$PROJECT_DIR$/contributors.txt" />
+        <option value="$PROJECT_DIR$/app/src/main/java/net/hamoto/wallhammer/Scenes/GameScene.java" />
       </list>
     </option>
   </component>
@@ -3828,7 +3824,13 @@
       <option name="project" value="LOCAL" />
       <updated>1463667209456</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Contributers update">
+      <created>1463667259767</created>
+      <option name="number" value="00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1463667259767</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -3841,13 +3843,13 @@
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32893" sideWeight="0.46566522" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32893" sideWeight="0.6709585" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32893" sideWeight="0.4828326" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32893" sideWeight="0.49713877" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32893" sideWeight="0.49427754" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32893" sideWeight="0.5343348" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32893" sideWeight="0.32904148" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24606581" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -3886,7 +3888,8 @@
     <MESSAGE value="&#10;" />
     <MESSAGE value="Test&#10;" />
     <MESSAGE value="Clean up + Wall initializing" />
-    <option name="LAST_COMMIT_MESSAGE" value="Clean up + Wall initializing" />
+    <MESSAGE value="Contributers update" />
+    <option name="LAST_COMMIT_MESSAGE" value="Contributers update" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -4254,10 +4257,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/contributors.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.09375">
+          <caret line="3" column="13" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/net/hamoto/wallhammer/Scenes/GameScene.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="174" column="0" selection-start-line="174" selection-start-column="0" selection-end-line="174" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.56953645">
+          <caret line="165" column="21" selection-start-line="165" selection-start-column="21" selection-end-line="165" selection-end-column="21" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#initPhysics#0;class#GameScene#0" expanded="false" />
@@ -4265,27 +4276,18 @@
             <element signature="method#createHUD#0;class#GameScene#0" expanded="false" />
             <element signature="method#startBackgroundMusic#0;class#GameScene#0" expanded="false" />
             <element signature="method#addSprites#0;class#GameScene#0" expanded="false" />
+            <element signature="e#6745#6746#0" expanded="true" />
+            <element signature="e#6787#6788#0" expanded="true" />
             <element signature="method#addToScore#0;class#GameScene#0" expanded="false" />
             <element signature="method#addGround#0;class#GameScene#0" expanded="false" />
             <element signature="method#addCloud#0;class#GameScene#0" expanded="false" />
             <element signature="method#addHammer#0;class#GameScene#0" expanded="false" />
             <element signature="method#addRad#0;class#GameScene#0" expanded="false" />
             <element signature="method#createWall#0;class#GameScene#0" expanded="false" />
-            <element signature="method#onBackKeyPressed#0;class#GameScene#0" expanded="false" />
-            <element signature="method#createTouchFunction#0;class#GameScene#0" expanded="false" />
-            <element signature="method#onSceneTouchEvent#0;class#GameScene#0" expanded="false" />
             <element signature="docComment;method#randInt#0;class#GameScene#0" expanded="false" />
             <element signature="method#randInt#0;class#GameScene#0" expanded="false" />
             <element signature="method#disposeScene#0;class#GameScene#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contributors.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.09375">
-          <caret line="3" column="13" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
