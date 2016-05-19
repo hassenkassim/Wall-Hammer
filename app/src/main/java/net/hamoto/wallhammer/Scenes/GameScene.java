@@ -58,9 +58,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     private int counter = 0;
     private int curwall;
     private int lastwall;
+    private int highscore;
     private Date lasttouch;
     private Date actualtouch;
     private ArrayList<Sprite> walls;
+    private Text gameOverText;
+    private Text highscoreText;
+    private boolean gameOverDisplayed = false;
 
     @Override
     public void createScene()
@@ -72,6 +76,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         addSprites(); //Figuren Einfuegen
         initWalls(COUNT_WALL); //Waende einfuegen starten COUNT_WALL Waende generieren
         createTouchFunction(); //Touch aktivieren
+        createGameOverText(); //GameOverText generieren
+
     }
 
 
@@ -194,23 +200,18 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         else curwall++;
         if(lastwall == walls.size()-1) lastwall = 0;
         else lastwall++;
-
         addToScore(1);
     }
 
     private void gameover(){
         stopGame();
-        showGameOverScreen();
+        displayGameOverText();
         Log.i("STATUS: ", "GAMEOVER!");
     }
 
     private void stopGame(){
         this.setIgnoreUpdate(true);
     }
-
-    private void showGameOverScreen(){
-
-    };
 
 
     private void addToScore(int i) {
@@ -259,6 +260,28 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         Body wallBody = PhysicsFactory.createBoxBody(world, wall, BodyDef.BodyType.DynamicBody, WALL_FIX);
         wall.registerEntityModifier(new SequenceEntityModifier(new MoveXModifier(wall.getX()/300,wall.getX(),-128)));
         attachChild(wall);
+    }
+
+    private void createGameOverText()
+    {
+        gameOverText = new Text(0, 0, resourcesManager.font, "GAME OVER!", vbom);
+        highscoreText = new Text(0, 0, resourcesManager.font, "Highscore: 0", vbom);
+        scoreText = new Text(0, 0, resourcesManager.font, "Score: 0", vbom);
+    }
+
+    private void displayGameOverText()
+    {
+        camera.setChaseEntity(null);
+        gameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 230);
+        highscoreText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 100);
+        scoreText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 20);
+        gameOverText.setScale(1,2);
+        highscoreText.setText("Highscore: " + highscore);
+        scoreText.setText("Score: " + score);
+        attachChild(gameOverText);
+        attachChild(highscoreText);
+        attachChild(scoreText);
+        gameOverDisplayed = true;
     }
 
 

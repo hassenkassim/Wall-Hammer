@@ -72,6 +72,9 @@ public class ResourcesManager
     public ITextureRegion hammer_region;
     public ITextureRegion rad_region;
     public ITextureRegion wall_region;
+    public ITextureRegion playAgain_region;
+    public ITextureRegion highscore_region;
+
 
     BitmapTextureAtlas splashTextTextureAtlas;
     BitmapTextureAtlas splashLogoTextureAtlas;
@@ -133,6 +136,8 @@ public class ResourcesManager
         menuTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 500, 500, TextureOptions.BILINEAR);
         play_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "playbtn.png");
         options_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "options.png");
+        playAgain_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "playbtn.png");
+        highscore_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(menuTextureAtlas, activity, "options.png");
         menuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 1, 0));
         menuTextureAtlas.load();
 
