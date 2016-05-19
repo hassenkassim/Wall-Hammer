@@ -107,7 +107,7 @@ public class SceneManager
         setScene(loadingScene);
         gameScene.disposeScene();
         ResourcesManager.getInstance().unloadGameRecources();
-        mEngine.registerUpdateHandler(new TimerHandler(0.1f, new ITimerCallback()
+        mEngine.registerUpdateHandler(new TimerHandler(1.0f, new ITimerCallback()
         {
             public void onTimePassed(final TimerHandler pTimerHandler)
             {
@@ -121,7 +121,7 @@ public class SceneManager
     public void loadGameScene(final Engine mEngine)
     {
         setScene(loadingScene);
-        mEngine.registerUpdateHandler(new TimerHandler(0.1f, new ITimerCallback()
+        mEngine.registerUpdateHandler(new TimerHandler(1.0f, new ITimerCallback()
         {
             public void onTimePassed(final TimerHandler pTimerHandler)
             {

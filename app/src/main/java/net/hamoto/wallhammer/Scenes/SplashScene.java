@@ -41,64 +41,49 @@ public class SplashScene extends BaseScene
     @Override
     public void createScene()
     {
+        initPhysics();
+        createBackground();
+        addGround();
+        addSplashText();
+        addSplashLogo();
+    }
+
+    private void initPhysics(){
         world = new PhysicsWorld(new Vector2(0.0f,-100.0f), false);
         this.registerUpdateHandler(world);
+    }
 
-        splashBackground = new Sprite(0, 0, resourcesManager.splashBackground_region, vbom)
-        {
-            @Override
-            protected void preDraw(GLState pGLState, Camera pCamera)
-            {
-                super.preDraw(pGLState, pCamera);
-                pGLState.enableDither();
-            }
-        };
+    private void createBackground(){
+        splashBackground = new Sprite(0, 0, resourcesManager.splashBackground_region, vbom);
         splashBackground.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2);
         attachChild(splashBackground);
+    }
 
-
+    private void addGround(){
         FixtureDef GROUND_FIX = PhysicsFactory.createFixtureDef(0.0f, 0.0f, 0.0f);
         Rectangle ground = new Rectangle(MainActivity.GAMEWIDTH/2,0,MainActivity.GAMEWIDTH, 50, this.engine.getVertexBufferObjectManager());
         ground.setAlpha(0.0f);
         PhysicsFactory.createBoxBody(world, ground, BodyDef.BodyType.StaticBody, GROUND_FIX);
         attachChild(ground);
+    }
 
-
-        splashText = new Sprite(0, 0, resourcesManager.splashText_region, vbom)
-        {
-            @Override
-            protected void preDraw(GLState pGLState, Camera pCamera)
-            {
-                super.preDraw(pGLState, pCamera);
-                pGLState.enableDither();
-            }
-        };
+    private void addSplashText(){
+        splashText = new Sprite(0, 0, resourcesManager.splashText_region, vbom);
         splashText.setScale(0.35f);
         splashText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT + splashText.getHeight() + 100);
         FixtureDef SPLASHTEXT_FIX = PhysicsFactory.createFixtureDef(0.0f, 0.3f, 0.0f);
         Body splashTextBody = PhysicsFactory.createBoxBody(world, splashText, BodyDef.BodyType.DynamicBody, SPLASHTEXT_FIX);
         attachChild(splashText);
         world.registerPhysicsConnector(new PhysicsConnector(splashText, splashTextBody, true, false));
+    }
 
-
-
-        splashLogo = new Sprite(0, 0, resourcesManager.splashLogo_region, vbom)
-        {
-            @Override
-            protected void preDraw(GLState pGLState, Camera pCamera)
-            {
-                super.preDraw(pGLState, pCamera);
-                pGLState.enableDither();
-            }
-        };
+    private void addSplashLogo(){
+        splashLogo = new Sprite(0, 0, resourcesManager.splashLogo_region, vbom);
         splashLogo.setScale(0.35f);
         splashLogo.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT*0.7f);
         splashLogo.registerEntityModifier(new LoopEntityModifier(new RotationModifier(2.5f, 0f, 359f)));
-
         attachChild(splashLogo);
-
     }
-
 
 
     @Override

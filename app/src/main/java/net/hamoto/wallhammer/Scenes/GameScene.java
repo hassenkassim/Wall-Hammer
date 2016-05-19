@@ -47,6 +47,10 @@ import java.util.Random;
 public class GameScene extends BaseScene implements IOnSceneTouchListener
 {
     final private int COUNT_WALL = 5;
+    final private int DELAYMS = 2000;
+    final private int TOUCHTIME_MIN = 200;
+    final private int TOUCHTIME_MAX = 500;
+
 
     public static Music musicGame;
     public static Music musicGameOver;
@@ -178,9 +182,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         if(lasttouch!=null){
             if(hammer.collidesWith(walls.get(curwall))){
                 actualtouch = new Date();
-                actualtouch.getTime();
                 long a = actualtouch.getTime() - lasttouch.getTime();
-                if(a<500&&a>200) {
+                if(a<TOUCHTIME_MAX&&a>TOUCHTIME_MIN) {
                     Log.i("INFO: ", "Touched " + a + "ms before collision -> Destroy Wall and continue!");
                     destroyWall();
                 }
@@ -366,8 +369,17 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     @Override
     public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
         if(pSceneTouchEvent.isActionDown()) {
-            lasttouch = new Date();
-            lasttouch.getTime();
+            Date now = new Date();
+            if(lasttouch!=null){
+                if(now.getTime() - lasttouch.getTime()>DELAYMS){
+                    lasttouch = now;
+                }
+                else{
+                    Log.i("INFO: ","Touched less then 2 seconds ago!!");
+                }
+            } else {
+                lasttouch = now;
+            }
             //MainActivity.gameToast("" + lasttouch);
             //Jump only if the user tapped, not moved his finger or something
             //walls.get(0).setPosition(walls.get(0).getX(),walls.get(0).getY()+200);

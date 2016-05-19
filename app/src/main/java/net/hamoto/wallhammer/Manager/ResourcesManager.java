@@ -285,9 +285,9 @@ public class ResourcesManager
     public void unloadSplashScreen()
     {
         splashTextTextureAtlas.unload();
-        splashLogoTextureAtlas.unload();
+        //splashLogoTextureAtlas.unload();
         splashText_region = null;
-        splashLogo_region = null;
+        //splashLogo_region = null;
     }
 
 
