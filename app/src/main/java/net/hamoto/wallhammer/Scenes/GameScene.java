@@ -133,43 +133,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         this.registerUpdateHandler(new IUpdateHandler() {
             @Override
             public void onUpdate(float pSecondsElapsed) {
-
-
-                if(walls.get(curwall).getX() + walls.get(curwall).getWidth() < 0){
-                    float from = walls.get(lastwall).getX() + randInt(300,1000);
-                    float to = -128;
-                    walls.get(curwall).clearEntityModifiers();
-                    walls.get(curwall).registerEntityModifier(new SequenceEntityModifier(new MoveXModifier(from/300, from,to)));
-                    //curwall und lastwall aktualisieren
-                    if(curwall == walls.size()-1) curwall = 0;
-                    else curwall++;
-                    if(lastwall == walls.size()-1) lastwall = 0;
-                    else lastwall++;
-                }
-
-                if(lasttouch!=null){
-                    if(hammer.collidesWith(walls.get(curwall))){
-                        actualtouch = new Date();
-                        actualtouch.getTime();
-                        long a = actualtouch.getTime() - lasttouch.getTime();
-                        if(a<500&&a>200) {
-                            //Mauer zerstören
-                            destroyWall();
-                            Log.i("INFO: ", "Touched " + a + "ms before collision -> Destroy Wall and continue!");
-                        }
-                        else {
-                            //Gameover
-                            gameover();
-                            Log.i("INFO: ", "Touched " + a + "ms before collision -> GAMEOVER! 1");
-                        }
-                        lasttouch=null;
-                    }
-                } else {
-                    if (hammer.collidesWith(walls.get(curwall))) {
-                        gameover();
-                        Log.i("INFO: ", "No touch at all -> GAMEOVER! 3");
-                    }
-                }
+                //checkWallOutside();
+                checkHammerWallCollision();
             }
 
             @Override
@@ -178,7 +143,45 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
             }
 
         });
+    }
 
+    private void checkWallOutside(){
+        if(walls.get(curwall).getX() + walls.get(curwall).getWidth() < 0){
+            float from = walls.get(lastwall).getX() + randInt(300,1000);
+            float to = -128;
+            walls.get(curwall).clearEntityModifiers();
+            walls.get(curwall).registerEntityModifier(new SequenceEntityModifier(new MoveXModifier(from/300, from,to)));
+            //curwall und lastwall aktualisieren
+            if(curwall == walls.size()-1) curwall = 0;
+            else curwall++;
+            if(lastwall == walls.size()-1) lastwall = 0;
+            else lastwall++;
+        }
+    }
+
+    private void checkHammerWallCollision(){
+        if(lasttouch!=null){
+            if(hammer.collidesWith(walls.get(curwall))){
+                actualtouch = new Date();
+                actualtouch.getTime();
+                long a = actualtouch.getTime() - lasttouch.getTime();
+                if(a<500&&a>200) {
+                    Log.i("INFO: ", "Touched " + a + "ms before collision -> Destroy Wall and continue!");
+                    destroyWall();
+                }
+                else {
+                    //Gameover
+                    Log.i("INFO: ", "Touched " + a + "ms before collision -> GAMEOVER! 1");
+                    gameover();
+                }
+                lasttouch=null;
+            }
+        } else {
+            if (hammer.collidesWith(walls.get(curwall))) {
+                Log.i("INFO: ", "No touch at all -> GAMEOVER! 3");
+                gameover();
+            }
+        }
     }
 
     private void destroyWall(){
