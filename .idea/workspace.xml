@@ -10,16 +10,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3894cbc-2925-4c14-bfbd-527a90a0f218" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/cache.properties.lock" afterPath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/cache.properties.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/fileHashes.bin" afterPath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/fileHashes.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/fileSnapshots.bin" afterPath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/fileSnapshots.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/taskArtifacts.bin" afterPath="$PROJECT_DIR$/.gradle/2.10/taskArtifacts/taskArtifacts.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/tasks/_app_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" afterPath="$PROJECT_DIR$/.gradle/2.10/tasks/_app_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.10/tasks/_app_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" afterPath="$PROJECT_DIR$/.gradle/2.10/tasks/_app_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/andEnginePhysicsBox2DExtension/andEnginePhysicsBox2DExtension.iml" afterPath="$PROJECT_DIR$/andEnginePhysicsBox2DExtension/andEnginePhysicsBox2DExtension.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/net/hamoto/wallhammer/Scenes/GameScene.java" afterPath="$PROJECT_DIR$/app/src/main/java/net/hamoto/wallhammer/Scenes/GameScene.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/contributors.txt" afterPath="$PROJECT_DIR$/contributors.txt" />
     </list>
     <ignored path="Wallhammer.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -47,10 +39,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="GameScene.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="GameScene.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/net/hamoto/wallhammer/Scenes/GameScene.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.75">
+            <state vertical-scroll-proportion="0.0">
               <caret line="174" column="0" selection-start-line="174" selection-start-column="0" selection-end-line="174" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -72,6 +64,16 @@
                 <element signature="method#randInt#0;class#GameScene#0" expanded="false" />
                 <element signature="method#disposeScene#0;class#GameScene#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="contributors.txt" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/contributors.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.09375">
+              <caret line="3" column="13" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -3345,6 +3347,7 @@
         <option value="$PROJECT_DIR$/app/src/main/java/net/hamoto/wallhammer/Manager/SceneManager.java" />
         <option value="$PROJECT_DIR$/app/.gitignore" />
         <option value="$PROJECT_DIR$/app/src/main/java/net/hamoto/wallhammer/Scenes/GameScene.java" />
+        <option value="$PROJECT_DIR$/contributors.txt" />
       </list>
     </option>
   </component>
@@ -3819,7 +3822,13 @@
       <option name="project" value="LOCAL" />
       <updated>1463517518294</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Clean up + Wall initializing">
+      <created>1463667209456</created>
+      <option name="number" value="00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1463667209456</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -3876,7 +3885,8 @@
     <MESSAGE value="Times and Touches&#10;" />
     <MESSAGE value="&#10;" />
     <MESSAGE value="Test&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Test&#10;" />
+    <MESSAGE value="Clean up + Wall initializing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Clean up + Wall initializing" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -3885,13 +3895,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/gradle.properties">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -4253,7 +4256,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/net/hamoto/wallhammer/Scenes/GameScene.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.75">
+        <state vertical-scroll-proportion="0.0">
           <caret line="174" column="0" selection-start-line="174" selection-start-column="0" selection-end-line="174" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -4275,6 +4278,14 @@
             <element signature="method#randInt#0;class#GameScene#0" expanded="false" />
             <element signature="method#disposeScene#0;class#GameScene#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/contributors.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.09375">
+          <caret line="3" column="13" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
+          <folding />
         </state>
       </provider>
     </entry>
