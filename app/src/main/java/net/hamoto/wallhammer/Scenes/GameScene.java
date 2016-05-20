@@ -260,6 +260,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
                         return true;
                     case GAME_PLAYAGAIN:
                         SceneManager.getInstance().loadGameScene(engine);
+                        return true;
                         //TODO CALL GAME SCENE
                     case GAME_SHARE:
                         //MainActivity.gameToast("Share");
