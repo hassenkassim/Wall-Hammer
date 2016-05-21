@@ -25,6 +25,8 @@ import org.andengine.util.adt.color.Color;
 
 import net.hamoto.wallhammer.MainActivity;
 
+import java.util.Random;
+
 /**
  * @author Hassen Kassim
  * @version 1.0
@@ -49,7 +51,7 @@ public class SplashScene extends BaseScene
     }
 
     private void initPhysics(){
-        world = new PhysicsWorld(new Vector2(0.0f,-100.0f), false);
+        world = new PhysicsWorld(new Vector2(0.0f,-50.0f), false);
         this.registerUpdateHandler(world);
     }
 
@@ -65,16 +67,43 @@ public class SplashScene extends BaseScene
         ground.setAlpha(0.0f);
         PhysicsFactory.createBoxBody(world, ground, BodyDef.BodyType.StaticBody, GROUND_FIX);
         attachChild(ground);
+
+        Rectangle ground2 = new Rectangle(MainActivity.GAMEWIDTH*0.05f,320,10, 720, this.engine.getVertexBufferObjectManager());
+        ground2.setAlpha(0.0f);
+        PhysicsFactory.createBoxBody(world, ground2, BodyDef.BodyType.StaticBody, GROUND_FIX);
+        attachChild(ground2);
+
+        Rectangle ground3 = new Rectangle(MainActivity.GAMEWIDTH*0.95f,360,10, 720, this.engine.getVertexBufferObjectManager());
+        ground3.setAlpha(0.0f);
+        PhysicsFactory.createBoxBody(world, ground3, BodyDef.BodyType.StaticBody, GROUND_FIX);
+        attachChild(ground3);
+
+        Rectangle ground4 = new Rectangle(MainActivity.GAMEWIDTH/2,30,400, 60, this.engine.getVertexBufferObjectManager());
+        ground4.setColor(Color.BLACK);
+        ground4.setAlpha(0.0f);
+        PhysicsFactory.createBoxBody(world, ground4, BodyDef.BodyType.StaticBody, GROUND_FIX);
+        attachChild(ground4);
     }
 
     private void addSplashText(){
         splashText = new Sprite(0, 0, resourcesManager.splashText_region, vbom);
         splashText.setScale(0.35f);
         splashText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT + splashText.getHeight() + 100);
-        FixtureDef SPLASHTEXT_FIX = PhysicsFactory.createFixtureDef(0.0f, 0.3f, 0.0f);
+        FixtureDef SPLASHTEXT_FIX = PhysicsFactory.createFixtureDef(0.1f, 0.3f, 0.0f);
         Body splashTextBody = PhysicsFactory.createBoxBody(world, splashText, BodyDef.BodyType.DynamicBody, SPLASHTEXT_FIX);
+        Random rand = new Random();
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+        int randomNum = rand.nextInt((5000 - 1000) + 1) + 100;
+        Log.i("Rotation: ", randomNum + "");
+
+        splashTextBody.applyTorque((float)randomNum);
+        //splashTextBody.applyAngularImpulse(600.0f);
         attachChild(splashText);
-        world.registerPhysicsConnector(new PhysicsConnector(splashText, splashTextBody, true, false));
+        world.registerPhysicsConnector(new PhysicsConnector(splashText, splashTextBody, true, true));
+
+
+
     }
 
     private void addSplashLogo(){
