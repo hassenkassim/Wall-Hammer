@@ -12,8 +12,12 @@ import net.hamoto.wallhammer.Manager.SceneManager;
 import org.andengine.engine.camera.Camera;
 import org.andengine.engine.handler.timer.ITimerCallback;
 import org.andengine.engine.handler.timer.TimerHandler;
+import org.andengine.entity.modifier.AlphaModifier;
+import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.RotationModifier;
+import org.andengine.entity.modifier.ScaleModifier;
+import org.andengine.entity.modifier.SequenceEntityModifier;
 import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
@@ -56,9 +60,15 @@ public class SplashScene extends BaseScene
     }
 
     private void createBackground(){
+        Rectangle background = new Rectangle(MainActivity.GAMEWIDTH/2,MainActivity.GAMEHEIGHT/2,MainActivity.GAMEWIDTH, MainActivity.GAMEHEIGHT, this.engine.getVertexBufferObjectManager());
+        background.setColor(Color.BLACK);
+        attachChild(background);
         splashBackground = new Sprite(0, 0, resourcesManager.splashBackground_region, vbom);
         splashBackground.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2);
+        splashBackground.setAlpha(0.0f);
         attachChild(splashBackground);
+        splashBackground.registerEntityModifier(new AlphaModifier(1.5f,0.0f, 1.0f));
+
     }
 
     private void addGround(){
@@ -67,7 +77,6 @@ public class SplashScene extends BaseScene
         ground.setAlpha(0.0f);
         PhysicsFactory.createBoxBody(world, ground, BodyDef.BodyType.StaticBody, GROUND_FIX);
         attachChild(ground);
-
         Rectangle ground2 = new Rectangle(MainActivity.GAMEWIDTH*0.05f,320,10, 720, this.engine.getVertexBufferObjectManager());
         ground2.setAlpha(0.0f);
         PhysicsFactory.createBoxBody(world, ground2, BodyDef.BodyType.StaticBody, GROUND_FIX);
@@ -88,30 +97,24 @@ public class SplashScene extends BaseScene
     private void addSplashText(){
         splashText = new Sprite(0, 0, resourcesManager.splashText_region, vbom);
         splashText.setScale(0.35f);
+        //splashText.setPosition(MainActivity.GAMEWIDTH/2, 200.0f);
         splashText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT + splashText.getHeight() + 100);
         FixtureDef SPLASHTEXT_FIX = PhysicsFactory.createFixtureDef(0.1f, 0.3f, 0.0f);
         Body splashTextBody = PhysicsFactory.createBoxBody(world, splashText, BodyDef.BodyType.DynamicBody, SPLASHTEXT_FIX);
-        Random rand = new Random();
-        // nextInt is normally exclusive of the top value,
-        // so add 1 to make it inclusive
-        int randomNum = rand.nextInt((5000 - 1000) + 1) + 100;
-        Log.i("Rotation: ", randomNum + "");
 
-        splashTextBody.applyTorque((float)randomNum);
-        //splashTextBody.applyAngularImpulse(600.0f);
+        splashTextBody.applyTorque(3000);
+        splashTextBody.applyAngularImpulse(600.0f);
         attachChild(splashText);
         world.registerPhysicsConnector(new PhysicsConnector(splashText, splashTextBody, true, true));
-
-
-
     }
 
     private void addSplashLogo(){
         splashLogo = new Sprite(0, 0, resourcesManager.splashLogo_region, vbom);
-        splashLogo.setScale(0.35f);
         splashLogo.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT*0.7f);
         splashLogo.registerEntityModifier(new LoopEntityModifier(new RotationModifier(2.5f, 0f, 359f)));
         attachChild(splashLogo);
+        splashLogo.registerEntityModifier(new AlphaModifier(1.0f, 0.0f, 1.0f));
+        splashLogo.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new ScaleModifier(0.25f, 0.35f, 0.30f), new DelayModifier(0.5f), new ScaleModifier(0.25f,0.30f,0.35f),new DelayModifier(0.2f))));
     }
 
 

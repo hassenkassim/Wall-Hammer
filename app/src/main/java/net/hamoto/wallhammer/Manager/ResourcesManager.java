@@ -174,15 +174,20 @@ public class ResourcesManager
         soundoffTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         soundoffTextureAtlas.load();
 
-        hammerTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 357, 400, TextureOptions.BILINEAR);
-        hammer_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(hammerTextureAtlas, activity, "hammerNeu.png");
+
+        BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/general/");
+
+        hammerTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 557, 679, TextureOptions.BILINEAR);
+        hammer_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(hammerTextureAtlas, activity, "hammerOhneRad.png");
         hammerTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         hammerTextureAtlas.load();
 
-        radTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 130, 130, TextureOptions.BILINEAR);
+        radTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 273, 273, TextureOptions.BILINEAR);
         rad_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(radTextureAtlas, activity, "rad.png");
         radTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         radTextureAtlas.load();
+
+
     }
 
     private void loadFonts()
