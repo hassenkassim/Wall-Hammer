@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import net.hamoto.wallhammer.Manager.SceneManager;
 import net.hamoto.wallhammer.Manager.ResourcesManager;
+import net.hamoto.wallhammer.Scenes.GameScene;
 
 import org.andengine.engine.Engine;
 import org.andengine.engine.LimitedFPSEngine;
@@ -42,10 +43,14 @@ public class MainActivity extends BaseGameActivity {
     public final static int GAMEWIDTH = 1280;
     public final static int GAMEHEIGHT = 720;
     public final static String SETTING = "PREFS";
+    public final static String SETTING2 = "PREFS2";
     public final static String SETTING_MUSIC = "MUSICON";
+    public final static String SETTING_HIGHSCORE = "HIGHSCORE";
 
     public static boolean musicon;
     SharedPreferences prefs;
+    public static long highscore;
+    SharedPreferences prefs2;
 
     @Override
     public Engine onCreateEngine(EngineOptions pEngineOptions)
@@ -53,6 +58,7 @@ public class MainActivity extends BaseGameActivity {
         main = this;
         gameToast("Game Started!");
         musicsetting();
+        highscoreSetting();
         return new LimitedFPSEngine(pEngineOptions, 60);
     }
 
@@ -76,6 +82,11 @@ public class MainActivity extends BaseGameActivity {
     @Override
     public void onCreateScene(OnCreateSceneCallback pOnCreateSceneCallback) throws IOException {
         SceneManager.getInstance().createSplashScene(pOnCreateSceneCallback);
+    }
+
+    private void highscoreSetting(){
+        prefs2 = getSharedPreferences(SETTING2, MODE_PRIVATE);
+        highscore = prefs2.getLong(SETTING_HIGHSCORE, 1);
     }
 
     private void musicsetting(){

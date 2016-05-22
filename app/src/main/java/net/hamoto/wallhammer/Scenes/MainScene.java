@@ -110,7 +110,7 @@ public class MainScene extends BaseScene
 
     private void addMusicButton(){
         musicon = new ButtonSprite(0, 0, ResourcesManager.getInstance().soundon_region, engine.getVertexBufferObjectManager());
-        musicon.setPosition(MainActivity.GAMEWIDTH - 100, 100);
+        musicon.setPosition(MainActivity.GAMEWIDTH/2 + 200, MainActivity.GAMEHEIGHT/2 - 80);
 
         musicon.setOnClickListener(new ButtonSprite.OnClickListener() {
             @Override
@@ -119,7 +119,7 @@ public class MainScene extends BaseScene
                 MainActivity.musicon = false;
                 activity.getSharedPreferences(MainActivity.SETTING, Context.MODE_PRIVATE).edit().putBoolean(MainActivity.SETTING_MUSIC, false).apply();
                 musicon.setEnabled(false);
-                musicon.setVisible(false);activity.getSharedPreferences(MainActivity.SETTING, Context.MODE_PRIVATE).edit().putBoolean(MainActivity.SETTING_MUSIC, false).apply();
+                musicon.setVisible(false);
                 musicoff.setEnabled(true);
                 musicoff.setVisible(true);
             }
@@ -128,7 +128,7 @@ public class MainScene extends BaseScene
 
 
         musicoff = new ButtonSprite(0, 0, ResourcesManager.getInstance().soundoff_region, engine.getVertexBufferObjectManager());
-        musicoff.setPosition(MainActivity.GAMEWIDTH - 100, 100);
+        musicoff.setPosition(MainActivity.GAMEWIDTH/2 + 200, MainActivity.GAMEHEIGHT/2 - 80);
 
         musicoff.setOnClickListener(new ButtonSprite.OnClickListener() {
             @Override
@@ -170,8 +170,8 @@ public class MainScene extends BaseScene
         menuChildScene.buildAnimations();
         menuChildScene.setBackgroundEnabled(false);
 
-        playMenuItem.setPosition(MainActivity.GAMEWIDTH/2 - 100, MainActivity.GAMEHEIGHT/2 - 80);
-        optionsMenuItem.setPosition(MainActivity.GAMEWIDTH/2 + 100, MainActivity.GAMEHEIGHT/2 - 80);
+        playMenuItem.setPosition(MainActivity.GAMEWIDTH/2 - 200, MainActivity.GAMEHEIGHT/2 - 80);
+        optionsMenuItem.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 - 80);
 
         menuChildScene.setOnMenuItemClickListener(new MenuScene.IOnMenuItemClickListener() {
             @Override

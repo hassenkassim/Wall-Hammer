@@ -1,6 +1,8 @@
 package net.hamoto.wallhammer.Scenes;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -83,6 +85,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     final int GAME_PLAYAGAIN = 1;
     final int GAME_SHARE = 2;
     final int GAME_SCORE = 3;
+    private static SharedPreferences prefs;
+
+
 
     @Override
     public void createScene()
@@ -383,7 +388,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     private void displayGameOverText()
     {
 
-        if(score > highscore){
+        if(score > MainActivity.highscore){
+            activity.getSharedPreferences(MainActivity.SETTING2, Context.MODE_PRIVATE).edit().putLong(MainActivity.SETTING_HIGHSCORE, score).apply();
             highscore = score;
         }
 
@@ -392,8 +398,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         gameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 280);
         highscoreText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 180);
         scoreGameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 120);
-        highscoreText.setText("Highscore: " + highscore);
         scoreGameOverText.setText("Score: " + score);
+        highscoreText.setText("Highscore: " + MainActivity.highscore);
         gameOverText.setScale(1,2);
         attachChild(gameOverText);
         attachChild(highscoreText);
