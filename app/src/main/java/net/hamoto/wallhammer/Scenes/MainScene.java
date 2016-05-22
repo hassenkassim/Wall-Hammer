@@ -119,13 +119,13 @@ public class MainScene extends BaseScene
                 MainActivity.musicon = false;
                 activity.getSharedPreferences(MainActivity.SETTING, Context.MODE_PRIVATE).edit().putBoolean(MainActivity.SETTING_MUSIC, false).apply();
                 musicon.setEnabled(false);
-                musicon.setVisible(false);
+                musicon.setVisible(false);activity.getSharedPreferences(MainActivity.SETTING, Context.MODE_PRIVATE).edit().putBoolean(MainActivity.SETTING_MUSIC, false).apply();
                 musicoff.setEnabled(true);
                 musicoff.setVisible(true);
             }
         });
         registerTouchArea(musicon);
-        musicon.setScale(0.7f);
+
 
         musicoff = new ButtonSprite(0, 0, ResourcesManager.getInstance().soundoff_region, engine.getVertexBufferObjectManager());
         musicoff.setPosition(MainActivity.GAMEWIDTH - 100, 100);
@@ -143,7 +143,7 @@ public class MainScene extends BaseScene
             }
         });
         registerTouchArea(musicoff);
-        musicoff.setScale(0.7f);
+
 
         if(MainActivity.musicon){
             musicoff.setVisible(false);
@@ -170,8 +170,8 @@ public class MainScene extends BaseScene
         menuChildScene.buildAnimations();
         menuChildScene.setBackgroundEnabled(false);
 
-        playMenuItem.setPosition(playMenuItem.getX(), playMenuItem.getY() - 80);
-        optionsMenuItem.setPosition(optionsMenuItem.getX(), optionsMenuItem.getY() - 100);
+        playMenuItem.setPosition(MainActivity.GAMEWIDTH/2 - 100, MainActivity.GAMEHEIGHT/2 - 80);
+        optionsMenuItem.setPosition(MainActivity.GAMEWIDTH/2 + 100, MainActivity.GAMEHEIGHT/2 - 80);
 
         menuChildScene.setOnMenuItemClickListener(new MenuScene.IOnMenuItemClickListener() {
             @Override

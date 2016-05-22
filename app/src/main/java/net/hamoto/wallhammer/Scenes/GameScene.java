@@ -71,7 +71,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     private int counter = 0;
     private int curwall;
     private int lastwall;
-    private int highscore;
+    private long highscore;
     private Date lasttouch;
     private Date actualtouch;
     private ArrayList<Sprite> walls;
@@ -82,7 +82,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     final int GAME_BACK = 0;
     final int GAME_PLAYAGAIN = 1;
     final int GAME_SHARE = 2;
-
+    final int GAME_SCORE = 3;
 
     @Override
     public void createScene()
@@ -235,17 +235,20 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         final IMenuItem backGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_BACK, resourcesManager.backToMenu_region, vbom), 1.5f, 1);
         final IMenuItem playagainGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_PLAYAGAIN, resourcesManager.playAgain_region, vbom), 1.5f, 1);
         final IMenuItem shareGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_SHARE, resourcesManager.share_region, vbom), 1.5f, 1);
+        final IMenuItem scoreGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_SCORE, resourcesManager.score_region, vbom), 1.5f, 1);
 
         gameChildScene.addMenuItem(backGameItem);
         gameChildScene.addMenuItem(playagainGameItem);
         gameChildScene.addMenuItem(shareGameItem);
+        gameChildScene.addMenuItem(scoreGameItem);
 
         gameChildScene.buildAnimations();
         gameChildScene.setBackgroundEnabled(false);
 
-        backGameItem.setPosition(backGameItem.getX(), backGameItem.getY() - 120);
-        playagainGameItem.setPosition(playagainGameItem.getX(), playagainGameItem.getY() - 140);
-        shareGameItem.setPosition(shareGameItem.getX(), shareGameItem.getY() - 160);
+        backGameItem.setPosition(backGameItem.getX() - 100, MainActivity.GAMEHEIGHT/2 - 30);
+        playagainGameItem.setPosition(playagainGameItem.getX() - 300, MainActivity.GAMEHEIGHT/2 - 30);
+        shareGameItem.setPosition(shareGameItem.getX() + 300, MainActivity.GAMEHEIGHT/2 - 30);
+        scoreGameItem.setPosition(scoreGameItem.getX() + 100, MainActivity.GAMEHEIGHT/2 - 30);
 
         gameChildScene.setOnMenuItemClickListener(new MenuScene.IOnMenuItemClickListener() {
             @Override
@@ -266,6 +269,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
                         //MainActivity.gameToast("Share");
                         SharingToSocialMedia("NOPE");
                         return true;
+                    case GAME_SCORE:
+
                     default:
                         return false;
                 }
@@ -377,11 +382,16 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
     private void displayGameOverText()
     {
+
+        if(score > highscore){
+            highscore = score;
+        }
+
         clearHUD();
         camera.setChaseEntity(null);
-        gameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 300);
-        highscoreText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 220);
-        scoreGameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 160);
+        gameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 280);
+        highscoreText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 180);
+        scoreGameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 120);
         highscoreText.setText("Highscore: " + highscore);
         scoreGameOverText.setText("Score: " + score);
         gameOverText.setScale(1,2);
