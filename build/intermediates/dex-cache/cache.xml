@@ -1,2 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" />
+<items version="2" >
+
+    <item
+        jar="/Users/HassenKassim/StudioProjects/wall-hammer/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.4.0/jars/libs/internal_impl-23.4.0.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="ea3c07504d2c8f4b13aa17c45c1b68ed9c1c3674">
+        <dex dex="/Users/HassenKassim/StudioProjects/wall-hammer/app/build/intermediates/transforms/dex/debug/folders/1000/10/internal_impl-23.4.0_f704f0b553609fdad52b5a2740f07b5cac83da90/classes.dex" />
+    </item>
+    <item
+        jar="/Users/HassenKassim/StudioProjects/wall-hammer/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="f8fbdd80ce9774eb06461cbfdf5b08de7891ddf6">
+        <dex dex="/Users/HassenKassim/StudioProjects/wall-hammer/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_a02090c9cb666019df6f1bb6071d3ef89ec18ce9/classes.dex" />
+    </item>
+    <item
+        jar="/Users/HassenKassim/StudioProjects/wall-hammer/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/23.4.0/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="c2c594cace5d83a3227b2b6e658ecbfd586d3ed9">
+        <dex dex="/Users/HassenKassim/StudioProjects/wall-hammer/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-vector-drawable-23.4.0_0bca6bc6284a4f6cad6f59018ee910e6cfe2c988/classes.dex" />
+    </item>
+    <item
+        jar="/Users/HassenKassim/StudioProjects/wall-hammer/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.4.0/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="548f06de403a9409f00554b3ee12a9fdea0e236c">
+        <dex dex="/Users/HassenKassim/StudioProjects/wall-hammer/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-appcompat-v7-23.4.0_90e6f69878b29a97b6ed7acc11e5f749adc1eb85/classes.dex" />
+    </item>
+    <item
+        jar="/Users/HassenKassim/StudioProjects/wall-hammer/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/23.4.0/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="de4db3785756bfb0915a9f59a9b3f2fea7407be4">
+        <dex dex="/Users/HassenKassim/StudioProjects/wall-hammer/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-animated-vector-drawable-23.4.0_6d7851e4ae1df88404c0c5f8a9a12fe9f95dc775/classes.dex" />
+    </item>
+    <item
+        jar="/Users/HassenKassim/StudioProjects/wall-hammer/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.4.0/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="67bd36ee9340ec7c254108936ad16b24bed160cc">
+        <dex dex="/Users/HassenKassim/StudioProjects/wall-hammer/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-v4-23.4.0_0ecbbcea862e2df79a2dddfd13187ccc2139735d/classes.dex" />
+    </item>
+    <item
+        jar="/Users/HassenKassim/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.4.0/support-annotations-23.4.0.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="ffbe55fdb2bb456b1485831706a9eac3300bb6b8">
+        <dex dex="/Users/HassenKassim/StudioProjects/wall-hammer/app/build/intermediates/transforms/dex/debug/folders/1000/10/support-annotations-23.4.0_25fe6159710fbf4e0d5e45a75b32ff669ab0ecc7/classes.dex" />
+    </item>
+    <item
+        jar="/Users/HassenKassim/StudioProjects/wall-hammer/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="c7d2009f858302b7751742c5926b457822850312">
+        <dex dex="/Users/HassenKassim/StudioProjects/wall-hammer/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_0ff7af0cf07461131ffd5ea5587de569ac3e8203/classes.dex" />
+    </item>
+
+</items>

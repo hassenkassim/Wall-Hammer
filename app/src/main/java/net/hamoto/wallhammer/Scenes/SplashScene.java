@@ -68,7 +68,6 @@ public class SplashScene extends BaseScene
         splashBackground.setAlpha(0.0f);
         attachChild(splashBackground);
         splashBackground.registerEntityModifier(new AlphaModifier(1.5f,0.0f, 1.0f));
-
     }
 
     private void addGround(){
@@ -77,33 +76,14 @@ public class SplashScene extends BaseScene
         ground.setAlpha(0.0f);
         PhysicsFactory.createBoxBody(world, ground, BodyDef.BodyType.StaticBody, GROUND_FIX);
         attachChild(ground);
-        Rectangle ground2 = new Rectangle(MainActivity.GAMEWIDTH*0.05f,320,10, 720, this.engine.getVertexBufferObjectManager());
-        ground2.setAlpha(0.0f);
-        PhysicsFactory.createBoxBody(world, ground2, BodyDef.BodyType.StaticBody, GROUND_FIX);
-        attachChild(ground2);
-
-        Rectangle ground3 = new Rectangle(MainActivity.GAMEWIDTH*0.95f,360,10, 720, this.engine.getVertexBufferObjectManager());
-        ground3.setAlpha(0.0f);
-        PhysicsFactory.createBoxBody(world, ground3, BodyDef.BodyType.StaticBody, GROUND_FIX);
-        attachChild(ground3);
-
-        Rectangle ground4 = new Rectangle(MainActivity.GAMEWIDTH/2,30,400, 60, this.engine.getVertexBufferObjectManager());
-        ground4.setColor(Color.BLACK);
-        ground4.setAlpha(0.0f);
-        PhysicsFactory.createBoxBody(world, ground4, BodyDef.BodyType.StaticBody, GROUND_FIX);
-        attachChild(ground4);
     }
 
     private void addSplashText(){
         splashText = new Sprite(0, 0, resourcesManager.splashText_region, vbom);
         splashText.setScale(0.35f);
-        //splashText.setPosition(MainActivity.GAMEWIDTH/2, 200.0f);
         splashText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT + splashText.getHeight() + 100);
         FixtureDef SPLASHTEXT_FIX = PhysicsFactory.createFixtureDef(0.1f, 0.3f, 0.0f);
         Body splashTextBody = PhysicsFactory.createBoxBody(world, splashText, BodyDef.BodyType.DynamicBody, SPLASHTEXT_FIX);
-
-        splashTextBody.applyTorque(3000);
-        splashTextBody.applyAngularImpulse(600.0f);
         attachChild(splashText);
         world.registerPhysicsConnector(new PhysicsConnector(splashText, splashTextBody, true, true));
     }

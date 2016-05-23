@@ -229,8 +229,6 @@ public class ResourcesManager
         rad_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(radTextureAtlas, activity, "rad.png");
         radTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         radTextureAtlas.load();
-
-
     }
 
     private void loadFonts()
