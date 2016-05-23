@@ -66,6 +66,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     private Sprite groundsprite;
     private Sprite hammer;
     private Sprite rad;
+    private Sprite scoreBackground;
     private Text scoreText;
     private Text scoreGameOverText;
     private long score = 0;
@@ -119,7 +120,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         gameHUD = new HUD();
         scoreText = new Text(20, MainActivity.GAMEHEIGHT-65, resourcesManager.font, "Score: 0123456789", new TextOptions(HorizontalAlign.LEFT), vbom);
         scoreText.setAnchorCenter(0, 0);
-        scoreText.setText("Score: 0");
         gameHUD.attachChild(scoreText);
         camera.setHUD(gameHUD);
     }
@@ -250,10 +250,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         gameChildScene.buildAnimations();
         gameChildScene.setBackgroundEnabled(false);
 
-        backGameItem.setPosition(backGameItem.getX() - 100, MainActivity.GAMEHEIGHT/2 - 30);
-        playagainGameItem.setPosition(playagainGameItem.getX() - 300, MainActivity.GAMEHEIGHT/2 - 30);
-        shareGameItem.setPosition(shareGameItem.getX() + 300, MainActivity.GAMEHEIGHT/2 - 30);
-        scoreGameItem.setPosition(scoreGameItem.getX() + 100, MainActivity.GAMEHEIGHT/2 - 30);
+        backGameItem.setPosition(backGameItem.getX() - 100, MainActivity.GAMEHEIGHT/2 - 90);
+        playagainGameItem.setPosition(playagainGameItem.getX() - 300, MainActivity.GAMEHEIGHT/2 - 90);
+        shareGameItem.setPosition(shareGameItem.getX() + 300, MainActivity.GAMEHEIGHT/2 - 90);
+        scoreGameItem.setPosition(scoreGameItem.getX() + 100, MainActivity.GAMEHEIGHT/2 - 90);
 
         gameChildScene.setOnMenuItemClickListener(new MenuScene.IOnMenuItemClickListener() {
             @Override
@@ -380,9 +380,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
     private void createGameOverText()
     {
-        gameOverText = new Text(0, 0, resourcesManager.font, "GAME OVER!", vbom);
+        scoreBackground = new Sprite (0, 0, 431, 318, ResourcesManager.getInstance().scoreBackground_region, engine.getVertexBufferObjectManager());
+        gameOverText = new Text(0, 0, resourcesManager.font, "Game Over!", vbom);
         highscoreText = new Text(0, 0, resourcesManager.font, "Highscore: 0", vbom);
         scoreGameOverText = new Text(0, 0, resourcesManager.font, "Score: 0", vbom);
+
     }
 
     private void displayGameOverText()
@@ -395,12 +397,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
         clearHUD();
         camera.setChaseEntity(null);
-        gameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 280);
-        highscoreText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 180);
-        scoreGameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 120);
+        scoreBackground.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 +180);
+        scoreBackground.setAlpha(0.95f);
+        gameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 260);
+        highscoreText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 160);
+        scoreGameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 100);
         scoreGameOverText.setText("Score: " + score);
         highscoreText.setText("Highscore: " + MainActivity.highscore);
         gameOverText.setScale(1,2);
+        attachChild(scoreBackground);
         attachChild(gameOverText);
         attachChild(highscoreText);
         attachChild(scoreGameOverText);

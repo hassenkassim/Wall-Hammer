@@ -77,6 +77,7 @@ public class ResourcesManager
     public ITextureRegion share_region;
     public ITextureRegion backToMenu_region;
     public ITextureRegion score_region;
+    public ITextureRegion scoreBackground_region;
 
 
     BitmapTextureAtlas splashTextTextureAtlas;
@@ -97,6 +98,8 @@ public class ResourcesManager
     BuildableBitmapTextureAtlas shareTextureAtlas;
     BuildableBitmapTextureAtlas backToMenuTextureAtlas;
     BuildableBitmapTextureAtlas scoreTextureAtlas;
+    BuildableBitmapTextureAtlas scoreBackgroundTextureAtlas;
+
 
 
 
@@ -150,32 +153,32 @@ public class ResourcesManager
       // menuTextureAtlas.load();
 
         playTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 240, 240, TextureOptions.BILINEAR);
-        play_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playTextureAtlas, activity, "PlayButton.png");
+        play_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playTextureAtlas, activity, "playButton.png");
         playTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         playTextureAtlas.load();
 
         optionsTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 240, 240, TextureOptions.BILINEAR);
-        options_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(optionsTextureAtlas, activity, "SettingsButton.png");
+        options_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(optionsTextureAtlas, activity, "settingsButton.png");
         optionsTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         optionsTextureAtlas.load();
 
         shareTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 240, 240, TextureOptions.BILINEAR);
-        share_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(shareTextureAtlas, activity, "ShareButton.png");
+        share_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(shareTextureAtlas, activity, "shareButton.png");
         shareTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         shareTextureAtlas.load();
 
         backToMenuTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 240, 240, TextureOptions.BILINEAR);
-        backToMenu_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(backToMenuTextureAtlas, activity, "MenuButton.png");
+        backToMenu_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(backToMenuTextureAtlas, activity, "menuButton.png");
         backToMenuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         backToMenuTextureAtlas.load();
 
         playAgainTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 240, 240, TextureOptions.BILINEAR);
-        playAgain_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playAgainTextureAtlas, activity, "PlayAgainButton.png");
+        playAgain_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playAgainTextureAtlas, activity, "playAgainButton.png");
         playAgainTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         playAgainTextureAtlas.load();
 
         scoreTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 240, 240, TextureOptions.BILINEAR);
-        score_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(scoreTextureAtlas, activity, "Score2Button.png");
+        score_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(scoreTextureAtlas, activity, "score2Button.png");
         scoreTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         scoreTextureAtlas.load();
 
@@ -199,15 +202,20 @@ public class ResourcesManager
 
 
         soundonTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 240, 240, TextureOptions.BILINEAR);
-        soundon_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(soundonTextureAtlas, activity, "SoundOnButton.png");
+        soundon_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(soundonTextureAtlas, activity, "soundOnButton.png");
         soundonTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         soundonTextureAtlas.load();
 
 
         soundoffTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 240, 240, TextureOptions.BILINEAR);
-        soundoff_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(soundoffTextureAtlas, activity, "SoundOffButton.png");
+        soundoff_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(soundoffTextureAtlas, activity, "soundOffButton.png");
         soundoffTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         soundoffTextureAtlas.load();
+
+        scoreBackgroundTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 431, 318, TextureOptions.BILINEAR);
+        scoreBackground_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(scoreBackgroundTextureAtlas, activity, "scoreBackground.png");
+        scoreBackgroundTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
+        scoreBackgroundTextureAtlas.load();
 
 
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/general/");
@@ -230,7 +238,7 @@ public class ResourcesManager
         FontFactory.setAssetBasePath("fonts/");
         final ITexture mainFontTexture = new BitmapTextureAtlas(activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
         font = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), "mexcellent_3d.ttf", 50, true, Color.WHITE, 2, Color.BLACK);
-        //fontBig = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), "mexcellent_3d.ttf", 70, true, Color.WHITE, 2, Color.BLACK);
+        //fontBig = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), "mexcellent_3d Kopie.ttf", 70, true, Color.WHITE, 2, Color.BLACK);
         font.load();
         //fontBig.load();
     }
