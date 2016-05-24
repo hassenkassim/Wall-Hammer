@@ -152,42 +152,42 @@ public class ResourcesManager
       // menuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
       // menuTextureAtlas.load();
 
-        playTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 240, 240, TextureOptions.BILINEAR);
+        playTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 172, 172, TextureOptions.BILINEAR);
         play_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playTextureAtlas, activity, "playButton.png");
         playTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         playTextureAtlas.load();
 
-        optionsTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 240, 240, TextureOptions.BILINEAR);
+        optionsTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 172, 172, TextureOptions.BILINEAR);
         options_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(optionsTextureAtlas, activity, "settingsButton.png");
         optionsTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         optionsTextureAtlas.load();
 
-        shareTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 240, 240, TextureOptions.BILINEAR);
+        shareTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 172, 172, TextureOptions.BILINEAR);
         share_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(shareTextureAtlas, activity, "shareButton.png");
         shareTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         shareTextureAtlas.load();
 
-        backToMenuTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 240, 240, TextureOptions.BILINEAR);
+        backToMenuTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 172, 172, TextureOptions.BILINEAR);
         backToMenu_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(backToMenuTextureAtlas, activity, "menuButton.png");
         backToMenuTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         backToMenuTextureAtlas.load();
 
-        playAgainTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 240, 240, TextureOptions.BILINEAR);
+        playAgainTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 172, 172, TextureOptions.BILINEAR);
         playAgain_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playAgainTextureAtlas, activity, "playAgainButton.png");
         playAgainTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         playAgainTextureAtlas.load();
 
-        scoreTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 240, 240, TextureOptions.BILINEAR);
+        scoreTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 172, 172, TextureOptions.BILINEAR);
         score_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(scoreTextureAtlas, activity, "score2Button.png");
         scoreTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         scoreTextureAtlas.load();
-
 
         groundTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 256, 256, TextureOptions.REPEATING_BILINEAR);
         ground_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(groundTextureAtlas, activity, "ground.png");
         ground_region.setTextureSize(3000, 256);
         groundTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         groundTextureAtlas.load();
+
 
         cloud1TextureAtlas = new BuildableBitmapTextureAtlas(texmng, 512, 512, TextureOptions.REPEATING_BILINEAR);
         cloud1_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(cloud1TextureAtlas, activity, "cloud1.png");
@@ -200,17 +200,16 @@ public class ResourcesManager
         logoTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         logoTextureAtlas.load();
 
-
-        soundonTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 240, 240, TextureOptions.BILINEAR);
+        soundonTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 172, 172, TextureOptions.BILINEAR);
         soundon_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(soundonTextureAtlas, activity, "soundOnButton.png");
         soundonTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         soundonTextureAtlas.load();
 
-
-        soundoffTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 240, 240, TextureOptions.BILINEAR);
+        soundoffTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 172, 172, TextureOptions.BILINEAR);
         soundoff_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(soundoffTextureAtlas, activity, "soundOffButton.png");
         soundoffTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         soundoffTextureAtlas.load();
+
 
         scoreBackgroundTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 431, 318, TextureOptions.BILINEAR);
         scoreBackground_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(scoreBackgroundTextureAtlas, activity, "scoreBackground.png");
@@ -218,9 +217,10 @@ public class ResourcesManager
         scoreBackgroundTextureAtlas.load();
 
 
+
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/general/");
 
-        hammerTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 557, 679, TextureOptions.BILINEAR);
+        hammerTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 557, 763, TextureOptions.BILINEAR);
         hammer_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(hammerTextureAtlas, activity, "hammerOhneRad.png");
         hammerTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         hammerTextureAtlas.load();
@@ -229,6 +229,7 @@ public class ResourcesManager
         rad_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(radTextureAtlas, activity, "rad.png");
         radTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         radTextureAtlas.load();
+
     }
 
     private void loadFonts()
@@ -315,11 +316,11 @@ public class ResourcesManager
         splashBackgroundTextureAtlas.load();
 
         splashLogoTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 595, 595, TextureOptions.BILINEAR);
-        splashLogo_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashLogoTextureAtlas, activity, "SplashLogo.png", 0, 0);
+        splashLogo_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashLogoTextureAtlas, activity, "splashLogo.png", 0, 0);
         splashLogoTextureAtlas.load();
 
         splashTextTextureAtlas = new BitmapTextureAtlas(activity.getTextureManager(), 3012, 888, TextureOptions.BILINEAR);
-        splashText_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTextTextureAtlas, activity, "Logo.png", 0, 0);
+        splashText_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(splashTextTextureAtlas, activity, "logo.png", 0, 0);
         splashTextTextureAtlas.load();
     }
 

@@ -30,6 +30,8 @@ public class MainScene extends BaseScene
     MenuScene menuChildScene;
     final int MENU_PLAY = 0;
     final int MENU_OPTIONS = 1;
+    final int MENU_SOUND_ON = 2;
+    final int MENU_SOUND_OFF = 3;
     Sprite logo;
     Sprite cloud1sprite;
     Sprite groundsprite;
@@ -94,15 +96,15 @@ public class MainScene extends BaseScene
     }
 
     private void addHammer(){
-        hammer = new Sprite(0, 0, 357, 400, ResourcesManager.getInstance().hammer_region, engine.getVertexBufferObjectManager());
-        hammer.setScale(0.5f);
+        hammer = new Sprite(0, 0, ResourcesManager.getInstance().hammer_region, engine.getVertexBufferObjectManager());
+        hammer.setScale(0.3f);
         hammer.setPosition(130, 190);
         attachChild(hammer);
     }
 
     private void addRad(){
-        rad = new Sprite(0, 0, 130, 130, ResourcesManager.getInstance().rad_region, engine.getVertexBufferObjectManager());
-        rad.setScale(0.5f);
+        rad = new Sprite(0, 0, 273, 273, ResourcesManager.getInstance().rad_region, engine.getVertexBufferObjectManager());
+        rad.setScale(0.3f);
         rad.setPosition(148, 125);
         rad.registerEntityModifier(new LoopEntityModifier(new RotationModifier(1f, 0f, 359f)));
         attachChild(rad);
@@ -163,15 +165,26 @@ public class MainScene extends BaseScene
 
         final IMenuItem playMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_PLAY, resourcesManager.play_region, vbom), 1.5f, 1);
         final IMenuItem optionsMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_OPTIONS, resourcesManager.options_region, vbom), 1.5f, 1);
+        final IMenuItem musicOnMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SOUND_ON, resourcesManager.soundon_region, vbom), 1.5f, 1);
+        final IMenuItem musicOffMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SOUND_OFF, resourcesManager.soundoff_region, vbom), 1.5f, 1);
 
         menuChildScene.addMenuItem(playMenuItem);
         menuChildScene.addMenuItem(optionsMenuItem);
+        menuChildScene.addMenuItem(musicOnMenuItem);
+        menuChildScene.addMenuItem(musicOffMenuItem);
+
 
         menuChildScene.buildAnimations();
         menuChildScene.setBackgroundEnabled(false);
 
+        final float SOUNDXVISIBLE = MainActivity.GAMEWIDTH/2 + 200;
+        final float SOUNDXINVISIBLE = -200;
+
         playMenuItem.setPosition(MainActivity.GAMEWIDTH/2 - 200, MainActivity.GAMEHEIGHT/2 - 80);
         optionsMenuItem.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 - 80);
+        musicOnMenuItem.setPosition(SOUNDXVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
+        musicOffMenuItem.setPosition(SOUNDXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
+
 
         menuChildScene.setOnMenuItemClickListener(new MenuScene.IOnMenuItemClickListener() {
             @Override
@@ -188,6 +201,16 @@ public class MainScene extends BaseScene
                     case MENU_OPTIONS:
                         //MainActivity.gameToast("OPTIONS");
                         //TODO CALL SETTING SCENE
+                        return true;
+                    case MENU_SOUND_ON:
+                        //MainActivity.gameToast("SOUND ON");
+                        musicOnMenuItem.setX(SOUNDXINVISIBLE);
+                        musicOffMenuItem.setX(SOUNDXVISIBLE);
+                        return true;
+                    case MENU_SOUND_OFF:
+                        //MainActivity.gameToast("SOUND OFF");
+                        musicOnMenuItem.setX(SOUNDXVISIBLE);
+                        musicOffMenuItem.setX(SOUNDXINVISIBLE);
                         return true;
                     default:
                         return false;

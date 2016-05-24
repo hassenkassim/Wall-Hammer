@@ -55,7 +55,7 @@ public class SplashScene extends BaseScene
     }
 
     private void initPhysics(){
-        world = new PhysicsWorld(new Vector2(0.0f,-50.0f), false);
+        world = new PhysicsWorld(new Vector2(0.0f,-150.0f), false);
         this.registerUpdateHandler(world);
     }
 

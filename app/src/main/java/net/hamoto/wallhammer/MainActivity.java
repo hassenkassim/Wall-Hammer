@@ -56,7 +56,7 @@ public class MainActivity extends BaseGameActivity {
     public Engine onCreateEngine(EngineOptions pEngineOptions)
     {
         main = this;
-        gameToast("Game Started!");
+        //gameToast("Game Started!");
         musicsetting();
         highscoreSetting();
         return new LimitedFPSEngine(pEngineOptions, 60);
@@ -96,7 +96,7 @@ public class MainActivity extends BaseGameActivity {
 
     public void onPopulateScene(Scene pScene, OnPopulateSceneCallback pOnPopulateSceneCallback) throws IOException
     {
-        mEngine.registerUpdateHandler(new TimerHandler(5f, new ITimerCallback()
+        mEngine.registerUpdateHandler(new TimerHandler(3f, new ITimerCallback()
         {
             public void onTimePassed(final TimerHandler pTimerHandler)
             {

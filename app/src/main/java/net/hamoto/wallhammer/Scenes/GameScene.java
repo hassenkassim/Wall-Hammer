@@ -11,6 +11,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
+import com.badlogic.gdx.physics.box2d.joints.PrismaticJoint;
+import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
+import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
+import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
 import net.hamoto.wallhammer.MainActivity;
 import net.hamoto.wallhammer.Manager.SceneManager;
@@ -36,6 +42,7 @@ import org.andengine.entity.text.TextOptions;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
+import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.align.HorizontalAlign;
 
@@ -87,7 +94,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     final int GAME_SHARE = 2;
     final int GAME_SCORE = 3;
     private static SharedPreferences prefs;
-
+    private Body radBody;
+    private Body hammerBody;
 
 
     @Override
@@ -137,7 +145,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         addGround();
         addCloud();
         addHammer();
-        addRad();
+        //addRad();
     }
 
 
@@ -350,23 +358,39 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         attachChild(cloud1sprite);
     }
     private void addHammer(){
-        hammer = new Sprite(0, 0, 357, 400, ResourcesManager.getInstance().hammer_region, engine.getVertexBufferObjectManager());
-        hammer.setScale(0.5f);
-        hammer.setPosition(130, 190);
-        final FixtureDef HAMMER_FIX = PhysicsFactory.createFixtureDef(100.0f, 0.2f, 0.0f);
-        Body hammerBody = PhysicsFactory.createBoxBody(world, hammer, BodyDef.BodyType.DynamicBody, HAMMER_FIX);
+        hammer = new Sprite(0, 0, ResourcesManager.getInstance().hammer_region, engine.getVertexBufferObjectManager());
+        hammer.setScale(0.3f);
+        hammer.setPosition(130, 300);
+        final FixtureDef HAMMER_FIX = PhysicsFactory.createFixtureDef(1.0f, 0.2f, 0.0f);
+        hammerBody = PhysicsFactory.createBoxBody(world, hammer, BodyDef.BodyType.DynamicBody, HAMMER_FIX);
         attachChild(hammer);
         world.registerPhysicsConnector(new PhysicsConnector(hammer, hammerBody, true, false));
-    }
-    private void addRad(){
-        rad = new Sprite(0, 0, 130, 130, ResourcesManager.getInstance().rad_region, engine.getVertexBufferObjectManager());
-        rad.setScale(0.5f);
-        rad.setPosition(148, 125);
+
+        rad = new Sprite(0, 0, ResourcesManager.getInstance().rad_region, engine.getVertexBufferObjectManager());
+        rad.setScale(0.3f);
+        rad.setPosition(140, 300);
+        final FixtureDef RAD_FIX = PhysicsFactory.createFixtureDef(1000.0f, 0.2f, 0.0f);
+        radBody = PhysicsFactory.createBoxBody(world, rad, BodyDef.BodyType.DynamicBody, RAD_FIX);
         rad.registerEntityModifier(new LoopEntityModifier(new RotationModifier(1f, 0f, 359f)));
-        //final FixtureDef RAD_FIX = PhysicsFactory.createFixtureDef(100.0f, 0.2f, 0.0f);
-        //Body radBody = PhysicsFactory.createBoxBody(world, rad, BodyDef.BodyType.DynamicBody, RAD_FIX);
-        //world.registerPhysicsConnector(new PhysicsConnector(rad, radBody, true, false));
         attachChild(rad);
+        world.registerPhysicsConnector(new PhysicsConnector(rad, radBody, true, false));
+        //radBody.setLinearVelocity(new Vector2(0.0f, -9.81f));
+
+
+
+        final WeldJointDef weldJointDef = new WeldJointDef();
+        weldJointDef.initialize(hammerBody, radBody, radBody.getWorldCenter());
+        weldJointDef.localAnchorA.set(weldJointDef.localAnchorA.x-0.1f, -3.4f);
+        world.createJoint(weldJointDef);
+
+
+
+
+        /*final RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
+        revoluteJointDef.initialize(hammerBody, radBody, radBody.getWorldCenter());
+        revoluteJointDef.localAnchorA.set(0.1f* PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT,0.1f * PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT);
+        revoluteJointDef.localAnchorB.set(0,0);
+        world.createJoint(revoluteJointDef);*/
     }
 
     private void createWall(int x, int y, int width, int height){
@@ -435,6 +459,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     @Override
     public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
         if(pSceneTouchEvent.isActionDown()) {
+
+            hammerBody.applyLinearImpulse(new Vector2(0.0f, 10000.0f),new Vector2(0.0f,0.0f));
+            //radBody.applyLinearImpulse(new Vector2(0.0f, 10000.0f),new Vector2(0.0f,0.0f));
+
             Date now = new Date();
             if(lasttouch!=null){
                 if(now.getTime() - lasttouch.getTime()>DELAYMS){
