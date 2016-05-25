@@ -96,6 +96,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     private static SharedPreferences prefs;
     private Body radBody;
     private Body hammerBody;
+    public static Music musicMain;
+    private ArrayList<Sprite> clouds;
+    private int curcloud;
+    private int lastcloud;
+    final private int COUNT_CLOUDS = 8;
+    final private int minCloudDiff = 400;
+    final private int maxCloudDiff = 650;
 
 
     @Override
@@ -126,7 +133,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     private void createHUD()
     {
         gameHUD = new HUD();
-        scoreText = new Text(20, MainActivity.GAMEHEIGHT-65, resourcesManager.font, "Score: 0123456789", new TextOptions(HorizontalAlign.LEFT), vbom);
+        scoreText = new Text(20, MainActivity.GAMEHEIGHT-65, resourcesManager.font, "Score: "+score, new TextOptions(HorizontalAlign.LEFT), vbom);
         scoreText.setAnchorCenter(0, 0);
         gameHUD.attachChild(scoreText);
         camera.setHUD(gameHUD);
@@ -143,7 +150,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
     private void addSprites(){
         addGround();
-        addCloud();
+        addClouds();
         addHammer();
         //addRad();
     }
@@ -351,12 +358,84 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         attachChild(groundsprite);
 
     }
-    private void addCloud(){
-        cloud1sprite = new Sprite(0, 0, 3072, 512, ResourcesManager.getInstance().cloud1_region, engine.getVertexBufferObjectManager());
-        cloud1sprite.setY(600f);
-        cloud1sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(10f,256,-256))));
-        attachChild(cloud1sprite);
+
+    private void createCloud(int a, int x, int y, int width, int height){
+        if(a == 0) {
+            Sprite cloud = new Sprite(x, y, width, height, ResourcesManager.getInstance().cloud1_region, engine.getVertexBufferObjectManager());
+            clouds.add(cloud);
+            //final FixtureDef WALL_FIX = PhysicsFactory.createFixtureDef(0.0f,0.0f,0.0f);
+            //Body wallBody = PhysicsFactory.createBoxBody(world, wall, BodyDef.BodyType.DynamicBody, WALL_FIX);
+            cloud.registerEntityModifier(new SequenceEntityModifier(new MoveXModifier((cloud.getX() + 300.0f) / 50, cloud.getX(), -300)));
+            attachChild(cloud);
+        }else if(a == 1){
+            Sprite cloud = new Sprite(x, y, width, height, ResourcesManager.getInstance().cloud2_region, engine.getVertexBufferObjectManager());
+            clouds.add(cloud);
+            cloud.registerEntityModifier(new SequenceEntityModifier(new MoveXModifier((cloud.getX() + 300) / 50, cloud.getX(), -300)));
+            attachChild(cloud);
+        }else if(a == 2){
+            Sprite cloud = new Sprite(x, y, width, height, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
+            clouds.add(cloud);
+            cloud.registerEntityModifier(new SequenceEntityModifier(new MoveXModifier((cloud.getX() + 300) / 50, cloud.getX(), -300)));
+            attachChild(cloud);
+        }else{
+            Sprite cloud = new Sprite(x, y, width, height, ResourcesManager.getInstance().cloud4_region, engine.getVertexBufferObjectManager());
+            clouds.add(cloud);
+            cloud.registerEntityModifier(new SequenceEntityModifier(new MoveXModifier((cloud.getX() + 300) / 50, cloud.getX(), -300)));
+            attachChild(cloud);
+        }
+
     }
+
+    public void initClouds(int count){
+        //create initial 'count' Walls
+        clouds = new ArrayList<Sprite>();
+        int x = 300;
+        int cloudKind = 0;
+        for(int i = 0; i < count; i++){
+            createCloud(cloudKind, x, 600, 285, 156);
+            x = x + randInt(minCloudDiff, maxCloudDiff);
+            cloudKind = randInt(0,3);
+        }
+        curcloud = 0;
+        lastcloud = clouds.size()-1;
+
+
+    }
+
+
+    private void checkCloudOutside(){
+        if(clouds.get(curcloud).getX() < - 150){
+            float from = clouds.get(lastcloud).getX() + randInt(minCloudDiff,maxCloudDiff);
+            float to = -300;
+            clouds.get(curcloud).clearEntityModifiers();
+            clouds.get(curcloud).registerEntityModifier(new SequenceEntityModifier(new MoveXModifier((from-to)/50, from,to)));
+            //curwall und lastwall aktualisieren
+            if(curcloud == clouds.size()-1) curcloud = 0;
+            else curcloud++;
+            if(lastcloud == clouds.size()-1) lastcloud = 0;
+            else lastcloud++;
+        }
+    }
+
+    private void addClouds(){
+        initClouds(COUNT_CLOUDS);
+        //checkCloudOutside();
+        this.registerUpdateHandler(new IUpdateHandler() {
+            @Override
+            public void onUpdate(float pSecondsElapsed) {
+                //checkWallOutside();
+                checkCloudOutside();
+            }
+
+            @Override
+            public void reset() {
+
+            }
+
+        });
+    }
+
+
     private void addHammer(){
         hammer = new Sprite(0, 0, ResourcesManager.getInstance().hammer_region, engine.getVertexBufferObjectManager());
         hammer.setScale(0.3f);
