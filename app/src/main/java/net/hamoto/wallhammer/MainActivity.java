@@ -55,10 +55,11 @@ public class MainActivity extends BaseGameActivity {
     @Override
     public Engine onCreateEngine(EngineOptions pEngineOptions)
     {
+        highscoreSetting();
         main = this;
         //gameToast("Game Started!");
         musicsetting();
-        highscoreSetting();
+
         return new LimitedFPSEngine(pEngineOptions, 60);
     }
 
@@ -86,7 +87,7 @@ public class MainActivity extends BaseGameActivity {
 
     private void highscoreSetting(){
         prefs2 = getSharedPreferences(SETTING2, MODE_PRIVATE);
-        highscore = prefs2.getLong(SETTING_HIGHSCORE, 1);
+        highscore = prefs2.getLong(SETTING_HIGHSCORE, 0);
     }
 
     private void musicsetting(){

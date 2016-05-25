@@ -494,8 +494,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     {
 
         if(score > MainActivity.highscore){
+            MainActivity.highscore = score;
             activity.getSharedPreferences(MainActivity.SETTING2, Context.MODE_PRIVATE).edit().putLong(MainActivity.SETTING_HIGHSCORE, score).apply();
-            highscore = score;
+
         }
 
         clearHUD();
