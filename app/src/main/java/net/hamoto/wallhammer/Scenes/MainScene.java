@@ -43,6 +43,15 @@ public class MainScene extends BaseScene
     final int MENU_SOUND_OFF = 3;
     Sprite logo;
     Sprite cloud1sprite;
+    Sprite cloud2sprite;
+    Sprite cloud3sprite;
+    Sprite cloud4sprite;
+    Sprite cloud5sprite;
+    Sprite cloud6sprite;
+    Sprite cloud7sprite;
+    Sprite cloud8sprite;
+    Sprite cloud9sprite;
+    Sprite cloud10sprite;
     Sprite groundsprite;
     Sprite hammer;
     Sprite rad;
@@ -76,7 +85,7 @@ public class MainScene extends BaseScene
         addClouds();
         addGround();
         addHammer();
-        addLogo();
+        //addLogo();
         addRad();
         addMusicButton();
     }
@@ -104,88 +113,63 @@ public class MainScene extends BaseScene
         attachChild(logo);
     }
 
-    private void createCloud(int a, int x, int y, int width, int height){
-        if(a == 0) {
-            Sprite cloud = new Sprite(x, y, width, height, ResourcesManager.getInstance().cloud1_region, engine.getVertexBufferObjectManager());
-            clouds.add(cloud);
-            //final FixtureDef WALL_FIX = PhysicsFactory.createFixtureDef(0.0f,0.0f,0.0f);
-            //Body wallBody = PhysicsFactory.createBoxBody(world, wall, BodyDef.BodyType.DynamicBody, WALL_FIX);
-            cloud.registerEntityModifier(new SequenceEntityModifier(new MoveXModifier((cloud.getX() + 300.0f) / 50, cloud.getX(), -300)));
-            attachChild(cloud);
-        }else if(a == 1){
-            Sprite cloud = new Sprite(x, y, width, height, ResourcesManager.getInstance().cloud2_region, engine.getVertexBufferObjectManager());
-            clouds.add(cloud);
-            cloud.registerEntityModifier(new SequenceEntityModifier(new MoveXModifier((cloud.getX() + 300) / 50, cloud.getX(), -300)));
-            attachChild(cloud);
-        }else if(a == 2){
-            Sprite cloud = new Sprite(x, y, width, height, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
-            clouds.add(cloud);
-            cloud.registerEntityModifier(new SequenceEntityModifier(new MoveXModifier((cloud.getX() + 300) / 50, cloud.getX(), -300)));
-            attachChild(cloud);
-        }else{
-            Sprite cloud = new Sprite(x, y, width, height, ResourcesManager.getInstance().cloud4_region, engine.getVertexBufferObjectManager());
-            clouds.add(cloud);
-            cloud.registerEntityModifier(new SequenceEntityModifier(new MoveXModifier((cloud.getX() + 300) / 50, cloud.getX(), -300)));
-            attachChild(cloud);
-        }
-
-    }
-
-    public void initClouds(int count){
-        //create initial 'count' Walls
-        clouds = new ArrayList<Sprite>();
-        int x = 300;
-        int cloudKind = 0;
-        for(int i = 0; i < count; i++){
-            createCloud(cloudKind, x, 600, 285, 156);
-            x = x + randInt(minCloudDiff, maxCloudDiff);
-            cloudKind = randInt(0,3);
-        }
-        curcloud = 0;
-        lastcloud = clouds.size()-1;
-
-
-    }
-
-
-    private void checkCloudOutside(){
-        if(clouds.get(curcloud).getX() < - 150){
-            float from = clouds.get(lastcloud).getX() + randInt(minCloudDiff,maxCloudDiff);
-            float to = -300;
-            clouds.get(curcloud).clearEntityModifiers();
-            clouds.get(curcloud).registerEntityModifier(new SequenceEntityModifier(new MoveXModifier((from-to)/50, from,to)));
-            //curwall und lastwall aktualisieren
-            if(curcloud == clouds.size()-1) curcloud = 0;
-            else curcloud++;
-            if(lastcloud == clouds.size()-1) lastcloud = 0;
-            else lastcloud++;
-        }
-    }
 
     private void addClouds(){
-        initClouds(COUNT_CLOUDS);
-        //checkCloudOutside();
-       this.registerUpdateHandler(new IUpdateHandler() {
-           @Override
-           public void onUpdate(float pSecondsElapsed) {
-               //checkWallOutside();
-               checkCloudOutside();
-           }
 
-           @Override
-           public void reset() {
+        float a = 2698;
+        float duration = 20;
 
-           }
+        cloud1sprite = new Sprite(450, 0, 285, 156, ResourcesManager.getInstance().cloud4_region, engine.getVertexBufferObjectManager());
+        cloud1sprite.setY(600f);
+        cloud1sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud1sprite.getX(), -a + cloud1sprite.getX()))));
+        attachChild(cloud1sprite);
 
-       });
+        cloud2sprite = new Sprite(cloud1sprite.getX() + 500, 0, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
+        cloud2sprite.setY(600f);
+        cloud2sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud2sprite.getX(), -a + cloud2sprite.getX()))));
+        attachChild(cloud2sprite);
+
+        cloud3sprite = new Sprite(cloud2sprite.getX() + 600, 0, 285, 156, ResourcesManager.getInstance().cloud1_region, engine.getVertexBufferObjectManager());
+        cloud3sprite.setY(600f);
+        cloud3sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud3sprite.getX(), -a + cloud3sprite.getX()))));
+        attachChild(cloud3sprite);
+
+        cloud4sprite = new Sprite(cloud3sprite.getX() + 550, 0, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
+        cloud4sprite.setY(600f);
+        cloud4sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud4sprite.getX(), -a + cloud4sprite.getX()))));
+        attachChild(cloud4sprite);
+
+        cloud5sprite = new Sprite(cloud4sprite.getX() + 450, 0, 285, 156, ResourcesManager.getInstance().cloud2_region, engine.getVertexBufferObjectManager());
+        cloud5sprite.setY(600f);
+        cloud5sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud5sprite.getX(), -a + cloud5sprite.getX()))));
+        attachChild(cloud5sprite);
+
+        cloud6sprite = new Sprite(cloud5sprite.getX() + 600, 0, 285, 156, ResourcesManager.getInstance().cloud4_region, engine.getVertexBufferObjectManager());
+        cloud6sprite.setY(600f);
+        cloud6sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud6sprite.getX(), -a + cloud6sprite.getX()))));
+        attachChild(cloud6sprite);
+
+        cloud7sprite = new Sprite(cloud6sprite.getX() + 500, 0, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
+        cloud7sprite.setY(600f);
+        cloud7sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud7sprite.getX(), -a + cloud7sprite.getX()))));
+        attachChild(cloud7sprite);
+
+        cloud8sprite = new Sprite(cloud7sprite.getX() + 600, 0, 285, 156, ResourcesManager.getInstance().cloud1_region, engine.getVertexBufferObjectManager());
+        cloud8sprite.setY(600f);
+        cloud8sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud8sprite.getX(), -a + cloud8sprite.getX()))));
+        attachChild(cloud8sprite);
+
+        cloud9sprite = new Sprite(cloud8sprite.getX() + 550, 0, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
+        cloud9sprite.setY(600f);
+        cloud9sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud9sprite.getX(), -a + cloud9sprite.getX()))));
+        attachChild(cloud9sprite);
+
+        cloud10sprite = new Sprite(cloud9sprite.getX() + 600, 0, 285, 156, ResourcesManager.getInstance().cloud2_region, engine.getVertexBufferObjectManager());
+        cloud10sprite.setY(600f);
+        cloud10sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud10sprite.getX(), -a + cloud10sprite.getX()))));
+        attachChild(cloud10sprite);
+
     }
-
-  // private void addCloud(){
-  //     cloud1sprite = new Sprite(0, 0, 285, 156, ResourcesManager.getInstance().cloud1_region, engine.getVertexBufferObjectManager());
-  //     cloud1sprite.setY(600f);
-  //     cloud1sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(10f,256,-256))));
-  //     attachChild(cloud1sprite);
-  // }
 
 
     private void addHammer(){

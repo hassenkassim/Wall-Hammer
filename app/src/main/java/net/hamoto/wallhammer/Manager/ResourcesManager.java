@@ -188,23 +188,23 @@ public class ResourcesManager
         groundTextureAtlas.load();
 
 
-        cloud1TextureAtlas = new BuildableBitmapTextureAtlas(texmng, 512, 512, TextureOptions.REPEATING_BILINEAR);
-        cloud1_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(cloud1TextureAtlas, activity, "cloud1.png");
+        cloud1TextureAtlas = new BuildableBitmapTextureAtlas(texmng, 286, 170, TextureOptions.REPEATING_BILINEAR);
+        cloud1_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(cloud1TextureAtlas, activity, "cloud_a.png");
         cloud1TextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         cloud1TextureAtlas.load();
 
-        cloud2TextureAtlas = new BuildableBitmapTextureAtlas(texmng, 512, 512, TextureOptions.REPEATING_BILINEAR);
-        cloud2_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(cloud2TextureAtlas, activity, "cloud2.png");
+        cloud2TextureAtlas = new BuildableBitmapTextureAtlas(texmng, 288, 172, TextureOptions.REPEATING_BILINEAR);
+        cloud2_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(cloud2TextureAtlas, activity, "cloud_b.png");
         cloud2TextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         cloud2TextureAtlas.load();
 
-        cloud3TextureAtlas = new BuildableBitmapTextureAtlas(texmng, 512, 512, TextureOptions.REPEATING_BILINEAR);
-        cloud3_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(cloud3TextureAtlas, activity, "cloud3.png");
+        cloud3TextureAtlas = new BuildableBitmapTextureAtlas(texmng, 287, 158, TextureOptions.REPEATING_BILINEAR);
+        cloud3_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(cloud3TextureAtlas, activity, "cloud_c.png");
         cloud3TextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         cloud3TextureAtlas.load();
 
-        cloud4TextureAtlas = new BuildableBitmapTextureAtlas(texmng, 512, 512, TextureOptions.REPEATING_BILINEAR);
-        cloud4_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(cloud4TextureAtlas, activity, "cloud4.png");
+        cloud4TextureAtlas = new BuildableBitmapTextureAtlas(texmng, 287, 147, TextureOptions.REPEATING_BILINEAR);
+        cloud4_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(cloud4TextureAtlas, activity, "cloud_d.png");
         cloud4TextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         cloud4TextureAtlas.load();
 
