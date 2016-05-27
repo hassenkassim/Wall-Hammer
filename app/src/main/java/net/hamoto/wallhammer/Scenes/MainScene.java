@@ -2,11 +2,16 @@ package net.hamoto.wallhammer.Scenes;
 
 import android.content.Context;
 
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+
 import net.hamoto.wallhammer.MainActivity;
 import net.hamoto.wallhammer.Manager.SceneManager;
 import net.hamoto.wallhammer.Manager.ResourcesManager;
 
 import org.andengine.audio.music.Music;
+import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.MoveXModifier;
 import org.andengine.entity.modifier.RotationModifier;
@@ -18,6 +23,10 @@ import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.extension.physics.box2d.PhysicsFactory;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * @author Hassen Kassim
@@ -34,12 +43,27 @@ public class MainScene extends BaseScene
     final int MENU_SOUND_OFF = 3;
     Sprite logo;
     Sprite cloud1sprite;
+    Sprite cloud2sprite;
+    Sprite cloud3sprite;
+    Sprite cloud4sprite;
+    Sprite cloud5sprite;
+    Sprite cloud6sprite;
+    Sprite cloud7sprite;
+    Sprite cloud8sprite;
+    Sprite cloud9sprite;
+    Sprite cloud10sprite;
     Sprite groundsprite;
     Sprite hammer;
     Sprite rad;
     ButtonSprite musicon;
     ButtonSprite musicoff;
     public static Music musicMain;
+    private ArrayList<Sprite> clouds;
+    private int curcloud;
+    private int lastcloud;
+    final private int COUNT_CLOUDS = 8;
+    final private int minCloudDiff = 400;
+    final private int maxCloudDiff = 650;
 
     @Override
     public void createScene()
@@ -49,6 +73,7 @@ public class MainScene extends BaseScene
         createMenuChildScene();
         startbackgroundmusic();
         setTouchAreaBindingOnActionDownEnabled(true);
+
     }
 
     private void createBackground()
@@ -57,10 +82,10 @@ public class MainScene extends BaseScene
     }
 
     private void addSprites(){
+        addClouds();
         addGround();
-        addCloud();
         addHammer();
-        addLogo();
+        //addLogo();
         addRad();
     }
 
@@ -81,18 +106,70 @@ public class MainScene extends BaseScene
         attachChild(groundsprite);
     }
 
-    private void addCloud(){
-        cloud1sprite = new Sprite(0, 0, 3072, 512, ResourcesManager.getInstance().cloud1_region, engine.getVertexBufferObjectManager());
-        cloud1sprite.setY(600f);
-        cloud1sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(10f,256,-256))));
-        attachChild(cloud1sprite);
-    }
-
     private void addLogo(){
         logo = new Sprite(0, 0, 500, 300, ResourcesManager.getInstance().logo_region, engine.getVertexBufferObjectManager());
         logo.setPosition(MainActivity.GAMEWIDTH/2, 550);
         attachChild(logo);
     }
+
+
+    private void addClouds(){
+
+        float a = 2698;
+        float duration = 20;
+
+        cloud1sprite = new Sprite(450, 0, 285, 156, ResourcesManager.getInstance().cloud4_region, engine.getVertexBufferObjectManager());
+        cloud1sprite.setY(600f);
+        cloud1sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud1sprite.getX(), -a + cloud1sprite.getX()))));
+        attachChild(cloud1sprite);
+
+        cloud2sprite = new Sprite(cloud1sprite.getX() + 500, 0, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
+        cloud2sprite.setY(600f);
+        cloud2sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud2sprite.getX(), -a + cloud2sprite.getX()))));
+        attachChild(cloud2sprite);
+
+        cloud3sprite = new Sprite(cloud2sprite.getX() + 600, 0, 285, 156, ResourcesManager.getInstance().cloud1_region, engine.getVertexBufferObjectManager());
+        cloud3sprite.setY(600f);
+        cloud3sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud3sprite.getX(), -a + cloud3sprite.getX()))));
+        attachChild(cloud3sprite);
+
+        cloud4sprite = new Sprite(cloud3sprite.getX() + 550, 0, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
+        cloud4sprite.setY(600f);
+        cloud4sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud4sprite.getX(), -a + cloud4sprite.getX()))));
+        attachChild(cloud4sprite);
+
+        cloud5sprite = new Sprite(cloud4sprite.getX() + 450, 0, 285, 156, ResourcesManager.getInstance().cloud2_region, engine.getVertexBufferObjectManager());
+        cloud5sprite.setY(600f);
+        cloud5sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud5sprite.getX(), -a + cloud5sprite.getX()))));
+        attachChild(cloud5sprite);
+
+        cloud6sprite = new Sprite(cloud5sprite.getX() + 600, 0, 285, 156, ResourcesManager.getInstance().cloud4_region, engine.getVertexBufferObjectManager());
+        cloud6sprite.setY(600f);
+        cloud6sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud6sprite.getX(), -a + cloud6sprite.getX()))));
+        attachChild(cloud6sprite);
+
+        cloud7sprite = new Sprite(cloud6sprite.getX() + 500, 0, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
+        cloud7sprite.setY(600f);
+        cloud7sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud7sprite.getX(), -a + cloud7sprite.getX()))));
+        attachChild(cloud7sprite);
+
+        cloud8sprite = new Sprite(cloud7sprite.getX() + 600, 0, 285, 156, ResourcesManager.getInstance().cloud1_region, engine.getVertexBufferObjectManager());
+        cloud8sprite.setY(600f);
+        cloud8sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud8sprite.getX(), -a + cloud8sprite.getX()))));
+        attachChild(cloud8sprite);
+
+        cloud9sprite = new Sprite(cloud8sprite.getX() + 550, 0, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
+        cloud9sprite.setY(600f);
+        cloud9sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud9sprite.getX(), -a + cloud9sprite.getX()))));
+        attachChild(cloud9sprite);
+
+        cloud10sprite = new Sprite(cloud9sprite.getX() + 600, 0, 285, 156, ResourcesManager.getInstance().cloud2_region, engine.getVertexBufferObjectManager());
+        cloud10sprite.setY(600f);
+        cloud10sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud10sprite.getX(), -a + cloud10sprite.getX()))));
+        attachChild(cloud10sprite);
+
+    }
+
 
     private void addHammer(){
         hammer = new Sprite(0, 0, ResourcesManager.getInstance().hammer_region, engine.getVertexBufferObjectManager());
@@ -204,6 +281,23 @@ public class MainScene extends BaseScene
         menuChildScene.dispose();
         this.detachSelf();
         this.dispose();
+    }
+
+    public static int randInt(int min, int max) {
+
+        // NOTE: This will (intentionally) not run as written so that folks
+        // copy-pasting have to think about how to initialize their
+        // Random instance.  Initialization of the Random instance is outside
+        // the main scope of the question, but some decent options are to have
+        // a field that is initialized once and then re-used as needed or to
+        // use ThreadLocalRandom (if using at least Java 1.7).
+        Random rand = new Random();
+
+        // nextInt is normally exclusive of the top value,
+        // so add 1 to make it inclusive
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+
+        return randomNum;
     }
 
 
