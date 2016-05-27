@@ -161,6 +161,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         musicGame.setLooping(true);
         if(MainActivity.musicon){
             musicGame.play();
+
         }
     }
 
