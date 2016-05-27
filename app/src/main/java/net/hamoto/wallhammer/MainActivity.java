@@ -43,22 +43,19 @@ public class MainActivity extends BaseGameActivity {
     public final static int GAMEWIDTH = 1280;
     public final static int GAMEHEIGHT = 720;
     public final static String SETTING = "PREFS";
-    public final static String SETTING2 = "PREFS2";
     public final static String SETTING_MUSIC = "MUSICON";
-    public final static String SETTING_HIGHSCORE = "HIGHSCORE";
+    public final static String HIGHSCORE = "HIGHSCORE";
 
     public static boolean musicon;
     SharedPreferences prefs;
     public static long highscore;
-    SharedPreferences prefs2;
 
     @Override
     public Engine onCreateEngine(EngineOptions pEngineOptions)
     {
         main = this;
-        //gameToast("Game Started!");
         musicsetting();
-        highscoreSetting();
+        setHighscore();
         return new LimitedFPSEngine(pEngineOptions, 60);
     }
 
@@ -84,9 +81,8 @@ public class MainActivity extends BaseGameActivity {
         SceneManager.getInstance().createSplashScene(pOnCreateSceneCallback);
     }
 
-    private void highscoreSetting(){
-        prefs2 = getSharedPreferences(SETTING2, MODE_PRIVATE);
-        highscore = prefs2.getLong(SETTING_HIGHSCORE, 1);
+    private void setHighscore(){
+        highscore = getSharedPreferences(HIGHSCORE, MODE_PRIVATE).getLong(HIGHSCORE, 0);
     }
 
     private void musicsetting(){

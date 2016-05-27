@@ -2,21 +2,14 @@ package net.hamoto.wallhammer.Scenes;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
-import com.badlogic.gdx.physics.box2d.joints.PrismaticJoint;
-import com.badlogic.gdx.physics.box2d.joints.DistanceJoint;
-import com.badlogic.gdx.physics.box2d.joints.WeldJoint;
-import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 
 import net.hamoto.wallhammer.MainActivity;
 import net.hamoto.wallhammer.Manager.SceneManager;
@@ -25,6 +18,7 @@ import net.hamoto.wallhammer.Manager.ResourcesManager;
 import org.andengine.audio.music.Music;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.handler.IUpdateHandler;
+import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.MoveXModifier;
 import org.andengine.entity.modifier.RotationModifier;
@@ -42,7 +36,6 @@ import org.andengine.entity.text.TextOptions;
 import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
-import org.andengine.extension.physics.box2d.util.constants.PhysicsConstants;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.util.adt.align.HorizontalAlign;
 
@@ -58,63 +51,94 @@ import java.util.Random;
  */
 public class GameScene extends BaseScene implements IOnSceneTouchListener
 {
+
+    /*
+    *
+    *    VARIABLES
+    *
+     */
     final private int COUNT_WALL = 5;
-    final private int DELAYMS = 2000;
-    final private int TOUCHTIME_MIN = 200;
-    final private int TOUCHTIME_MAX = 500;
+    final private int DELAYMS = 1500;
+    final private int TOUCHTIME_MIN = 700;
+    final private int TOUCHTIME_MAX = 900;
+    final private int NEXTWALL_MIN = 800;
+    final private int NEXTWALL_MAX = 1500;
+    final private int LEVEL_MAX = 12;
+    final private int GAME_BACK = 0;
+    final private int GAME_PLAYAGAIN = 1;
+    final private int GAME_SHARE = 2;
+    final private int GAME_SCORE = 3;
     final private String FACEBOOK = "com.facebook.katana";
     final private String TWITTER = "com.twitter.android";
+
+    private boolean gameOverDisplayed = false;
+    private int level;
+    private int curwall;
+    private int lastwall;
+    private int speed;
+    private long score;
+    private long highscore;
+    private float wheelspeed;
+    private Date lasttouch;
+    private Date actualtouch;
+    private static Random rand;
+
+    private PhysicsWorld world;
+
+    private HUD gameHUD;
+
+    private Sprite cloud1sprite;
+    private Sprite groundsprite;
+    private Sprite hammer;
+    private Sprite wheel;
+    private Sprite scoreBackground;
+    private ArrayList<Sprite> walls;
+
+    private Body wheelBody;
+    private Body hammerBody;
+
+    private Text scoreText;
+    private Text scoreGameOverText;
+    private Text gameOverText;
+    private Text highscoreText;
 
     public static Music musicGame;
     public static Music musicGameOver;
 
-    private HUD gameHUD;
-    private Sprite cloud1sprite;
-    private Sprite groundsprite;
-    private Sprite hammer;
-    private Sprite rad;
-    private Sprite scoreBackground;
-    private Text scoreText;
-    private Text scoreGameOverText;
-    private long score = 0;
-    private PhysicsWorld world;
-    private int counter = 0;
-    private int curwall;
-    private int lastwall;
-    private long highscore;
-    private Date lasttouch;
-    private Date actualtouch;
-    private ArrayList<Sprite> walls;
-    private Text gameOverText;
-    private Text highscoreText;
-    private boolean gameOverDisplayed = false;
-    MenuScene gameChildScene;
-    final int GAME_BACK = 0;
-    final int GAME_PLAYAGAIN = 1;
-    final int GAME_SHARE = 2;
-    final int GAME_SCORE = 3;
-    private static SharedPreferences prefs;
-    private Body radBody;
-    private Body hammerBody;
+    private MenuScene gameChildScene;
 
+
+    /*
+    *
+    *    METHODS
+    *
+     */
 
     @Override
     public void createScene()
     {
-        initPhysics(); //Physik Welt initiieren
-        createBackground(); //Hintergrund erstellen
-        createHUD(); //Score anzeigen
-        startBackgroundMusic(); //Hintergrundmusik starten
-        addSprites(); //Figuren Einfuegen
-        initWalls(COUNT_WALL); //Waende einfuegen starten COUNT_WALL Waende generieren
-        createTouchFunction(); //Touch aktivieren
-        createGameOverText(); //GameOverText generieren
+        initVariables(0,0,300, 1.0f);//init variablen
+        initPhysics(); //init physics
+        createBackground(); //set the background color
+        createHUD(); //create the score field
+        startBackgroundMusic(); //start background music
+        addSprites(); //add figures
+        initWalls(COUNT_WALL); //insert walls
+        createTouchFunction(); //activate touch
+        createGameOverText(); //show game over window
     }
 
 
+    private void initVariables(int level, long score, int speed, float wheelspeed){
+        setLevel(level);
+        setScore(score);
+        setSpeed(speed);
+        setWheelSpeed(wheelspeed);
+    }
+
     private void initPhysics()
     {
-        world = new PhysicsWorld(new Vector2(0, -9.81f), false);
+        world = new PhysicsWorld(new Vector2(0, -98.1f), false);
         this.registerUpdateHandler(world);
     }
 
@@ -126,7 +150,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     private void createHUD()
     {
         gameHUD = new HUD();
-        scoreText = new Text(20, MainActivity.GAMEHEIGHT-65, resourcesManager.font, "Score: 0123456789", new TextOptions(HorizontalAlign.LEFT), vbom);
+        scoreText = new Text(20, MainActivity.GAMEHEIGHT-65, resourcesManager.font, "Score: " + score, new TextOptions(HorizontalAlign.LEFT), vbom);
         scoreText.setAnchorCenter(0, 0);
         gameHUD.attachChild(scoreText);
         camera.setHUD(gameHUD);
@@ -134,7 +158,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
     private void startBackgroundMusic(){
         musicGame = ResourcesManager.getInstance().musicGame;
-        musicGameOver = ResourcesManager.getInstance().musicGameOver;
         musicGame.setLooping(true);
         if(MainActivity.musicon){
             musicGame.play();
@@ -145,17 +168,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         addGround();
         addCloud();
         addHammer();
-        //addRad();
     }
-
 
     public void initWalls(int count){
         //create initial 'count' Walls
         walls = new ArrayList<Sprite>();
-        int x = 1500;
+        int x = NEXTWALL_MAX;
         for(int i = 0; i < count; i++){
-            createWall(x, 250, 64, 320);
-            x = x + randInt(300, 1200);
+            createWall(x, 240, 64, 320);
+            x = x + randInt(NEXTWALL_MIN, NEXTWALL_MAX);
         }
         curwall = 0;
         lastwall = walls.size()-1;
@@ -164,7 +185,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     }
 
     private void initCollisionCheck(){
-
         //collision check
         this.registerUpdateHandler(new IUpdateHandler() {
             @Override
@@ -179,20 +199,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
             }
 
         });
-    }
-
-    private void checkWallOutside(){
-        if(walls.get(curwall).getX() + walls.get(curwall).getWidth() < 0){
-            float from = walls.get(lastwall).getX() + randInt(300,1000);
-            float to = -128;
-            walls.get(curwall).clearEntityModifiers();
-            walls.get(curwall).registerEntityModifier(new SequenceEntityModifier(new MoveXModifier((from-to)/300, from,to)));
-            //curwall und lastwall aktualisieren
-            if(curwall == walls.size()-1) curwall = 0;
-            else curwall++;
-            if(lastwall == walls.size()-1) lastwall = 0;
-            else lastwall++;
-        }
     }
 
     private void checkHammerWallCollision(){
@@ -220,16 +226,51 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     }
 
     private void destroyWall(){
-        float from = walls.get(lastwall).getX() + randInt(300,1000);
+        float from = walls.get(lastwall).getX() + randInt(NEXTWALL_MIN,NEXTWALL_MAX);
         float to = -128;
         walls.get(curwall).clearEntityModifiers();
-        walls.get(curwall).registerEntityModifier(new SequenceEntityModifier(new MoveXModifier((from-to)/300, from,to)));
+        walls.get(curwall).setX(from);
+        walls.get(curwall).registerEntityModifier(new MoveXModifier((from-to)/speed, from,to));
         //curwall und lastwall aktualisieren
         if(curwall == walls.size()-1) curwall = 0;
         else curwall++;
         if(lastwall == walls.size()-1) lastwall = 0;
         else lastwall++;
         addToScore(1);
+        checklevel();
+    }
+
+
+    private void checklevel(){
+        if(score%3 == 0&&level<LEVEL_MAX){
+            levelup();
+            MainActivity.gameToast("LEVEL UP");
+        }
+    }
+
+    private void levelup(){
+        incSpeed(50);
+        incWheelSpeed(0.2f);
+        adjustAnimations();
+    }
+
+    private void adjustAnimations(){
+        for(int i = 0; i<walls.size(); i++){
+            Sprite wall = walls.get(i);
+            float from = wall.getX();
+            float to = -128;
+            wall.clearEntityModifiers();
+            wall.registerEntityModifier(new MoveXModifier((from-to)/speed, from,to));
+        }
+
+        groundsprite.clearEntityModifiers();
+        float from = groundsprite.getX();
+        float to = -128;
+        groundsprite.registerEntityModifier(new SequenceEntityModifier(new MoveXModifier((from+to)/speed, from, to), new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(256.0f/speed,128,-128)))));
+
+        wheel.clearEntityModifiers();
+        wheel.registerEntityModifier(new LoopEntityModifier(new RotationModifier(1f/wheelspeed, 0f, 359f)));
+
     }
 
     private void gameover() {
@@ -237,6 +278,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         displayGameOverText();
         Log.i("STATUS: ", "GAMEOVER!");
         createGameChildScene();
+        musicGameOver = ResourcesManager.getInstance().musicGameOver;
         musicGameOver.play();
     }
 
@@ -270,20 +312,16 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
                 switch(pMenuItem.getID())
                 {
                     case GAME_BACK:
-                        //MainActivity.gameToast("Back");
-                        //TODO CALL MENU SCENE
-                        onBackKeyPressed();
+                        goBack();
                         return true;
                     case GAME_PLAYAGAIN:
                         SceneManager.getInstance().loadGameScene(engine);
                         return true;
-                        //TODO CALL GAME SCENE
                     case GAME_SHARE:
-                        //MainActivity.gameToast("Share");
                         SharingToSocialMedia("NOPE");
                         return true;
                     case GAME_SCORE:
-
+                        //TODO: Implement Highscore
                     default:
                         return false;
                 }
@@ -291,6 +329,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         });
 
         setChildScene(gameChildScene);
+    }
+
+    private void goBack(){
+        musicGame.stop();
+        musicGameOver.stop();
+        if(MainActivity.musicon){
+            MainScene.musicMain.resume();
+        }
+        SceneManager.getInstance().loadMainScene(engine);
     }
 
     /*
@@ -339,58 +386,55 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
 
     private void addToScore(int i) {
-        score += i;
+        setScore(score + i);
         scoreText.setText("Score: " + score);
     }
     private void addGround(){
         groundsprite = new Sprite(0, 0, 3000, 256, ResourcesManager.getInstance().ground_region, engine.getVertexBufferObjectManager());
         groundsprite.setY(-25f);
-        groundsprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(256.0f/300.0f,128,-128))));
+        groundsprite.registerEntityModifier(new LoopEntityModifier(new MoveXModifier(256.0f/speed,128,-128)));
         final FixtureDef GROUND_FIX = PhysicsFactory.createFixtureDef(0.0f,0.0f,0.0f);
         Body groundBody = PhysicsFactory.createBoxBody(world, groundsprite, BodyDef.BodyType.StaticBody, GROUND_FIX);
+        groundBody.setTransform(groundBody.getPosition().x, groundBody.getPosition().y-0.85f, 0.0f);
         attachChild(groundsprite);
 
     }
     private void addCloud(){
         cloud1sprite = new Sprite(0, 0, 3072, 512, ResourcesManager.getInstance().cloud1_region, engine.getVertexBufferObjectManager());
         cloud1sprite.setY(600f);
-        cloud1sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(10f,256,-256))));
+        cloud1sprite.registerEntityModifier(new LoopEntityModifier(new MoveXModifier(10f,256,-256)));
         attachChild(cloud1sprite);
     }
     private void addHammer(){
         hammer = new Sprite(0, 0, ResourcesManager.getInstance().hammer_region, engine.getVertexBufferObjectManager());
         hammer.setScale(0.3f);
-        hammer.setPosition(130, 300);
-        final FixtureDef HAMMER_FIX = PhysicsFactory.createFixtureDef(1.0f, 0.2f, 0.0f);
+        hammer.setAnchorCenter(0.5f,0.0f);
+        hammer.setOffsetCenterY(0.15f);
+        hammer.setPosition(250.0f, 300.0f);
+        final FixtureDef HAMMER_FIX = PhysicsFactory.createFixtureDef(0.0f, 0.0f, 0.0f);
         hammerBody = PhysicsFactory.createBoxBody(world, hammer, BodyDef.BodyType.DynamicBody, HAMMER_FIX);
         attachChild(hammer);
         world.registerPhysicsConnector(new PhysicsConnector(hammer, hammerBody, true, false));
 
-        rad = new Sprite(0, 0, ResourcesManager.getInstance().rad_region, engine.getVertexBufferObjectManager());
-        rad.setScale(0.3f);
-        rad.setPosition(140, 300);
-        final FixtureDef RAD_FIX = PhysicsFactory.createFixtureDef(1000.0f, 0.2f, 0.0f);
-        radBody = PhysicsFactory.createBoxBody(world, rad, BodyDef.BodyType.DynamicBody, RAD_FIX);
-        rad.registerEntityModifier(new LoopEntityModifier(new RotationModifier(1f, 0f, 359f)));
-        attachChild(rad);
-        world.registerPhysicsConnector(new PhysicsConnector(rad, radBody, true, false));
-        //radBody.setLinearVelocity(new Vector2(0.0f, -9.81f));
+        wheel = new Sprite(0, 0, ResourcesManager.getInstance().wheel_region, engine.getVertexBufferObjectManager());
+        wheel.setScale(0.3f);
+        wheel.setPosition(250.0f, 300.0f);
+        final FixtureDef WHEEL_FIX = PhysicsFactory.createFixtureDef(1.0f, 0.0f, 0.0f);
+        wheelBody = PhysicsFactory.createBoxBody(world, wheel, BodyDef.BodyType.DynamicBody, WHEEL_FIX);
+        wheel.registerEntityModifier(new LoopEntityModifier(new RotationModifier(1f/wheelspeed, 0f, 359f)));
+        attachChild(wheel);
+        world.registerPhysicsConnector(new PhysicsConnector(wheel, wheelBody, true, false));
 
-
-
-        final WeldJointDef weldJointDef = new WeldJointDef();
-        weldJointDef.initialize(hammerBody, radBody, radBody.getWorldCenter());
-        weldJointDef.localAnchorA.set(weldJointDef.localAnchorA.x-0.1f, -3.4f);
-        world.createJoint(weldJointDef);
-
-
-
-
-        /*final RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
-        revoluteJointDef.initialize(hammerBody, radBody, radBody.getWorldCenter());
-        revoluteJointDef.localAnchorA.set(0.1f* PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT,0.1f * PhysicsConstants.PIXEL_TO_METER_RATIO_DEFAULT);
-        revoluteJointDef.localAnchorB.set(0,0);
-        world.createJoint(revoluteJointDef);*/
+        final RevoluteJointDef revoluteJointDef = new RevoluteJointDef();
+        revoluteJointDef.bodyA = hammerBody;
+        revoluteJointDef.bodyB = wheelBody;
+        revoluteJointDef.localAnchorA.set(new Vector2(0.25f, -3.4f));
+        revoluteJointDef.localAnchorB.set(new Vector2(0.0f, 0.0f));
+        revoluteJointDef.collideConnected = false;
+        revoluteJointDef.referenceAngle = 90.0f;
+        revoluteJointDef.lowerAngle = -10.0f;
+        revoluteJointDef.upperAngle = 10.0f;
+        world.createJoint(revoluteJointDef);
     }
 
     private void createWall(int x, int y, int width, int height){
@@ -398,7 +442,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         walls.add(wall);
         final FixtureDef WALL_FIX = PhysicsFactory.createFixtureDef(0.0f,0.0f,0.0f);
         Body wallBody = PhysicsFactory.createBoxBody(world, wall, BodyDef.BodyType.DynamicBody, WALL_FIX);
-        wall.registerEntityModifier(new SequenceEntityModifier(new MoveXModifier((wall.getX()+128.0f)/300.0f,wall.getX(),-128)));
+        wall.registerEntityModifier(new MoveXModifier((wall.getX()+128.0f)/speed,wall.getX(),-128));
         attachChild(wall);
     }
 
@@ -408,14 +452,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         gameOverText = new Text(0, 0, resourcesManager.font, "Game Over!", vbom);
         highscoreText = new Text(0, 0, resourcesManager.font, "Highscore: 0", vbom);
         scoreGameOverText = new Text(0, 0, resourcesManager.font, "Score: 0", vbom);
-
     }
 
     private void displayGameOverText()
     {
+        highscore = getHighscore();
 
-        if(score > MainActivity.highscore){
-            activity.getSharedPreferences(MainActivity.SETTING2, Context.MODE_PRIVATE).edit().putLong(MainActivity.SETTING_HIGHSCORE, score).apply();
+        if(score > highscore){
+            activity.getSharedPreferences(MainActivity.HIGHSCORE, Context.MODE_PRIVATE).edit().putLong(MainActivity.HIGHSCORE, score).apply();
             highscore = score;
         }
 
@@ -427,7 +471,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         highscoreText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 160);
         scoreGameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 100);
         scoreGameOverText.setText("Score: " + score);
-        highscoreText.setText("Highscore: " + MainActivity.highscore);
+        highscoreText.setText("Highscore: " + highscore);
         gameOverText.setScale(1,2);
         attachChild(scoreBackground);
         attachChild(gameOverText);
@@ -438,16 +482,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     }
 
 
+
     @Override
     public void onBackKeyPressed()
     {
-        musicGame.stop();
-        musicGameOver.stop();
-        if(MainActivity.musicon){
-            MainScene.musicMain.resume();
+        //pauseGame();
 
-        }
-        SceneManager.getInstance().loadMainScene(engine);
     }
 
     private void createTouchFunction()
@@ -459,48 +499,33 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     @Override
     public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
         if(pSceneTouchEvent.isActionDown()) {
-
-            hammerBody.applyLinearImpulse(new Vector2(0.0f, 10000.0f),new Vector2(0.0f,0.0f));
-            //radBody.applyLinearImpulse(new Vector2(0.0f, 10000.0f),new Vector2(0.0f,0.0f));
-
             Date now = new Date();
             if(lasttouch!=null){
                 if(now.getTime() - lasttouch.getTime()>DELAYMS){
-                    lasttouch = now;
+                    hammerHit(now);
                 }
                 else{
                     Log.i("INFO: ","Touched less then 2 seconds ago!!");
                 }
             } else {
-                lasttouch = now;
+                hammerHit(now);
             }
-            //MainActivity.gameToast("" + lasttouch);
-            //Jump only if the user tapped, not moved his finger or something
-            //walls.get(0).setPosition(walls.get(0).getX(),walls.get(0).getY()+200);
-            //hammer.setPosition(hammer.getX(),hammer.getY() + 200);
-            /*final Entity hammer = this.hammer;//Get player entity here.
-            final float jumpDuration = 1;
-            final float startY = hammer.getY();
-            final float jumpHeight = 20;
-
-            final MoveYModifier moveUpModifier = new MoveYModifier(jumpDuration / 2, startY, startY - jumpHeight); // - since we want the sprite to go up.
-            final MoveYModifier moveDownModifier = new MoveYModifier(jumpDuration / 2, startY + jumpHeight, startY);
-            final SequenceEntityModifier modifier = new SequenceEntityModifier(moveUpModifier, moveDownModifier);
-
-            hammer.registerEntityModifier(modifier);*/
             return true;
         }
         return false;
+    }
+
+    private void hammerHit(Date now){
+        lasttouch = now;
+        hammer.registerEntityModifier(new SequenceEntityModifier(new RotationModifier(0.5f, 0.0f, -45.0f), new DelayModifier(0.2f), new RotationModifier(0.1f,-45.0f, 22.5f),new RotationModifier(0.25f, 22.5f, 15.0f),  new RotationModifier(0.25f,15.0f, 0.0f)));
     }
 
     private void clearHUD(){
         if(gameHUD!=null){
             gameHUD.detachChildren();
             gameHUD.detachSelf();
-//            gameHUD.dispose();
         }
     }
-
 
     /**
      * Returns a pseudo-random number between min and max, inclusive.
@@ -513,20 +538,44 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
      * @see java.util.Random#nextInt(int)
      */
     public static int randInt(int min, int max) {
+        rand = new Random();
+        return rand.nextInt((max - min) + 1) + min;
+    }
 
-        // NOTE: This will (intentionally) not run as written so that folks
-        // copy-pasting have to think about how to initialize their
-        // Random instance.  Initialization of the Random instance is outside
-        // the main scope of the question, but some decent options are to have
-        // a field that is initialized once and then re-used as needed or to
-        // use ThreadLocalRandom (if using at least Java 1.7).
-        Random rand = new Random();
+    private void setLevel(int level){
+        this.level = level;
+    }
 
-        // nextInt is normally exclusive of the top value,
-        // so add 1 to make it inclusive
-        int randomNum = rand.nextInt((max - min) + 1) + min;
+    private void setScore(long score){
+        this.score = score;
+    }
 
-        return randomNum;
+    private void setSpeed(int speed){
+        this.speed = speed;
+    }
+
+    private void setWheelSpeed(float wheelspeed){
+        this.wheelspeed = wheelspeed;
+    }
+
+    private void incSpeed(int incspeed){
+        this.speed += incspeed;
+    }
+
+    private void decSpeed(int decspeed){
+        this.speed -= decspeed;
+    }
+
+    private void incWheelSpeed(float incWheelspeed){
+        this.wheelspeed += incWheelspeed;
+    }
+
+    private void decWheelSpeed(int decWheelspeed){
+        this.wheelspeed -= decWheelspeed;
+    }
+
+    private long getHighscore(){
+        return activity.getSharedPreferences(MainActivity.HIGHSCORE, Context.MODE_PRIVATE).getLong(MainActivity.HIGHSCORE, 0);
     }
 
     @Override

@@ -62,7 +62,6 @@ public class MainScene extends BaseScene
         addHammer();
         addLogo();
         addRad();
-        addMusicButton();
     }
 
     private void startbackgroundmusic(){
@@ -103,60 +102,25 @@ public class MainScene extends BaseScene
     }
 
     private void addRad(){
-        rad = new Sprite(0, 0, 273, 273, ResourcesManager.getInstance().rad_region, engine.getVertexBufferObjectManager());
+        rad = new Sprite(0, 0, 273, 273, ResourcesManager.getInstance().wheel_region, engine.getVertexBufferObjectManager());
         rad.setScale(0.3f);
         rad.setPosition(148, 125);
         rad.registerEntityModifier(new LoopEntityModifier(new RotationModifier(1f, 0f, 359f)));
         attachChild(rad);
     }
 
-    private void addMusicButton(){
-        musicon = new ButtonSprite(0, 0, ResourcesManager.getInstance().soundon_region, engine.getVertexBufferObjectManager());
-        musicon.setPosition(MainActivity.GAMEWIDTH/2 + 200, MainActivity.GAMEHEIGHT/2 - 80);
-
-        musicon.setOnClickListener(new ButtonSprite.OnClickListener() {
-            @Override
-            public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                musicMain.pause();
-                MainActivity.musicon = false;
-                activity.getSharedPreferences(MainActivity.SETTING, Context.MODE_PRIVATE).edit().putBoolean(MainActivity.SETTING_MUSIC, false).apply();
-                musicon.setEnabled(false);
-                musicon.setVisible(false);
-                musicoff.setEnabled(true);
-                musicoff.setVisible(true);
-            }
-        });
-        registerTouchArea(musicon);
-
-
-        musicoff = new ButtonSprite(0, 0, ResourcesManager.getInstance().soundoff_region, engine.getVertexBufferObjectManager());
-        musicoff.setPosition(MainActivity.GAMEWIDTH/2 + 200, MainActivity.GAMEHEIGHT/2 - 80);
-
-        musicoff.setOnClickListener(new ButtonSprite.OnClickListener() {
-            @Override
-            public void onClick(ButtonSprite pButtonSprite, float pTouchAreaLocalX, float pTouchAreaLocalY) {
-                musicMain.resume();
-                musicon.setEnabled(true);
-                musicon.setVisible(true);
-                musicoff.setEnabled(false);
-                musicoff.setVisible(false);
-                MainActivity.musicon = true;
-                activity.getSharedPreferences(MainActivity.SETTING, Context.MODE_PRIVATE).edit().putBoolean(MainActivity.SETTING_MUSIC, true).apply();
-            }
-        });
-        registerTouchArea(musicoff);
-
-
-        if(MainActivity.musicon){
-            musicoff.setVisible(false);
-            musicoff.setEnabled(false);
-        } else{
-            musicon.setVisible(false);
-            musicon.setEnabled(false);
-        }
-        attachChild(musicon);
-        attachChild(musicoff);
+    private void musicOn(){
+        musicMain.resume();
+        activity.getSharedPreferences(MainActivity.SETTING, Context.MODE_PRIVATE).edit().putBoolean(MainActivity.SETTING_MUSIC, true).apply();
     }
+
+    private void musicOff(){
+        musicMain.pause();
+        MainActivity.musicon = false;
+        activity.getSharedPreferences(MainActivity.SETTING, Context.MODE_PRIVATE).edit().putBoolean(MainActivity.SETTING_MUSIC, false).apply();
+
+    }
+
 
     private void createMenuChildScene()
     {
@@ -203,12 +167,12 @@ public class MainScene extends BaseScene
                         //TODO CALL SETTING SCENE
                         return true;
                     case MENU_SOUND_ON:
-                        //MainActivity.gameToast("SOUND ON");
+                        musicOff();
                         musicOnMenuItem.setX(SOUNDXINVISIBLE);
                         musicOffMenuItem.setX(SOUNDXVISIBLE);
                         return true;
                     case MENU_SOUND_OFF:
-                        //MainActivity.gameToast("SOUND OFF");
+                        musicOn();
                         musicOnMenuItem.setX(SOUNDXVISIBLE);
                         musicOffMenuItem.setX(SOUNDXINVISIBLE);
                         return true;

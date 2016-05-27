@@ -71,7 +71,7 @@ public class ResourcesManager
     public ITextureRegion soundon_region;
     public ITextureRegion soundoff_region;
     public ITextureRegion hammer_region;
-    public ITextureRegion rad_region;
+    public ITextureRegion wheel_region;
     public ITextureRegion wall_region;
     public ITextureRegion playAgain_region;
     public ITextureRegion share_region;
@@ -90,7 +90,7 @@ public class ResourcesManager
     BuildableBitmapTextureAtlas soundonTextureAtlas;
     BuildableBitmapTextureAtlas soundoffTextureAtlas;
     BuildableBitmapTextureAtlas hammerTextureAtlas;
-    BuildableBitmapTextureAtlas radTextureAtlas;
+    BuildableBitmapTextureAtlas wheelTextureAtlas;
     BuildableBitmapTextureAtlas wallTextureAtlas;
     BuildableBitmapTextureAtlas playAgainTextureAtlas;
     BuildableBitmapTextureAtlas playTextureAtlas;
@@ -225,10 +225,10 @@ public class ResourcesManager
         hammerTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         hammerTextureAtlas.load();
 
-        radTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 273, 273, TextureOptions.BILINEAR);
-        rad_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(radTextureAtlas, activity, "rad.png");
-        radTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
-        radTextureAtlas.load();
+        wheelTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 273, 273, TextureOptions.BILINEAR);
+        wheel_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(wheelTextureAtlas, activity, "rad.png");
+        wheelTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
+        wheelTextureAtlas.load();
 
     }
 
@@ -249,7 +249,7 @@ public class ResourcesManager
         hammerTextureAtlas.unload();
         groundTextureAtlas.unload();
         logoTextureAtlas.unload();
-        radTextureAtlas.unload();
+        wheelTextureAtlas.unload();
         soundoffTextureAtlas.unload();
         soundonTextureAtlas.unload();
         menu_background_region = null;
@@ -261,7 +261,7 @@ public class ResourcesManager
         soundon_region = null;
         soundoff_region = null;
         hammer_region = null;
-        rad_region = null;
+        wheel_region = null;
     }
 
     public void loadGameResources()
