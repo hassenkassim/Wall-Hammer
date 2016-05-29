@@ -54,7 +54,7 @@ public class ResourcesManager
     public Music musicGameOver;
 
     public Font font;
-    //public Font fontBig;
+    public Font font2;
 
     //---------------------------------------------
     // TEXTURES & TEXTURE REGIONS
@@ -81,7 +81,9 @@ public class ResourcesManager
     public ITextureRegion backToMenu_region;
     public ITextureRegion score_region;
     public ITextureRegion scoreBackground_region;
-
+    public ITextureRegion new_region;
+    public ITextureRegion pauseButton_region;
+    public ITextureRegion playPauseButton_region;
 
     BitmapTextureAtlas splashTextTextureAtlas;
     BitmapTextureAtlas splashLogoTextureAtlas;
@@ -105,6 +107,9 @@ public class ResourcesManager
     BuildableBitmapTextureAtlas backToMenuTextureAtlas;
     BuildableBitmapTextureAtlas scoreTextureAtlas;
     BuildableBitmapTextureAtlas scoreBackgroundTextureAtlas;
+    BuildableBitmapTextureAtlas newTextureAtlas;
+    BuildableBitmapTextureAtlas pauseButtonTextureAtlas;
+    BuildableBitmapTextureAtlas playPauseButtonTextureAtlas;
 
 
 
@@ -181,6 +186,16 @@ public class ResourcesManager
         scoreTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         scoreTextureAtlas.load();
 
+        pauseButtonTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 172, 172, TextureOptions.BILINEAR);
+        pauseButton_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(pauseButtonTextureAtlas, activity, "Pause.png");
+        pauseButtonTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
+        pauseButtonTextureAtlas.load();
+
+        playPauseButtonTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 172, 172, TextureOptions.BILINEAR);
+        playPauseButton_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playPauseButtonTextureAtlas, activity, "playPause.png");
+        playPauseButtonTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
+        playPauseButtonTextureAtlas.load();
+
         groundTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 256, 256, TextureOptions.REPEATING_BILINEAR);
         ground_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(groundTextureAtlas, activity, "ground.png");
         ground_region.setTextureSize(3000, 256);
@@ -224,10 +239,15 @@ public class ResourcesManager
         soundoffTextureAtlas.load();
 
 
-        scoreBackgroundTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 431, 318, TextureOptions.BILINEAR);
+        scoreBackgroundTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 474, 318, TextureOptions.BILINEAR);
         scoreBackground_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(scoreBackgroundTextureAtlas, activity, "scoreBackground.png");
         scoreBackgroundTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         scoreBackgroundTextureAtlas.load();
+
+        newTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 41, 18, TextureOptions.BILINEAR);
+        new_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(newTextureAtlas, activity, "new.png");
+        newTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
+        newTextureAtlas.load();
 
 
 
@@ -250,9 +270,9 @@ public class ResourcesManager
         FontFactory.setAssetBasePath("fonts/");
         final ITexture mainFontTexture = new BitmapTextureAtlas(activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
         font = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), "mexcellent_3d.ttf", 50, true, Color.WHITE, 2, Color.BLACK);
-        //fontBig = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), "mexcellent_3d Kopie.ttf", 70, true, Color.WHITE, 2, Color.BLACK);
+        //font2 = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), "HAMMERHEAD.tff", 100, true, Color.BLACK, 2, Color.WHITE);
         font.load();
-        //fontBig.load();
+        //font2.load();
     }
 
     public void unloadMainGraphics()

@@ -68,6 +68,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     final private int GAME_PLAYAGAIN = 1;
     final private int GAME_SHARE = 2;
     final private int GAME_SCORE = 3;
+    final private int GAME_PAUSE = 4;
+    final private int GAME_PLAYPAUSE = 5;
     final private String FACEBOOK = "com.facebook.katana";
     final private String TWITTER = "com.twitter.android";
 
@@ -82,16 +84,27 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     private Date lasttouch;
     private Date actualtouch;
     private static Random rand;
+    private float pauseButtonXPosition = MainActivity.GAMEWIDTH - 100;
 
     private PhysicsWorld world;
 
     private HUD gameHUD;
 
     private Sprite cloud1sprite;
+    private Sprite cloud2sprite;
+    private Sprite cloud3sprite;
+    private Sprite cloud4sprite;
+    private Sprite cloud5sprite;
+    private Sprite cloud6sprite;
+    private Sprite cloud7sprite;
+    private Sprite cloud8sprite;
+    private Sprite cloud9sprite;
+    private Sprite cloud10sprite;
     private Sprite groundsprite;
     private Sprite hammer;
     private Sprite wheel;
     private Sprite scoreBackground;
+    private Sprite newTextSprite;
     private ArrayList<Sprite> walls;
 
     private Body wheelBody;
@@ -106,6 +119,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     public static Music musicGameOver;
 
     private MenuScene gameChildScene;
+    private MenuScene gameChildScenePauseFunction;
 
 
     /*
@@ -126,6 +140,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         initWalls(COUNT_WALL); //insert walls
         createTouchFunction(); //activate touch
         createGameOverText(); //show game over window
+        createGameChildScenePauseFunction();
+
     }
 
 
@@ -280,8 +296,106 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         Log.i("STATUS: ", "GAMEOVER!");
         createGameChildScene();
         musicGameOver = ResourcesManager.getInstance().musicGameOver;
-        musicGameOver.play();
+        if(MainActivity.musicon){
+            musicGameOver.play();
+        }
+
     }
+
+    private void createGameChildScenePauseFunction(){
+        gameChildScenePauseFunction = new MenuScene(camera);
+        gameChildScenePauseFunction.setPosition(0, 0);
+
+        gameChildScenePauseFunction.buildAnimations();
+        gameChildScenePauseFunction.setBackgroundEnabled(false);
+
+        final IMenuItem pauseGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_PAUSE, resourcesManager.pauseButton_region, vbom), 1.5f, 1);
+        final IMenuItem playPauseGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_PLAYPAUSE, resourcesManager.playPauseButton_region, vbom), 1.5f, 1);
+        //final IMenuItem backGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_BACK, resourcesManager.backToMenu_region, vbom), 1.5f, 1);
+        //final IMenuItem playagainGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_PLAYAGAIN, resourcesManager.playAgain_region, vbom), 1.5f, 1);
+        //final IMenuItem shareGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_SHARE, resourcesManager.share_region, vbom), 1.5f, 1);
+        //final IMenuItem scoreGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_SCORE, resourcesManager.score_region, vbom), 1.5f, 1);
+
+
+        gameChildScenePauseFunction.addMenuItem(pauseGameItem);
+        gameChildScenePauseFunction.addMenuItem(playPauseGameItem);
+        //gameChildScenePauseFunction.addMenuItem(backGameItem);
+        //gameChildScenePauseFunction.addMenuItem(playagainGameItem);
+        //gameChildScenePauseFunction.addMenuItem(shareGameItem);
+        //gameChildScenePauseFunction.addMenuItem(scoreGameItem);
+
+        final float PAUSEXINVISIBLE = - 4000;
+        final float PAUSEXVISIBLE = MainActivity.GAMEWIDTH -100;
+
+        pauseGameItem.setPosition(PAUSEXVISIBLE, MainActivity.GAMEHEIGHT - 90);
+        playPauseGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT - 90);
+        //backGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
+        //playagainGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
+        //shareGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
+        //scoreGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
+
+
+        gameChildScenePauseFunction.setOnMenuItemClickListener(new MenuScene.IOnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY)
+            {
+                switch(pMenuItem.getID())
+                {
+                    case GAME_PAUSE:
+                        pauseGame();
+                        pauseGameItem.setX(PAUSEXINVISIBLE);
+                        playPauseGameItem.setX(PAUSEXVISIBLE);
+                        //backGameItem.setPosition(backGameItem.getX() - 100, MainActivity.GAMEHEIGHT/2 - 90);
+                        //playagainGameItem.setPosition(playagainGameItem.getX() - 300, MainActivity.GAMEHEIGHT/2 - 90);
+                        //shareGameItem.setPosition(shareGameItem.getX() + 300, MainActivity.GAMEHEIGHT/2 - 90);
+                        //scoreGameItem.setPosition(scoreGameItem.getX() + 100, MainActivity.GAMEHEIGHT/2 - 90);
+                        return true;
+                    case GAME_PLAYPAUSE:
+                        resumeGame();
+                        playPauseGameItem.setX(PAUSEXINVISIBLE);
+                        pauseGameItem.setX(PAUSEXVISIBLE);
+                        //backGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
+                        //playagainGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
+                        //shareGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
+                        //scoreGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
+                        return true;
+                    //case GAME_BACK:
+                    //    goBack();
+                    //    return true;
+                    //case GAME_PLAYAGAIN:
+                    //    SceneManager.getInstance().loadGameScene(engine);
+                    //    return true;
+                    //case GAME_SHARE:
+                    //    SharingToSocialMedia("NOPE");
+                    //    return true;
+                    //case GAME_SCORE:
+                    //    //TODO: Implement Highscore
+                    default:
+                        return false;
+                }
+            }
+        });
+
+        setChildScene(gameChildScenePauseFunction);
+    }
+    public void pauseGame(){
+        if(MainActivity.musicon==true){
+             musicGame.pause();
+        }
+
+        this.setIgnoreUpdate(true);
+    }
+
+    public void resumeGame(){
+        if(MainActivity.musicon==true){
+            musicGame.resume();
+        }
+
+        this.setIgnoreUpdate(false);
+    }
+
+
+
 
     private void createGameChildScene()
         {
@@ -334,7 +448,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
     private void goBack(){
         musicGame.stop();
-        musicGameOver.stop();
+        //musicGameOver.stop();
         if(MainActivity.musicon){
             MainScene.musicMain.resume();
         }
@@ -401,10 +515,62 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
     }
     private void addCloud(){
-        cloud1sprite = new Sprite(0, 0, 3072, 512, ResourcesManager.getInstance().cloud1_region, engine.getVertexBufferObjectManager());
+
+
+        float a = 2698;
+        float duration = 30;
+
+        cloud1sprite = new Sprite(450, 0, 285, 156, ResourcesManager.getInstance().cloud4_region, engine.getVertexBufferObjectManager());
         cloud1sprite.setY(600f);
-        cloud1sprite.registerEntityModifier(new LoopEntityModifier(new MoveXModifier(10f,256,-256)));
+        cloud1sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud1sprite.getX(), -a + cloud1sprite.getX()))));
         attachChild(cloud1sprite);
+
+        cloud2sprite = new Sprite(cloud1sprite.getX() + 500, 0, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
+        cloud2sprite.setY(600f);
+        cloud2sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud2sprite.getX(), -a + cloud2sprite.getX()))));
+        attachChild(cloud2sprite);
+
+        cloud3sprite = new Sprite(cloud2sprite.getX() + 600, 0, 285, 156, ResourcesManager.getInstance().cloud1_region, engine.getVertexBufferObjectManager());
+        cloud3sprite.setY(600f);
+        cloud3sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud3sprite.getX(), -a + cloud3sprite.getX()))));
+        attachChild(cloud3sprite);
+
+        cloud4sprite = new Sprite(cloud3sprite.getX() + 550, 0, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
+        cloud4sprite.setY(600f);
+        cloud4sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud4sprite.getX(), -a + cloud4sprite.getX()))));
+        attachChild(cloud4sprite);
+
+        cloud5sprite = new Sprite(cloud4sprite.getX() + 450, 0, 285, 156, ResourcesManager.getInstance().cloud2_region, engine.getVertexBufferObjectManager());
+        cloud5sprite.setY(600f);
+        cloud5sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud5sprite.getX(), -a + cloud5sprite.getX()))));
+        attachChild(cloud5sprite);
+
+        cloud6sprite = new Sprite(cloud5sprite.getX() + 600, 0, 285, 156, ResourcesManager.getInstance().cloud4_region, engine.getVertexBufferObjectManager());
+        cloud6sprite.setY(600f);
+        cloud6sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud6sprite.getX(), -a + cloud6sprite.getX()))));
+        attachChild(cloud6sprite);
+
+        cloud7sprite = new Sprite(cloud6sprite.getX() + 500, 0, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
+        cloud7sprite.setY(600f);
+        cloud7sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud7sprite.getX(), -a + cloud7sprite.getX()))));
+        attachChild(cloud7sprite);
+
+        cloud8sprite = new Sprite(cloud7sprite.getX() + 600, 0, 285, 156, ResourcesManager.getInstance().cloud1_region, engine.getVertexBufferObjectManager());
+        cloud8sprite.setY(600f);
+        cloud8sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud8sprite.getX(), -a + cloud8sprite.getX()))));
+        attachChild(cloud8sprite);
+
+        cloud9sprite = new Sprite(cloud8sprite.getX() + 550, 0, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
+        cloud9sprite.setY(600f);
+        cloud9sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud9sprite.getX(), -a + cloud9sprite.getX()))));
+        attachChild(cloud9sprite);
+
+        cloud10sprite = new Sprite(cloud9sprite.getX() + 600, 0, 285, 156, ResourcesManager.getInstance().cloud2_region, engine.getVertexBufferObjectManager());
+        cloud10sprite.setY(600f);
+        cloud10sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud10sprite.getX(), -a + cloud10sprite.getX()))));
+        attachChild(cloud10sprite);
+
+
     }
     private void addHammer(){
         hammer = new Sprite(0, 0, ResourcesManager.getInstance().hammer_region, engine.getVertexBufferObjectManager());
@@ -449,10 +615,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
     private void createGameOverText()
     {
-        scoreBackground = new Sprite (0, 0, 431, 318, ResourcesManager.getInstance().scoreBackground_region, engine.getVertexBufferObjectManager());
+        scoreBackground = new Sprite (0, 0, 474, 318, ResourcesManager.getInstance().scoreBackground_region, engine.getVertexBufferObjectManager());
         gameOverText = new Text(0, 0, resourcesManager.font, "Game Over!", vbom);
         highscoreText = new Text(0, 0, resourcesManager.font, "Highscore: 0", vbom);
         scoreGameOverText = new Text(0, 0, resourcesManager.font, "Score: 0", vbom);
+        newTextSprite = new Sprite (0, 0, 41, 18, ResourcesManager.getInstance().new_region, engine.getVertexBufferObjectManager());
     }
 
     private void displayGameOverText()
@@ -462,6 +629,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         if(score > highscore){
             activity.getSharedPreferences(MainActivity.HIGHSCORE, Context.MODE_PRIVATE).edit().putLong(MainActivity.HIGHSCORE, score).apply();
             highscore = score;
+            newTextSprite.setScale(1.4f);
+            newTextSprite.setPosition(MainActivity.GAMEWIDTH/2 - 186, MainActivity.GAMEHEIGHT/2 + 165);
         }
 
         clearHUD();
@@ -478,6 +647,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         attachChild(gameOverText);
         attachChild(highscoreText);
         attachChild(scoreGameOverText);
+        attachChild(newTextSprite);
         gameOverDisplayed = true;
         musicGame.stop();
     }

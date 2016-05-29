@@ -46,6 +46,7 @@ public class MainActivity extends BaseGameActivity {
     public final static String SETTING_MUSIC = "MUSICON";
     public final static String HIGHSCORE = "HIGHSCORE";
 
+
     public static boolean musicon;
     SharedPreferences prefs;
     public static long highscore;

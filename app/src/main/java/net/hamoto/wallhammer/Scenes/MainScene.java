@@ -23,6 +23,7 @@ import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
 import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class MainScene extends BaseScene
 {
     MenuScene menuChildScene;
     final int MENU_PLAY = 0;
-    final int MENU_OPTIONS = 1;
+    final int MENU_SCORE = 1;
     final int MENU_SOUND_ON = 2;
     final int MENU_SOUND_OFF = 3;
     Sprite logo;
@@ -58,12 +59,7 @@ public class MainScene extends BaseScene
     ButtonSprite musicon;
     ButtonSprite musicoff;
     public static Music musicMain;
-    private ArrayList<Sprite> clouds;
-    private int curcloud;
-    private int lastcloud;
-    final private int COUNT_CLOUDS = 8;
-    final private int minCloudDiff = 400;
-    final private int maxCloudDiff = 650;
+    private Text gameTitle;
 
     @Override
     public void createScene()
@@ -107,16 +103,15 @@ public class MainScene extends BaseScene
     }
 
     private void addLogo(){
-        logo = new Sprite(0, 0, 500, 300, ResourcesManager.getInstance().logo_region, engine.getVertexBufferObjectManager());
-        logo.setPosition(MainActivity.GAMEWIDTH/2, 550);
-        attachChild(logo);
+        gameTitle = new Text(0, 0, resourcesManager.font, "WALLHAMMER", vbom);
+        gameTitle.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 250);
     }
 
 
     private void addClouds(){
 
         float a = 2698;
-        float duration = 20;
+        float duration = 30;
 
         cloud1sprite = new Sprite(450, 0, 285, 156, ResourcesManager.getInstance().cloud4_region, engine.getVertexBufferObjectManager());
         cloud1sprite.setY(600f);
@@ -188,6 +183,7 @@ public class MainScene extends BaseScene
 
     private void musicOn(){
         musicMain.resume();
+        MainActivity.musicon = true;
         activity.getSharedPreferences(MainActivity.SETTING, Context.MODE_PRIVATE).edit().putBoolean(MainActivity.SETTING_MUSIC, true).apply();
     }
 
@@ -205,12 +201,12 @@ public class MainScene extends BaseScene
         menuChildScene.setPosition(0, 0);
 
         final IMenuItem playMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_PLAY, resourcesManager.play_region, vbom), 1.5f, 1);
-        final IMenuItem optionsMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_OPTIONS, resourcesManager.options_region, vbom), 1.5f, 1);
+        final IMenuItem scoreMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SCORE, resourcesManager.score_region, vbom), 1.5f, 1);
         final IMenuItem musicOnMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SOUND_ON, resourcesManager.soundon_region, vbom), 1.5f, 1);
         final IMenuItem musicOffMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SOUND_OFF, resourcesManager.soundoff_region, vbom), 1.5f, 1);
 
         menuChildScene.addMenuItem(playMenuItem);
-        menuChildScene.addMenuItem(optionsMenuItem);
+        menuChildScene.addMenuItem(scoreMenuItem);
         menuChildScene.addMenuItem(musicOnMenuItem);
         menuChildScene.addMenuItem(musicOffMenuItem);
 
@@ -222,7 +218,7 @@ public class MainScene extends BaseScene
         final float SOUNDXINVISIBLE = -200;
 
         playMenuItem.setPosition(MainActivity.GAMEWIDTH/2 - 200, MainActivity.GAMEHEIGHT/2 - 80);
-        optionsMenuItem.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 - 80);
+        scoreMenuItem.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 - 80);
         musicOnMenuItem.setPosition(SOUNDXVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
         musicOffMenuItem.setPosition(SOUNDXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
 
@@ -234,14 +230,12 @@ public class MainScene extends BaseScene
                 switch(pMenuItem.getID())
                 {
                     case MENU_PLAY:
-                        //MainActivity.gameToast("PLAY");
-                        //TODO CALL GAME SCENE
                         musicMain.pause();
                         SceneManager.getInstance().setScene(SceneManager.SceneType.SCENE_GAME);
                         return true;
-                    case MENU_OPTIONS:
+                    case MENU_SCORE:
                         //MainActivity.gameToast("OPTIONS");
-                        //TODO CALL SETTING SCENE
+                        //TODO CALL LEADERBOARD
                         return true;
                     case MENU_SOUND_ON:
                         musicOff();
