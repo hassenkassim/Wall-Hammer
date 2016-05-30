@@ -1,4 +1,4 @@
-package hamoto.net.wallhammer;
+package net.hamoto.wallhammer;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

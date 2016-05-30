@@ -5,6 +5,7 @@ import android.content.Context;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.google.android.gms.games.Games;
 
 import net.hamoto.wallhammer.MainActivity;
 import net.hamoto.wallhammer.Manager.SceneManager;
@@ -234,7 +235,11 @@ public class MainScene extends BaseScene
                         SceneManager.getInstance().setScene(SceneManager.SceneType.SCENE_GAME);
                         return true;
                     case MENU_SCORE:
-                        //MainActivity.gameToast("OPTIONS");
+                        if(MainActivity.mHelper!=null&&MainActivity.mHelper.isSignedIn()){
+                            activity.startActivityForResult(Games.Leaderboards.getLeaderboardIntent(MainActivity.mHelper.getApiClient(),
+                                    MainActivity.LEADERBOARD_ID), MainActivity.REQUEST_LEADERBOARD);
+                        }
+
                         //TODO CALL LEADERBOARD
                         return true;
                     case MENU_SOUND_ON:
