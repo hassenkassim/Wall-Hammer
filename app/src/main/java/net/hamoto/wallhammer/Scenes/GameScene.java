@@ -10,9 +10,9 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
-import com.google.android.gms.games.Games;
 
 import net.hamoto.wallhammer.MainActivity;
+import net.hamoto.wallhammer.Manager.PlayGamesManager;
 import net.hamoto.wallhammer.Manager.SceneManager;
 import net.hamoto.wallhammer.Manager.ResourcesManager;
 
@@ -437,7 +437,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
                         SharingToSocialMedia("NOPE");
                         return true;
                     case GAME_SCORE:
-                        //TODO: Implement Highscore
+                        PlayGamesManager.showLeaderboard();
                     default:
                         return false;
                 }
@@ -632,7 +632,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
             highscore = score;
             newTextSprite.setScale(1.4f);
             newTextSprite.setPosition(MainActivity.GAMEWIDTH/2 - 186, MainActivity.GAMEHEIGHT/2 + 165);
-            posthighscore(score);
+            PlayGamesManager.postHighscore(score);
         }
 
         clearHUD();
@@ -655,18 +655,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     }
 
 
-    private void posthighscore(long hscore){
-        if(MainActivity.mHelper!=null&&MainActivity.mHelper.isSignedIn()){
-            Games.Leaderboards.submitScore(MainActivity.mHelper.getApiClient(), MainActivity.LEADERBOARD_ID, hscore);
-        }
-    }
-
 
     @Override
     public void onBackKeyPressed()
     {
         //pauseGame();
-
     }
 
     private void createTouchFunction()

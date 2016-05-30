@@ -4,16 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.games.Games;
 
 import net.hamoto.wallhammer.Manager.SceneManager;
 import net.hamoto.wallhammer.Manager.ResourcesManager;
@@ -58,19 +52,23 @@ public class MainActivity extends BaseGameActivity implements GameHelper.GameHel
     public static boolean musicon;
     SharedPreferences prefs;
     public static long highscore;
-    public static final String LEADERBOARD_ID = "CgkIxPfbyu8CEAIQAA";
-    public static final int REQUEST_LEADERBOARD = 123;
+
+
+    // The game helper object. This class is mainly a wrapper around this object.
+    public static GameHelper mHelper;
+
+    // We expose these constants here because we don't want users of this class
+    // to have to know about GameHelper at all.
+    public static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
+
+    // Requested clients. By default, that's just the games client.
+    protected int mRequestedClients = CLIENT_GAMES;
+    protected boolean mDebugLog = false;
 
 
     @Override
     public Engine onCreateEngine(EngineOptions pEngineOptions)
     {
-
-
-        main = this;
-        setupGoogleAPI();
-        musicsetting();
-        setHighscore();
         return new LimitedFPSEngine(pEngineOptions, 60);
     }
 
@@ -96,22 +94,7 @@ public class MainActivity extends BaseGameActivity implements GameHelper.GameHel
         SceneManager.getInstance().createSplashScene(pOnCreateSceneCallback);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        mHelper.onStart(this);
-    }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        mHelper.onStop();
-    }
-
-
-    private void setupGoogleAPI(){
-
-    }
 
     private void setHighscore(){
         highscore = getSharedPreferences(HIGHSCORE, MODE_PRIVATE).getLong(HIGHSCORE, 0);
@@ -198,21 +181,10 @@ public class MainActivity extends BaseGameActivity implements GameHelper.GameHel
      * Called when sign-in fails. As a result, a "Sign-In" button can be
      * shown to the user; when that button is clicked, call
      *
-     * @link{GamesHelper#beginUserInitiatedSignIn . Note that not all calls
-     * to this method mean an
-     * error; it may be a result
-     * of the fact that automatic
-     * sign-in could not proceed
-     * because user interaction
-     * was required (consent
-     * dialogs). So
-     * implementations of this
-     * method should NOT display
-     * an error message unless a
-     * call to @link{GamesHelper#
-     * hasSignInError} indicates
-     * that an error indeed
-     * occurred.
+     * @link{GamesHelper#beginUserInitiatedSignIn . Note that not all calls to this method mean an error; it may be a result
+     * of the fact that automatic sign-in could not proceed because user interaction was required (consent dialogs). So
+     * implementations of this method should NOT display an error message unless a call to @link{GamesHelper hasSignInError} indicates
+     * that an error indeed occurred.
      */
     @Override
     public void onSignInFailed() {
@@ -227,20 +199,7 @@ public class MainActivity extends BaseGameActivity implements GameHelper.GameHel
         Log.i("WALLHAMMER", "SIGNED IN SUCCEEDED");
     }
 
-    // The game helper object. This class is mainly a wrapper around this object.
-    public static GameHelper mHelper;
 
-    // We expose these constants here because we don't want users of this class
-    // to have to know about GameHelper at all.
-    public static final int CLIENT_GAMES = GameHelper.CLIENT_GAMES;
-    public static final int CLIENT_PLUS = GameHelper.CLIENT_PLUS;
-    public static final int CLIENT_ALL = GameHelper.CLIENT_ALL;
-
-    // Requested clients. By default, that's just the games client.
-    protected int mRequestedClients = CLIENT_GAMES;
-
-    private final static String TAG = "BaseGameActivity";
-    protected boolean mDebugLog = false;
 
     public GameHelper getGameHelper() {
         if (mHelper == null) {
@@ -265,58 +224,22 @@ public class MainActivity extends BaseGameActivity implements GameHelper.GameHel
         mHelper.onActivityResult(request, response, data);
     }
 
-    protected GoogleApiClient getApiClient() {
-        return mHelper.getApiClient();
+    @Override
+    protected void onStart() {
+        super.onStart();
+        main = this;
+        musicsetting();
+        setHighscore();
+        mHelper.onStart(this);
     }
 
-    protected boolean isSignedIn() {
-        return mHelper.isSignedIn();
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mHelper.onStop();
     }
 
-    protected void beginUserInitiatedSignIn() {
-        mHelper.beginUserInitiatedSignIn();
+    public static Activity getActivity(){
+        return main;
     }
-
-    protected void signOut() {
-        mHelper.signOut();
-    }
-
-    protected void showAlert(String message) {
-        mHelper.makeSimpleDialog(message).show();
-    }
-
-    protected void showAlert(String title, String message) {
-        mHelper.makeSimpleDialog(title, message).show();
-    }
-
-    protected void enableDebugLog(boolean enabled) {
-        mDebugLog = true;
-        if (mHelper != null) {
-            mHelper.enableDebugLog(enabled);
-        }
-    }
-
-    @Deprecated
-    protected void enableDebugLog(boolean enabled, String tag) {
-        Log.w(TAG, "BaseGameActivity.enabledDebugLog(bool,String) is " +
-                "deprecated. Use enableDebugLog(boolean)");
-        enableDebugLog(enabled);
-    }
-
-    protected String getInvitationId() {
-        return mHelper.getInvitationId();
-    }
-
-    protected void reconnectClient() {
-        mHelper.reconnectClient();
-    }
-
-    protected boolean hasSignInError() {
-        return mHelper.hasSignInError();
-    }
-
-    protected GameHelper.SignInFailureReason getSignInError() {
-        return mHelper.getSignInError();
-    }
-
 }

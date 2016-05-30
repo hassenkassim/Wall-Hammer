@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.google.android.gms.games.Games;
 
 import net.hamoto.wallhammer.MainActivity;
+import net.hamoto.wallhammer.Manager.PlayGamesManager;
 import net.hamoto.wallhammer.Manager.SceneManager;
 import net.hamoto.wallhammer.Manager.ResourcesManager;
 
@@ -235,12 +236,7 @@ public class MainScene extends BaseScene
                         SceneManager.getInstance().setScene(SceneManager.SceneType.SCENE_GAME);
                         return true;
                     case MENU_SCORE:
-                        if(MainActivity.mHelper!=null&&MainActivity.mHelper.isSignedIn()){
-                            activity.startActivityForResult(Games.Leaderboards.getLeaderboardIntent(MainActivity.mHelper.getApiClient(),
-                                    MainActivity.LEADERBOARD_ID), MainActivity.REQUEST_LEADERBOARD);
-                        }
-
-                        //TODO CALL LEADERBOARD
+                        PlayGamesManager.showLeaderboard();
                         return true;
                     case MENU_SOUND_ON:
                         musicOff();
