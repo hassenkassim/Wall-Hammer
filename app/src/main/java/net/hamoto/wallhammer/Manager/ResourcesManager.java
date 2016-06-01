@@ -52,9 +52,10 @@ public class ResourcesManager
     public Music musicMain;
     public Music musicGame;
     public Music musicGameOver;
+    public Music musicDestroyWall;
 
     public Font font;
-    public Font font2;
+    public Font fontLogo;
 
     //---------------------------------------------
     // TEXTURES & TEXTURE REGIONS
@@ -84,6 +85,7 @@ public class ResourcesManager
     public ITextureRegion new_region;
     public ITextureRegion pauseButton_region;
     public ITextureRegion playPauseButton_region;
+    public ITextureRegion gameTitle_region;
 
     BitmapTextureAtlas splashTextTextureAtlas;
     BitmapTextureAtlas splashLogoTextureAtlas;
@@ -110,6 +112,7 @@ public class ResourcesManager
     BuildableBitmapTextureAtlas newTextureAtlas;
     BuildableBitmapTextureAtlas pauseButtonTextureAtlas;
     BuildableBitmapTextureAtlas playPauseButtonTextureAtlas;
+    BuildableBitmapTextureAtlas gameTitleTextureAtlas;
 
 
 
@@ -249,6 +252,11 @@ public class ResourcesManager
         newTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         newTextureAtlas.load();
 
+        gameTitleTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 958, 212, TextureOptions.BILINEAR);
+        gameTitle_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTitleTextureAtlas, activity, "gameTitle.png");
+        gameTitleTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
+        gameTitleTextureAtlas.load();
+
 
 
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/general/");
@@ -270,9 +278,9 @@ public class ResourcesManager
         FontFactory.setAssetBasePath("fonts/");
         final ITexture mainFontTexture = new BitmapTextureAtlas(activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
         font = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), "mexcellent_3d.ttf", 50, true, Color.WHITE, 2, Color.BLACK);
-        //font2 = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), "HAMMERHEAD.tff", 100, true, Color.BLACK, 2, Color.WHITE);
+        //fontLogo = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), "mexcellent_3d.tff", 50, true, Color.WHITE, 2, Color.BLACK);
         font.load();
-        //font2.load();
+        //fontLogo.load();
     }
 
     public void unloadMainGraphics()
@@ -308,6 +316,7 @@ public class ResourcesManager
         try {
             loadGameAudio();
             loadGameOverAudio();
+            loadDestroyWallAudio();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -334,6 +343,10 @@ public class ResourcesManager
 
     public void loadGameOverAudio() throws IOException {
         musicGameOver = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity,"mfx/musicGameOver.ogg");
+    }
+
+    public void loadDestroyWallAudio() throws IOException {
+        musicDestroyWall = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity,"mfx/musicDestroyWall.ogg");
     }
 
     public void unloadGameRecources()

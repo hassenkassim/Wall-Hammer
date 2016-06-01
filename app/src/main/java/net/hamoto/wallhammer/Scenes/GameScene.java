@@ -74,7 +74,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     final private String FACEBOOK = "com.facebook.katana";
     final private String TWITTER = "com.twitter.android";
 
-    private boolean gameOverDisplayed = false;
+    private boolean gameOverMusicActive = false;
     private int level;
     private int curwall;
     private int lastwall;
@@ -118,6 +118,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
     public static Music musicGame;
     public static Music musicGameOver;
+    public static Music musicWallDestroy;
 
     private MenuScene gameChildScene;
     private MenuScene gameChildScenePauseFunction;
@@ -174,6 +175,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     }
 
     private void startBackgroundMusic(){
+        musicWallDestroy = ResourcesManager.getInstance().musicDestroyWall;
         musicGame = ResourcesManager.getInstance().musicGame;
         musicGame.setLooping(true);
         if(MainActivity.musicon){
@@ -256,6 +258,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         else lastwall++;
         addToScore(1);
         checklevel();
+        if(MainActivity.musicon){
+            musicWallDestroy.play();
+        }
+
     }
 
 
@@ -299,6 +305,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         musicGameOver = ResourcesManager.getInstance().musicGameOver;
         if(MainActivity.musicon){
             musicGameOver.play();
+            gameOverMusicActive = true;
         }
 
     }
@@ -312,28 +319,28 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
         final IMenuItem pauseGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_PAUSE, resourcesManager.pauseButton_region, vbom), 1.5f, 1);
         final IMenuItem playPauseGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_PLAYPAUSE, resourcesManager.playPauseButton_region, vbom), 1.5f, 1);
-        //final IMenuItem backGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_BACK, resourcesManager.backToMenu_region, vbom), 1.5f, 1);
-        //final IMenuItem playagainGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_PLAYAGAIN, resourcesManager.playAgain_region, vbom), 1.5f, 1);
-        //final IMenuItem shareGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_SHARE, resourcesManager.share_region, vbom), 1.5f, 1);
-        //final IMenuItem scoreGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_SCORE, resourcesManager.score_region, vbom), 1.5f, 1);
+        final IMenuItem backGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_BACK, resourcesManager.backToMenu_region, vbom), 1.5f, 1);
+        final IMenuItem playagainGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_PLAYAGAIN, resourcesManager.playAgain_region, vbom), 1.5f, 1);
+        final IMenuItem shareGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_SHARE, resourcesManager.share_region, vbom), 1.5f, 1);
+        final IMenuItem scoreGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_SCORE, resourcesManager.score_region, vbom), 1.5f, 1);
 
 
         gameChildScenePauseFunction.addMenuItem(pauseGameItem);
         gameChildScenePauseFunction.addMenuItem(playPauseGameItem);
-        //gameChildScenePauseFunction.addMenuItem(backGameItem);
-        //gameChildScenePauseFunction.addMenuItem(playagainGameItem);
-        //gameChildScenePauseFunction.addMenuItem(shareGameItem);
-        //gameChildScenePauseFunction.addMenuItem(scoreGameItem);
+        gameChildScenePauseFunction.addMenuItem(backGameItem);
+        gameChildScenePauseFunction.addMenuItem(playagainGameItem);
+        gameChildScenePauseFunction.addMenuItem(shareGameItem);
+        gameChildScenePauseFunction.addMenuItem(scoreGameItem);
 
         final float PAUSEXINVISIBLE = - 4000;
         final float PAUSEXVISIBLE = MainActivity.GAMEWIDTH -100;
 
         pauseGameItem.setPosition(PAUSEXVISIBLE, MainActivity.GAMEHEIGHT - 90);
         playPauseGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT - 90);
-        //backGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
-        //playagainGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
-        //shareGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
-        //scoreGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
+        backGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
+        playagainGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
+        shareGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
+        scoreGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
 
 
         gameChildScenePauseFunction.setOnMenuItemClickListener(new MenuScene.IOnMenuItemClickListener() {
@@ -346,31 +353,31 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
                         pauseGame();
                         pauseGameItem.setX(PAUSEXINVISIBLE);
                         playPauseGameItem.setX(PAUSEXVISIBLE);
-                        //backGameItem.setPosition(backGameItem.getX() - 100, MainActivity.GAMEHEIGHT/2 - 90);
-                        //playagainGameItem.setPosition(playagainGameItem.getX() - 300, MainActivity.GAMEHEIGHT/2 - 90);
-                        //shareGameItem.setPosition(shareGameItem.getX() + 300, MainActivity.GAMEHEIGHT/2 - 90);
-                        //scoreGameItem.setPosition(scoreGameItem.getX() + 100, MainActivity.GAMEHEIGHT/2 - 90);
+                        backGameItem.setPosition(MainActivity.GAMEWIDTH/2 - 100, MainActivity.GAMEHEIGHT/2 - 90);
+                        playagainGameItem.setPosition(MainActivity.GAMEWIDTH/2 - 300, MainActivity.GAMEHEIGHT/2 - 90);
+                        shareGameItem.setPosition(MainActivity.GAMEWIDTH/2 + 300, MainActivity.GAMEHEIGHT/2 - 90);
+                        scoreGameItem.setPosition(MainActivity.GAMEWIDTH/2 + 100, MainActivity.GAMEHEIGHT/2 - 90);
                         return true;
                     case GAME_PLAYPAUSE:
                         resumeGame();
                         playPauseGameItem.setX(PAUSEXINVISIBLE);
                         pauseGameItem.setX(PAUSEXVISIBLE);
-                        //backGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
-                        //playagainGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
-                        //shareGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
-                        //scoreGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
+                        backGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
+                        playagainGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
+                        shareGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
+                        scoreGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
                         return true;
-                    //case GAME_BACK:
-                    //    goBack();
-                    //    return true;
-                    //case GAME_PLAYAGAIN:
-                    //    SceneManager.getInstance().loadGameScene(engine);
-                    //    return true;
-                    //case GAME_SHARE:
-                    //    SharingToSocialMedia("NOPE");
-                    //    return true;
-                    //case GAME_SCORE:
-                    //    //TODO: Implement Highscore
+                    case GAME_BACK:
+                        goBack();
+                        return true;
+                    case GAME_PLAYAGAIN:
+                        SceneManager.getInstance().loadGameScene(engine);
+                        return true;
+                    case GAME_SHARE:
+                        SharingToSocialMedia("NOPE");
+                        return true;
+                    case GAME_SCORE:
+                        PlayGamesManager.showLeaderboard();
                     default:
                         return false;
                 }
@@ -380,7 +387,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         setChildScene(gameChildScenePauseFunction);
     }
     public void pauseGame(){
-        if(MainActivity.musicon==true){
+        if(MainActivity.musicon){
              musicGame.pause();
         }
 
@@ -388,7 +395,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     }
 
     public void resumeGame(){
-        if(MainActivity.musicon==true){
+        if(MainActivity.musicon){
             musicGame.resume();
         }
 
@@ -432,6 +439,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
                         return true;
                     case GAME_PLAYAGAIN:
                         SceneManager.getInstance().loadGameScene(engine);
+                        musicGameOver.stop();
                         return true;
                     case GAME_SHARE:
                         SharingToSocialMedia("NOPE");
@@ -449,7 +457,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
     private void goBack(){
         musicGame.stop();
-        //musicGameOver.stop();
+        if(gameOverMusicActive) {
+            musicGameOver.stop();
+        }
         if(MainActivity.musicon){
             MainScene.musicMain.resume();
         }
@@ -650,7 +660,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         attachChild(highscoreText);
         attachChild(scoreGameOverText);
         attachChild(newTextSprite);
-        gameOverDisplayed = true;
         musicGame.stop();
     }
 
@@ -675,6 +684,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
             if(lasttouch!=null){
                 if(now.getTime() - lasttouch.getTime()>DELAYMS){
                     hammerHit(now);
+
                 }
                 else{
                     Log.i("INFO: ","Touched less then 2 seconds ago!!");

@@ -58,10 +58,11 @@ public class MainScene extends BaseScene
     Sprite groundsprite;
     Sprite hammer;
     Sprite rad;
+    Sprite gameTitle;
     ButtonSprite musicon;
     ButtonSprite musicoff;
     public static Music musicMain;
-    private Text gameTitle;
+
 
     @Override
     public void createScene()
@@ -83,7 +84,7 @@ public class MainScene extends BaseScene
         addClouds();
         addGround();
         addHammer();
-        //addLogo();
+        addLogo();
         addRad();
     }
 
@@ -105,8 +106,10 @@ public class MainScene extends BaseScene
     }
 
     private void addLogo(){
-        gameTitle = new Text(0, 0, resourcesManager.font, "WALLHAMMER", vbom);
-        gameTitle.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 250);
+        gameTitle = new Sprite(0, 0, 958, 212, ResourcesManager.getInstance().gameTitle_region, engine.getVertexBufferObjectManager());
+        gameTitle.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 180);
+        gameTitle.setScale(1.05f);
+        attachChild(gameTitle);
     }
 
 
@@ -164,21 +167,20 @@ public class MainScene extends BaseScene
         cloud10sprite.setY(600f);
         cloud10sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud10sprite.getX(), -a + cloud10sprite.getX()))));
         attachChild(cloud10sprite);
-
     }
 
 
     private void addHammer(){
         hammer = new Sprite(0, 0, ResourcesManager.getInstance().hammer_region, engine.getVertexBufferObjectManager());
         hammer.setScale(0.3f);
-        hammer.setPosition(130, 190);
+        hammer.setPosition(143.0f, 226.0f);
         attachChild(hammer);
     }
 
     private void addRad(){
         rad = new Sprite(0, 0, 273, 273, ResourcesManager.getInstance().wheel_region, engine.getVertexBufferObjectManager());
         rad.setScale(0.3f);
-        rad.setPosition(148, 125);
+        rad.setPosition(150, 117);
         rad.registerEntityModifier(new LoopEntityModifier(new RotationModifier(1f, 0f, 359f)));
         attachChild(rad);
     }
