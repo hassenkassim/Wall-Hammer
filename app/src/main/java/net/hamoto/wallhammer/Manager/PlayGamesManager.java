@@ -21,6 +21,7 @@ public class PlayGamesManager {
 
     public static void postHighscore(long hscore){
         if(MainActivity.mHelper!=null&&MainActivity.mHelper.isSignedIn()){
+            //
             Games.Leaderboards.submitScore(MainActivity.mHelper.getApiClient(), LEADERBOARD_ID, hscore);
         }
     }
