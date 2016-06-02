@@ -85,7 +85,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     private Date lasttouch;
     private Date actualtouch;
     private static Random rand;
-    private float pauseButtonXPosition = MainActivity.GAMEWIDTH - 100;
 
     private PhysicsWorld world;
 
