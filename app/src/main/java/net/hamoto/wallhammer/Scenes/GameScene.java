@@ -31,6 +31,7 @@ import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
+import org.andengine.entity.sprite.AnimatedSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.entity.text.TextOptions;
@@ -59,12 +60,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     *
      */
     final private int COUNT_WALL = 5;
-    final private int DELAYMS = 1500;
-    final private int TOUCHTIME_MIN = 700;
-    final private int TOUCHTIME_MAX = 900;
-    final private int NEXTWALL_MIN = 800;
-    final private int NEXTWALL_MAX = 1500;
-    final private int LEVEL_MAX = 12;
+    final private int DELAYMS = 900;
+    final private int TOUCHTIME_MIN = 450;
+    final private int TOUCHTIME_MAX = 500;
+    final private int LEVEL_MAX = 10;
     final private int GAME_BACK = 0;
     final private int GAME_PLAYAGAIN = 1;
     final private int GAME_SHARE = 2;
@@ -85,6 +84,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     private Date lasttouch;
     private Date actualtouch;
     private static Random rand;
+    private int NEXTWALL_MIN;
+    private int NEXTWALL_MAX;
 
     private PhysicsWorld world;
 
@@ -105,6 +106,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     private Sprite wheel;
     private Sprite scoreBackground;
     private Sprite newTextSprite;
+    private AnimatedSprite explosion;
     private ArrayList<Sprite> walls;
 
     private Body wheelBody;
@@ -132,7 +134,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     @Override
     public void createScene()
     {
-        initVariables(0,0,300, 1.0f);//init variablen
+        initVariables(0,0,500, 1.6f);//init variablen
         initPhysics(); //init physics
         createBackground(); //set the background color
         createHUD(); //create the score field
@@ -147,6 +149,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
 
     private void initVariables(int level, long score, int speed, float wheelspeed){
+        NEXTWALL_MAX = 1500;
+        NEXTWALL_MIN = 1000;
         setLevel(level);
         setScore(score);
         setSpeed(speed);
@@ -220,6 +224,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         });
     }
 
+    private void checkExplosionDetach(){
+        if(explosion!=null&&explosion.getCurrentTileIndex() == explosion.getTileCount()-1){
+            detachChild(explosion);
+        }
+    }
+
     private void checkHammerWallCollision(){
         if(lasttouch!=null){
             if(hammer.collidesWith(walls.get(curwall))){
@@ -245,6 +255,32 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
     }
 
     private void destroyWall(){
+        float coordX = walls.get(curwall).getX() + (walls.get(curwall).getWidth()/2);
+        explosion = new AnimatedSprite(0, 0,resourcesManager.explosion_region , engine.getVertexBufferObjectManager());
+        explosion.setPosition(coordX, 200);
+        attachChild(explosion);
+        explosion.animate(50, false, new AnimatedSprite.IAnimationListener() {
+            @Override
+            public void onAnimationStarted(AnimatedSprite pAnimatedSprite, int pInitialLoopCount) {
+
+            }
+
+            @Override
+            public void onAnimationFrameChanged(AnimatedSprite pAnimatedSprite, int pOldFrameIndex, int pNewFrameIndex) {
+
+            }
+
+            @Override
+            public void onAnimationLoopFinished(AnimatedSprite pAnimatedSprite, int pRemainingLoopCount, int pInitialLoopCount) {
+
+            }
+
+            @Override
+            public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
+                detachChild(explosion);
+            }
+        });
+
         float from = walls.get(lastwall).getX() + randInt(NEXTWALL_MIN,NEXTWALL_MAX);
         float to = -128;
         walls.get(curwall).clearEntityModifiers();
@@ -257,24 +293,33 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         else lastwall++;
         addToScore(1);
         checklevel();
+        playWallDesroySound();
+    }
+
+
+    private void playWallDesroySound(){
         if(MainActivity.musicon){
             musicWallDestroy.play();
         }
-
     }
-
 
     private void checklevel(){
         if(score%3 == 0&&level<LEVEL_MAX){
             levelup();
-            MainActivity.gameToast("LEVEL UP");
         }
     }
 
     private void levelup(){
+        setLevel(level+1);
         incSpeed(50);
         incWheelSpeed(0.2f);
+        setNextWallMin();
         adjustAnimations();
+        MainActivity.gameToast("LEVEL: " + level);
+    }
+
+    private void setNextWallMin(){
+        NEXTWALL_MIN -=50;
     }
 
     private void adjustAnimations(){
@@ -698,7 +743,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
     private void hammerHit(Date now){
         lasttouch = now;
-        hammer.registerEntityModifier(new SequenceEntityModifier(new RotationModifier(0.5f, 0.0f, -45.0f), new DelayModifier(0.2f), new RotationModifier(0.1f,-45.0f, 22.5f),new RotationModifier(0.25f, 22.5f, 15.0f),  new RotationModifier(0.25f,15.0f, 0.0f)));
+        hammer.registerEntityModifier(new SequenceEntityModifier(new RotationModifier(0.2f, 0.0f, -22.5f), new DelayModifier(0.2f), new RotationModifier(0.1f,-22.5f, 30f),new RotationModifier(0.2f, 30f, 15.0f),  new RotationModifier(0.2f,15.0f, 0.0f))); //0.9
     }
 
     private void clearHUD(){

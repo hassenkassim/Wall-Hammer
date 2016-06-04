@@ -20,6 +20,7 @@ import org.andengine.opengl.texture.atlas.bitmap.source.IBitmapTextureAtlasSourc
 import org.andengine.opengl.texture.atlas.buildable.builder.BlackPawnTextureAtlasBuilder;
 import org.andengine.opengl.texture.atlas.buildable.builder.ITextureAtlasBuilder;
 import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.opengl.texture.region.TiledTextureRegion;
 import org.andengine.opengl.vbo.VertexBufferObjectManager;
 
 import java.io.IOException;
@@ -86,6 +87,7 @@ public class ResourcesManager
     public ITextureRegion pauseButton_region;
     public ITextureRegion playPauseButton_region;
     public ITextureRegion gameTitle_region;
+    public TiledTextureRegion explosion_region;
 
     BitmapTextureAtlas splashTextTextureAtlas;
     BitmapTextureAtlas splashLogoTextureAtlas;
@@ -113,6 +115,7 @@ public class ResourcesManager
     BuildableBitmapTextureAtlas pauseButtonTextureAtlas;
     BuildableBitmapTextureAtlas playPauseButtonTextureAtlas;
     BuildableBitmapTextureAtlas gameTitleTextureAtlas;
+    BitmapTextureAtlas explosionTextureAtlas;
 
 
 
@@ -325,10 +328,15 @@ public class ResourcesManager
     private void loadGameGraphics() throws ITextureAtlasBuilder.TextureAtlasBuilderException
     {
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/game/");
-        wallTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 256, 1280, TextureOptions.BILINEAR);
-        wall_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(wallTextureAtlas, activity, "wall.png");
+        wallTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 305, 1448, TextureOptions.BILINEAR);
+        wall_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(wallTextureAtlas, activity, "wall_bricks.png");
         wallTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         wallTextureAtlas.load();
+
+
+        explosionTextureAtlas = new BitmapTextureAtlas(texmng, 1134, 189, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        explosion_region = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(explosionTextureAtlas, activity, "explosion.png",0,0,6,1);
+        explosionTextureAtlas.load();
 
         //TODO: Load new Sprites for GameGaphics like the walls...
     }
