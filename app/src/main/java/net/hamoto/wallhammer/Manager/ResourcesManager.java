@@ -67,6 +67,7 @@ public class ResourcesManager
     public ITextureRegion menu_background_region;
     public ITextureRegion play_region;
     public ITextureRegion options_region;
+    public ITextureRegion info_region;
     public ITextureRegion ground_region;
     public ITextureRegion cloud1_region;
     public ITextureRegion cloud2_region;
@@ -107,6 +108,7 @@ public class ResourcesManager
     BuildableBitmapTextureAtlas playAgainTextureAtlas;
     BuildableBitmapTextureAtlas playTextureAtlas;
     BuildableBitmapTextureAtlas optionsTextureAtlas;
+    BuildableBitmapTextureAtlas infoTextureAtlas;
     BuildableBitmapTextureAtlas shareTextureAtlas;
     BuildableBitmapTextureAtlas backToMenuTextureAtlas;
     BuildableBitmapTextureAtlas scoreTextureAtlas;
@@ -171,6 +173,11 @@ public class ResourcesManager
         options_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(optionsTextureAtlas, activity, "settingsButton.png");
         optionsTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         optionsTextureAtlas.load();
+
+        infoTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 172, 172, TextureOptions.BILINEAR);
+        info_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(infoTextureAtlas, activity, "infoButton.png");
+        infoTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
+        infoTextureAtlas.load();
 
         shareTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 172, 172, TextureOptions.BILINEAR);
         share_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(shareTextureAtlas, activity, "shareButton.png");
@@ -280,7 +287,7 @@ public class ResourcesManager
     {
         FontFactory.setAssetBasePath("fonts/");
         final ITexture mainFontTexture = new BitmapTextureAtlas(activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
-        font = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), "mexcellent_3d.ttf", 50, true, Color.WHITE, 2, Color.BLACK);
+        font = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), "fontWallhammer.ttf", 50, true, Color.WHITE, 2, Color.BLACK);
         //fontLogo = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), "mexcellent_3d.tff", 50, true, Color.WHITE, 2, Color.BLACK);
         font.load();
         //fontLogo.load();
@@ -346,7 +353,7 @@ public class ResourcesManager
     }
 
     public void loadGameAudio() throws IOException {
-        musicGame = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity,"mfx/musicGame.ogg");
+        musicGame = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity,"mfx/MusicGame.m4a");
     }
 
     public void loadGameOverAudio() throws IOException {

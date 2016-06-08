@@ -108,7 +108,7 @@ public class MainScene extends BaseScene
     private void addLogo(){
         gameTitle = new Sprite(0, 0, 958, 212, ResourcesManager.getInstance().gameTitle_region, engine.getVertexBufferObjectManager());
         gameTitle.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 180);
-        gameTitle.setScale(1.05f);
+        gameTitle.setScale(0.95f);
         attachChild(gameTitle);
     }
 
