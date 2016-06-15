@@ -54,6 +54,7 @@ public abstract class SurfaceGestureDetector extends BaseDetector {
 	protected abstract boolean onSwipeDown();
 	protected abstract boolean onSwipeLeft();
 	protected abstract boolean onSwipeRight();
+	protected  abstract boolean onDown();
 
 	@Override
 	public void reset() {
@@ -103,6 +104,16 @@ public abstract class SurfaceGestureDetector extends BaseDetector {
 		@Override
 		public boolean onSingleTapConfirmed(final MotionEvent pMotionEvent) {
 			return SurfaceGestureDetector.this.onSingleTap();
+		}
+
+		@Override
+		public boolean onSingleTapUp(final MotionEvent pMotionEvent) {
+			return SurfaceGestureDetector.this.onSingleTap();
+		}
+
+		@Override
+		public boolean onDown(final MotionEvent pMotionEvent){
+			return SurfaceGestureDetector.this.onDown();
 		}
 
 		@Override

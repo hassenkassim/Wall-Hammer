@@ -67,6 +67,9 @@ public class SurfaceGestureDetectorAdapter extends SurfaceGestureDetector {
 		return false;
 	}
 
+	@Override
+	protected boolean onDown(){ return false; }
+
 	// ===========================================================
 	// Methods
 	// ===========================================================

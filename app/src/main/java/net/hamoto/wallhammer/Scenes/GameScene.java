@@ -3,6 +3,7 @@ package net.hamoto.wallhammer.Scenes;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Looper;
 import android.util.Log;
 
 import com.badlogic.gdx.math.Vector2;
@@ -39,6 +40,7 @@ import org.andengine.extension.physics.box2d.PhysicsConnector;
 import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.input.touch.TouchEvent;
+import org.andengine.input.touch.detector.SurfaceGestureDetectorAdapter;
 import org.andengine.util.adt.align.HorizontalAlign;
 
 import java.util.ArrayList;
@@ -51,8 +53,7 @@ import java.util.Random;
  *
  * This Scene shows the Logo while loading the Main Scene.
  */
-public class GameScene extends BaseScene implements IOnSceneTouchListener
-{
+public class GameScene extends BaseScene implements IOnSceneTouchListener{
 
     /*
     *
@@ -61,8 +62,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
      */
     final private int COUNT_WALL = 5;
     final private int DELAYMS = 900;
-    final private int TOUCHTIME_MIN = 450;
-    final private int TOUCHTIME_MAX = 500;
+    final private int TOUCHTIME_MIN = 300;
+    final private int TOUCHTIME_MAX = 400;
     final private int LEVEL_MAX = 10;
     final private int GAME_BACK = 0;
     final private int GAME_PLAYAGAIN = 1;
@@ -123,6 +124,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
     private MenuScene gameChildScene;
     private MenuScene gameChildScenePauseFunction;
+
+    SurfaceGestureDetectorAdapter surfaceGestureDetectorAdapter;
 
 
     /*
@@ -570,8 +573,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
     }
     private void addCloud(){
-
-
         float a = 2698;
         float duration = 30;
 
@@ -717,10 +718,65 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
 
     private void createTouchFunction()
     {
+        Looper.prepare();
+        surfaceGestureDetectorAdapter = new SurfaceGestureDetectorAdapter(activity) {
+
+            @Override
+            protected boolean onSingleTap() {
+                Log.i("Touch Event" , "SINGLE_TAP");
+                Date now = new Date();
+                if(lasttouch!=null){
+                    if(now.getTime() - lasttouch.getTime()>DELAYMS){
+                        hammerHit(now);
+
+                    }
+                    else{
+                        Log.i("INFO: ","Touched less then 2 seconds ago!!");
+                    }
+                } else {
+                    hammerHit(now);
+                }                return false;
+            }
+
+            @Override
+            protected boolean onSwipeDown() {
+                Log.i("Touch Event" , "SWIPE_DOWN");
+                hammer.registerEntityModifier(new SequenceEntityModifier(new RotationModifier(0.2f, 0.0f, -80.0f), new DelayModifier(1.0f), new RotationModifier(0.2f,-90.0f, 5.0f),new RotationModifier(0.05f, 5.0f, 0.0f))); //0.55
+                //onSurfaceGesture("Swipe Down");
+                return false;
+            }
+
+            @Override
+            protected boolean onSwipeLeft() {
+                Log.i("Touch Event" , "SWIPE_LEFT");
+                //onSurfaceGesture("Swipe Left");
+                return false;
+            }
+
+            @Override
+            protected boolean onSwipeRight() {
+                Log.i("Touch Event" , "SWIPE_RIGHT");
+                //onSurfaceGesture("Swipe Right");
+                return false;
+            }
+
+            @Override
+            protected boolean onSwipeUp() {
+                Log.i("Touch Event" , "SWIPE_UP");
+                wheelBody.applyLinearImpulse(0.0f,-100.0f,0.0f,0.0f);
+                //onSurfaceGesture("Swipe Up");
+                return false;
+            }
+
+        };
+        surfaceGestureDetectorAdapter.setEnabled(true);
+
         setTouchAreaBindingOnActionDownEnabled(true);
         this.setOnSceneTouchListener(this);
     }
 
+
+/*
     @Override
     public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
         if(pSceneTouchEvent.isActionDown()) {
@@ -739,11 +795,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
             return true;
         }
         return false;
-    }
+    }*/
 
     private void hammerHit(Date now){
         lasttouch = now;
-        hammer.registerEntityModifier(new SequenceEntityModifier(new RotationModifier(0.2f, 0.0f, -22.5f), new DelayModifier(0.2f), new RotationModifier(0.1f,-22.5f, 30f),new RotationModifier(0.2f, 30f, 15.0f),  new RotationModifier(0.2f,15.0f, 0.0f))); //0.9
+        hammer.registerEntityModifier(new SequenceEntityModifier(new RotationModifier(0.2f, 0.0f, -22.5f), new DelayModifier(0.1f), new RotationModifier(0.05f,-22.5f, 30f),new RotationModifier(0.1f, 30f, 15.0f),  new RotationModifier(0.1f,15.0f, 0.0f))); //0.55
     }
 
     private void clearHUD(){
@@ -818,4 +874,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener
         this.dispose();
     }
 
+    /**
+     * Called when a {@link TouchEvent} is dispatched to a {@link Scene}.
+     *
+     * @param pScene           The {@link Scene} that the {@link TouchEvent} has been dispatched to.
+     * @param pSceneTouchEvent The {@link TouchEvent} object containing full information about the event.
+     * @return <code>true</code> if this {@link IOnSceneTouchListener} has consumed the {@link TouchEvent}, <code>false</code> otherwise.
+     */
+    @Override
+    public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
+        return surfaceGestureDetectorAdapter.onManagedTouchEvent(pSceneTouchEvent);
+    }
 }

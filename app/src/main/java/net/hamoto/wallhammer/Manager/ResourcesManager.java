@@ -272,7 +272,7 @@ public class ResourcesManager
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/general/");
 
         hammerTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 557, 763, TextureOptions.BILINEAR);
-        hammer_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(hammerTextureAtlas, activity, "hammerOhneRad.png");
+        hammer_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(hammerTextureAtlas, activity, "hammerOhneRad-2.png");
         hammerTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         hammerTextureAtlas.load();
 
@@ -280,7 +280,6 @@ public class ResourcesManager
         wheel_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(wheelTextureAtlas, activity, "rad.png");
         wheelTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         wheelTextureAtlas.load();
-
     }
 
     private void loadFonts()
@@ -339,7 +338,6 @@ public class ResourcesManager
         wall_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(wallTextureAtlas, activity, "wall_bricks.png");
         wallTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         wallTextureAtlas.load();
-
 
         explosionTextureAtlas = new BitmapTextureAtlas(texmng, 1134, 189, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         explosion_region = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(explosionTextureAtlas, activity, "explosion.png",0,0,6,1);
