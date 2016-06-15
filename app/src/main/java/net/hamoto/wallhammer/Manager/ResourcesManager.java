@@ -68,6 +68,7 @@ public class ResourcesManager
     public ITextureRegion play_region;
     public ITextureRegion options_region;
     public ITextureRegion info_region;
+    public ITextureRegion infoBG_region;
     public ITextureRegion ground_region;
     public ITextureRegion cloud1_region;
     public ITextureRegion cloud2_region;
@@ -109,6 +110,7 @@ public class ResourcesManager
     BuildableBitmapTextureAtlas playTextureAtlas;
     BuildableBitmapTextureAtlas optionsTextureAtlas;
     BuildableBitmapTextureAtlas infoTextureAtlas;
+    BuildableBitmapTextureAtlas infoBGTextureAtlas;
     BuildableBitmapTextureAtlas shareTextureAtlas;
     BuildableBitmapTextureAtlas backToMenuTextureAtlas;
     BuildableBitmapTextureAtlas scoreTextureAtlas;
@@ -178,6 +180,12 @@ public class ResourcesManager
         info_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(infoTextureAtlas, activity, "infoButton.png");
         infoTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         infoTextureAtlas.load();
+
+
+        infoBGTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 985, 660, TextureOptions.BILINEAR);
+        infoBG_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(infoBGTextureAtlas, activity, "infoBackground.png");
+        infoBGTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
+        infoBGTextureAtlas.load();
 
         shareTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 172, 172, TextureOptions.BILINEAR);
         share_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(shareTextureAtlas, activity, "shareButton.png");

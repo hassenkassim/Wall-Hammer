@@ -44,6 +44,7 @@ public class MainScene extends BaseScene
     final int MENU_SCORE = 1;
     final int MENU_SOUND_ON = 2;
     final int MENU_SOUND_OFF = 3;
+    final int MENU_INFO = 4;
     Sprite logo;
     Sprite cloud1sprite;
     Sprite cloud2sprite;
@@ -198,21 +199,36 @@ public class MainScene extends BaseScene
 
     }
 
+    private void showInfo(){
+        Sprite info = new Sprite(0, 0, ResourcesManager.getInstance().infoBG_region, engine.getVertexBufferObjectManager());
+        info.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2);
+        String str = "Wallhammer\nProduced with AndEngine and AndEnginePhysics";
+        Text txt = new Text(0, 0, resourcesManager.font, str, vbom);
+        txt.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2);
+        txt.setScale(0.5f);
+        attachChild(info);
+        attachChild(txt);
+    }
+
 
     private void createMenuChildScene()
     {
         menuChildScene = new MenuScene(camera);
         menuChildScene.setPosition(0, 0);
 
-        final IMenuItem playMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_PLAY, resourcesManager.play_region, vbom), 1.5f, 1);
-        final IMenuItem scoreMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SCORE, resourcesManager.score_region, vbom), 1.5f, 1);
-        final IMenuItem musicOnMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SOUND_ON, resourcesManager.soundon_region, vbom), 1.5f, 1);
-        final IMenuItem musicOffMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SOUND_OFF, resourcesManager.soundoff_region, vbom), 1.5f, 1);
+        final IMenuItem playMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_PLAY, resourcesManager.play_region, vbom), 1.3f, 1);
+        final IMenuItem scoreMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SCORE, resourcesManager.score_region, vbom), 1.3f, 1);
+        final IMenuItem musicOnMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SOUND_ON, resourcesManager.soundon_region, vbom), 1.3f, 1);
+        final IMenuItem musicOffMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SOUND_OFF, resourcesManager.soundoff_region, vbom), 1.3f, 1);
+
+        final IMenuItem infoMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_INFO, resourcesManager.info_region, vbom), 0.7f, 0.5f);
+
 
         menuChildScene.addMenuItem(playMenuItem);
         menuChildScene.addMenuItem(scoreMenuItem);
         menuChildScene.addMenuItem(musicOnMenuItem);
         menuChildScene.addMenuItem(musicOffMenuItem);
+        menuChildScene.addMenuItem(infoMenuItem);
 
 
         menuChildScene.buildAnimations();
@@ -225,6 +241,7 @@ public class MainScene extends BaseScene
         scoreMenuItem.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 - 80);
         musicOnMenuItem.setPosition(SOUNDXVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
         musicOffMenuItem.setPosition(SOUNDXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
+        infoMenuItem.setPosition(MainActivity.GAMEWIDTH - 70, 70);
 
 
         menuChildScene.setOnMenuItemClickListener(new MenuScene.IOnMenuItemClickListener() {
@@ -249,6 +266,9 @@ public class MainScene extends BaseScene
                         musicOn();
                         musicOnMenuItem.setX(SOUNDXVISIBLE);
                         musicOffMenuItem.setX(SOUNDXINVISIBLE);
+                        return true;
+                    case MENU_INFO:
+                        showInfo();
                         return true;
                     default:
                         return false;

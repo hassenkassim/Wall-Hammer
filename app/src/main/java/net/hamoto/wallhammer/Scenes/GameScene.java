@@ -25,6 +25,7 @@ import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.MoveXModifier;
 import org.andengine.entity.modifier.RotationModifier;
 import org.andengine.entity.modifier.SequenceEntityModifier;
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
@@ -41,7 +42,9 @@ import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.input.touch.detector.SurfaceGestureDetectorAdapter;
+import org.andengine.opengl.texture.atlas.buildable.builder.BlackPawnTextureAtlasBuilder;
 import org.andengine.util.adt.align.HorizontalAlign;
+import org.andengine.util.adt.color.Color;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -235,7 +238,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 
     private void checkHammerWallCollision(){
         if(lasttouch!=null){
-            if(hammer.collidesWith(walls.get(curwall))){
+            if(hammer.collidesWith(walls.get(curwall))||wheel.collidesWith(walls.get(curwall))){
                 actualtouch = new Date();
                 long a = actualtouch.getTime() - lasttouch.getTime();
                 if(a<TOUCHTIME_MAX&&a>TOUCHTIME_MIN) {
@@ -250,7 +253,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
                 lasttouch=null;
             }
         } else {
-            if (hammer.collidesWith(walls.get(curwall))) {
+            if (hammer.collidesWith(walls.get(curwall))||wheel.collidesWith(walls.get(curwall))) {
                 Log.i("INFO: ", "No touch at all -> GAMEOVER! 3");
                 gameover();
             }
@@ -669,13 +672,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         attachChild(wall);
     }
 
-    private void createGameOverText()
-    {
-        scoreBackground = new Sprite (0, 0, 474, 318, ResourcesManager.getInstance().scoreBackground_region, engine.getVertexBufferObjectManager());
+    private void createGameOverText() {
+        scoreBackground = new Sprite(0, 0, 474, 318, ResourcesManager.getInstance().scoreBackground_region, engine.getVertexBufferObjectManager());
         gameOverText = new Text(0, 0, resourcesManager.font, "Game Over!", vbom);
         highscoreText = new Text(0, 0, resourcesManager.font, "Highscore: 0", vbom);
         scoreGameOverText = new Text(0, 0, resourcesManager.font, "Score: 0", vbom);
-        newTextSprite = new Sprite (0, 0, 41, 18, ResourcesManager.getInstance().new_region, engine.getVertexBufferObjectManager());
+        newTextSprite = new Sprite(0, 0, 41, 18, ResourcesManager.getInstance().new_region, engine.getVertexBufferObjectManager());
     }
 
     private void displayGameOverText()
@@ -718,7 +720,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 
     private void createTouchFunction()
     {
-        Looper.prepare();
+        if(Looper.myLooper()==null){
+            Looper.prepare();
+        }
         surfaceGestureDetectorAdapter = new SurfaceGestureDetectorAdapter(activity) {
 
             @Override
