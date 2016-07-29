@@ -63,6 +63,11 @@ public class MainScene extends BaseScene
     ButtonSprite musicon;
     ButtonSprite musicoff;
     public static Music musicMain;
+    boolean infoOn = false;
+    Sprite info;
+    Text txt;
+
+
 
 
     @Override
@@ -172,7 +177,7 @@ public class MainScene extends BaseScene
 
 
     private void addHammer(){
-        hammer = new Sprite(0, 0, ResourcesManager.getInstance().hammer_region, engine.getVertexBufferObjectManager());
+        hammer = new Sprite(0, 0, 557, 763, ResourcesManager.getInstance().hammer_region, engine.getVertexBufferObjectManager());
         hammer.setScale(0.3f);
         hammer.setPosition(143.0f, 226.0f);
         attachChild(hammer);
@@ -200,10 +205,10 @@ public class MainScene extends BaseScene
     }
 
     private void showInfo(){
-        Sprite info = new Sprite(0, 0, ResourcesManager.getInstance().infoBG_region, engine.getVertexBufferObjectManager());
+        info = new Sprite(0, 0, ResourcesManager.getInstance().infoBG_region, engine.getVertexBufferObjectManager());
         info.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2);
         String str = "Wallhammer\nProduced with AndEngine and AndEnginePhysics";
-        Text txt = new Text(0, 0, resourcesManager.font, str, vbom);
+        txt = new Text(0, 0, resourcesManager.font, str, vbom);
         txt.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2);
         txt.setScale(0.5f);
         attachChild(info);
@@ -239,10 +244,16 @@ public class MainScene extends BaseScene
 
         playMenuItem.setPosition(MainActivity.GAMEWIDTH/2 - 200, MainActivity.GAMEHEIGHT/2 - 80);
         scoreMenuItem.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 - 80);
-        musicOnMenuItem.setPosition(SOUNDXVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
-        musicOffMenuItem.setPosition(SOUNDXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
+
         infoMenuItem.setPosition(MainActivity.GAMEWIDTH - 70, 70);
 
+        if(MainActivity.musicon){
+            musicOnMenuItem.setPosition(SOUNDXVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
+            musicOffMenuItem.setPosition(SOUNDXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
+        }else{
+            musicOnMenuItem.setPosition(SOUNDXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
+            musicOffMenuItem.setPosition(SOUNDXVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
+        }
 
         menuChildScene.setOnMenuItemClickListener(new MenuScene.IOnMenuItemClickListener() {
             @Override
@@ -268,7 +279,28 @@ public class MainScene extends BaseScene
                         musicOffMenuItem.setX(SOUNDXINVISIBLE);
                         return true;
                     case MENU_INFO:
-                        showInfo();
+                        if(infoOn == false) {
+                            showInfo();
+                            infoOn = true;
+                            playMenuItem.setPosition(MainActivity.GAMEWIDTH/2 - 200, MainActivity.GAMEHEIGHT/2 - 8000);
+                            scoreMenuItem.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 - 8000);
+                            if(MainActivity.musicon){
+                                musicOnMenuItem.setPosition(SOUNDXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
+                            }else{
+                                musicOffMenuItem.setPosition(SOUNDXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
+                            }
+                        }else{
+                            detachChild(info);
+                            detachChild(txt);
+                            infoOn = false;
+                            playMenuItem.setPosition(MainActivity.GAMEWIDTH/2 - 200, MainActivity.GAMEHEIGHT/2 - 80);
+                            scoreMenuItem.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 - 80);
+                            if(MainActivity.musicon){
+                                musicOnMenuItem.setPosition(SOUNDXVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
+                            }else{
+                                musicOnMenuItem.setPosition(SOUNDXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
+                            }
+                        }
                         return true;
                     default:
                         return false;

@@ -53,7 +53,8 @@ public class ResourcesManager
     public Music musicMain;
     public Music musicGame;
     public Music musicGameOver;
-    public Music musicDestroyWall;
+    public Music soundWallDestroy;
+    public Music soundJump;
 
     public Font font;
     public Font fontLogo;
@@ -79,6 +80,7 @@ public class ResourcesManager
     public ITextureRegion soundoff_region;
     public ITextureRegion hammer_region;
     public ITextureRegion wheel_region;
+    public ITextureRegion wallSmall_region;
     public ITextureRegion wall_region;
     public ITextureRegion playAgain_region;
     public ITextureRegion share_region;
@@ -106,6 +108,7 @@ public class ResourcesManager
     BuildableBitmapTextureAtlas hammerTextureAtlas;
     BuildableBitmapTextureAtlas wheelTextureAtlas;
     BuildableBitmapTextureAtlas wallTextureAtlas;
+    BuildableBitmapTextureAtlas wallSmallTextureAtlas;
     BuildableBitmapTextureAtlas playAgainTextureAtlas;
     BuildableBitmapTextureAtlas playTextureAtlas;
     BuildableBitmapTextureAtlas optionsTextureAtlas;
@@ -260,7 +263,7 @@ public class ResourcesManager
         soundoffTextureAtlas.load();
 
 
-        scoreBackgroundTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 474, 318, TextureOptions.BILINEAR);
+        scoreBackgroundTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 511, 318, TextureOptions.BILINEAR);
         scoreBackground_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(scoreBackgroundTextureAtlas, activity, "scoreBackground.png");
         scoreBackgroundTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         scoreBackgroundTextureAtlas.load();
@@ -270,12 +273,11 @@ public class ResourcesManager
         newTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         newTextureAtlas.load();
 
-        gameTitleTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 958, 212, TextureOptions.BILINEAR);
+
+        gameTitleTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 957, 158, TextureOptions.BILINEAR);
         gameTitle_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameTitleTextureAtlas, activity, "gameTitle.png");
         gameTitleTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         gameTitleTextureAtlas.load();
-
-
 
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/general/");
 
@@ -334,6 +336,7 @@ public class ResourcesManager
             loadGameAudio();
             loadGameOverAudio();
             loadDestroyWallAudio();
+            loadJumpAudio();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -346,6 +349,11 @@ public class ResourcesManager
         wall_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(wallTextureAtlas, activity, "wall_bricks.png");
         wallTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         wallTextureAtlas.load();
+
+        wallSmallTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 305, 759, TextureOptions.BILINEAR);
+        wallSmall_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(wallSmallTextureAtlas, activity, "wall_unbreakable-01.png");
+        wallSmallTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
+        wallSmallTextureAtlas.load();
 
         explosionTextureAtlas = new BitmapTextureAtlas(texmng, 1134, 189, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         explosion_region = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(explosionTextureAtlas, activity, "explosion.png",0,0,6,1);
@@ -367,8 +375,10 @@ public class ResourcesManager
     }
 
     public void loadDestroyWallAudio() throws IOException {
-        musicDestroyWall = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity,"mfx/musicDestroyWall.ogg");
+        soundWallDestroy = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity,"mfx/soundWallDestroy.ogg");
     }
+    public void loadJumpAudio() throws IOException {
+        soundJump = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity,"mfx/soundJump.ogg");    }
 
     public void unloadGameRecources()
     {
@@ -394,7 +404,7 @@ public class ResourcesManager
     public void unloadSplashScreen()
     {
         splashTextTextureAtlas.unload();
-        //splashLogoTextureAtlas.unload();
+        //splashLogoTextureAtlas.unload( );
         splashText_region = null;
         //splashLogo_region = null;
     }

@@ -63,7 +63,19 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
     *    VARIABLES
     *
      */
-    final private int COUNT_WALL = 5;
+    final private int COUNT_WALL = 50;
+    final private int WALL0 = 0;
+    final private int WALL1 = 1;
+    final private int WALL2 = 2;
+    final private int WALL0_WIDTH = 64;
+    final private int WALL0__HEIGHT = 304;
+    final private int WALL1_WIDTH = 64;
+    final private int WALL1__HEIGHT = 159;
+    final private int WALL2_WIDTH = 64;
+    final private int WALL2__HEIGHT = 159;
+    final private int WALLS_Y_GROUND = 240;
+    final private int WALLS_Y_GROUND2 = 175;
+    final private int WALLS_Y_UP = 350;
     final private int DELAYMS = 900;
     final private int TOUCHTIME_MIN = 300;
     final private int TOUCHTIME_MAX = 400;
@@ -123,7 +135,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 
     public static Music musicGame;
     public static Music musicGameOver;
-    public static Music musicWallDestroy;
+    public static Music soundWallDestroy;
+    public static Music soundJump;
+    public boolean soundWallDestroyActive = false;
+    public boolean soundJumpActive = false;
 
     private MenuScene gameChildScene;
     private MenuScene gameChildScenePauseFunction;
@@ -184,12 +199,16 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
     }
 
     private void startBackgroundMusic(){
-        musicWallDestroy = ResourcesManager.getInstance().musicDestroyWall;
-        musicGame = ResourcesManager.getInstance().musicGame;
-        musicGame.setLooping(true);
-        if(MainActivity.musicon){
-            musicGame.play();
 
+        soundWallDestroy = ResourcesManager.getInstance().soundWallDestroy;
+        soundJump = ResourcesManager.getInstance().soundJump;
+        musicGame = ResourcesManager.getInstance().musicGame;
+
+        if(musicGame!=null){
+            musicGame.setLooping(true);
+            if(MainActivity.musicon){
+                musicGame.play();
+            }
         }
     }
 
@@ -200,12 +219,34 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
     }
 
     public void initWalls(int count){
+
+        /*Create coupe Walls
+            Wall Types:
+                        - Standard Wall: Gross, Breakable
+                        - Klein Wall Oben: Klein, oben, unbreakable: Spieler muss sich ducken
+                        - Klein Wall Unten: Klein, unten, unbreakable: Spieler muss springen
+        */
+
         //create initial 'count' Walls
         walls = new ArrayList<Sprite>();
-        int x = NEXTWALL_MAX;
+        int x = NEXTWALL_MAX; //X-Coordinates of current Wall
         for(int i = 0; i < count; i++){
-            createWall(x, 240, 64, 320);
-            x = x + randInt(NEXTWALL_MIN, NEXTWALL_MAX);
+            int walltype = randInt(0,2);
+            switch (walltype){
+                case WALL0:
+                    createWall(WALL0, x, WALLS_Y_GROUND);
+                    break;
+                case WALL1:
+                    createWall(WALL1, x, WALLS_Y_UP);
+                    break;
+                case WALL2:
+                    createWall(WALL2, x, WALLS_Y_GROUND2);
+                    break;
+                default:
+                    break;
+            }
+
+            x = x + randInt(NEXTWALL_MIN, NEXTWALL_MAX); //set new X-Coordinate
         }
         curwall = 0;
         lastwall = walls.size()-1;
@@ -218,7 +259,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         this.registerUpdateHandler(new IUpdateHandler() {
             @Override
             public void onUpdate(float pSecondsElapsed) {
-                //checkWallOutside();
+                checkWallOutside();
                 checkHammerWallCollision();
             }
 
@@ -236,9 +277,27 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         }
     }
 
+    private void checkWallOutside(){
+        if(walls.get(curwall).getX() + walls.get(curwall).getWidth()/2 < - 20){
+            float from = walls.get(lastwall).getX() + randInt(NEXTWALL_MIN,NEXTWALL_MAX);
+            float to = -128;
+            walls.get(curwall).clearEntityModifiers();
+            walls.get(curwall).setX(from);
+            walls.get(curwall).registerEntityModifier(new MoveXModifier((from-to)/speed, from,to));
+            //curwall und lastwall aktualisieren
+            if(curwall == walls.size()-1) curwall = 0;
+            else curwall++;
+            if(lastwall == walls.size()-1) lastwall = 0;
+            else lastwall++;
+            addToScore(1);
+        }
+    }
+
+
     private void checkHammerWallCollision(){
         if(lasttouch!=null){
             if(hammer.collidesWith(walls.get(curwall))||wheel.collidesWith(walls.get(curwall))){
+                if(walls.get(curwall).getHeight()<300) gameover();
                 actualtouch = new Date();
                 long a = actualtouch.getTime() - lasttouch.getTime();
                 if(a<TOUCHTIME_MAX&&a>TOUCHTIME_MIN) {
@@ -299,13 +358,29 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         else lastwall++;
         addToScore(1);
         checklevel();
-        playWallDesroySound();
+        playWallDestroySound();
     }
 
 
-    private void playWallDesroySound(){
+    private void playWallDestroySound(){
         if(MainActivity.musicon){
-            musicWallDestroy.play();
+            soundWallDestroy.play();
+        }
+    }
+
+    private void playJumpSound() {
+        if (MainActivity.musicon) {
+            //if(soundWallDestroyActive == true){
+            //    soundWallDestroy.stop();
+            //    soundWallDestroy.play();
+            //}else if(soundJumpActive == true){
+            //    soundJump.stop();
+            //    soundWallDestroy.play();
+            //}else{
+            //    soundWallDestroy.play();
+            //
+
+            soundJump.play();
         }
     }
 
@@ -663,21 +738,39 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         world.createJoint(revoluteJointDef);
     }
 
-    private void createWall(int x, int y, int width, int height){
-        Sprite wall = new Sprite(x, y, width, height, ResourcesManager.getInstance().wall_region, engine.getVertexBufferObjectManager());
-        walls.add(wall);
-        final FixtureDef WALL_FIX = PhysicsFactory.createFixtureDef(0.0f,0.0f,0.0f);
-        Body wallBody = PhysicsFactory.createBoxBody(world, wall, BodyDef.BodyType.DynamicBody, WALL_FIX);
-        wall.registerEntityModifier(new MoveXModifier((wall.getX()+128.0f)/speed,wall.getX(),-128));
-        attachChild(wall);
+    private void createWall(int walltype, int x, int y){
+        Sprite wall = null;
+        switch (walltype){
+            case WALL0:
+                wall = new Sprite(x, y, WALL0_WIDTH, WALL0__HEIGHT, ResourcesManager.getInstance().wall_region, engine.getVertexBufferObjectManager());
+                break;
+            case WALL1:
+                wall = new Sprite(x, y, WALL1_WIDTH, WALL1__HEIGHT, ResourcesManager.getInstance().wallSmall_region, engine.getVertexBufferObjectManager());
+                break;
+            case WALL2:
+                wall = new Sprite(x, y, WALL2_WIDTH, WALL2__HEIGHT, ResourcesManager.getInstance().wallSmall_region, engine.getVertexBufferObjectManager());
+                break;
+            default:
+                MainActivity.gameToast("Fehler beim erzeugen der Wand!");
+                break;
+        }
+        if(wall != null) {
+            walls.add(wall);
+
+            final FixtureDef WALL_FIX = PhysicsFactory.createFixtureDef(0.0f, 0.0f, 0.0f);
+            Body wallBody = PhysicsFactory.createBoxBody(world, wall, BodyDef.BodyType.DynamicBody, WALL_FIX);
+            if(walltype==WALL1) wallBody.setTransform(wallBody.getPosition().x, wallBody.getPosition().y-0.30f, 0.0f);
+
+            wall.registerEntityModifier(new MoveXModifier((wall.getX() + 128.0f) / speed, wall.getX(), -128));
+            attachChild(wall);
+        }
     }
 
     private void createGameOverText() {
-        scoreBackground = new Sprite(0, 0, 474, 318, ResourcesManager.getInstance().scoreBackground_region, engine.getVertexBufferObjectManager());
-        gameOverText = new Text(0, 0, resourcesManager.font, "Game Over!", vbom);
+        scoreBackground = new Sprite(0, 0, 511, 318, ResourcesManager.getInstance().scoreBackground_region, engine.getVertexBufferObjectManager());        gameOverText = new Text(0, 0, resourcesManager.font, "Game Over!", vbom);
         highscoreText = new Text(0, 0, resourcesManager.font, "Highscore: 0", vbom);
         scoreGameOverText = new Text(0, 0, resourcesManager.font, "Score: 0", vbom);
-        newTextSprite = new Sprite(0, 0, 41, 18, ResourcesManager.getInstance().new_region, engine.getVertexBufferObjectManager());
+        newTextSprite = new Sprite(0, 0, 35, 18, ResourcesManager.getInstance().new_region, engine.getVertexBufferObjectManager());
     }
 
     private void displayGameOverText()
@@ -688,7 +781,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
             activity.getSharedPreferences(MainActivity.HIGHSCORE, Context.MODE_PRIVATE).edit().putLong(MainActivity.HIGHSCORE, score).apply();
             highscore = score;
             newTextSprite.setScale(1.4f);
-            newTextSprite.setPosition(MainActivity.GAMEWIDTH/2 - 186, MainActivity.GAMEHEIGHT/2 + 165);
+            newTextSprite.setPosition(MainActivity.GAMEWIDTH/2 - 224, MainActivity.GAMEHEIGHT/2 + 175);
             PlayGamesManager.postHighscore(score);
         }
 
@@ -768,6 +861,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
             protected boolean onSwipeUp() {
                 Log.i("Touch Event" , "SWIPE_UP");
                 wheelBody.applyLinearImpulse(0.0f,-100.0f,0.0f,0.0f);
+                playJumpSound();
                 //onSurfaceGesture("Swipe Up");
                 return false;
             }
