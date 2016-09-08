@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 
 import net.hamoto.wallhammer.MainActivity;
 import net.hamoto.wallhammer.Manager.PlayGamesManager;
@@ -141,7 +144,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 
     private SurfaceGestureDetectorAdapter surfaceGestureDetectorAdapter;
 
-
     /*
     *
     *    METHODS
@@ -195,10 +197,11 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
     }
 
     private void startBackgroundMusic(){
-
         soundWallDestroy = ResourcesManager.getInstance().soundWallDestroy;
         soundJump = ResourcesManager.getInstance().soundJump;
         musicGame = ResourcesManager.getInstance().musicGame;
+        musicGameOver = ResourcesManager.getInstance().musicGameOver;
+
 
         if(musicGame!=null){
             musicGame.setLooping(true);
@@ -382,21 +385,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 
     private void playWallDestroySound(){
         if(MainActivity.musicon){
+            soundWallDestroy.seekTo(0);
             soundWallDestroy.play();
         }
     }
 
     private void playJumpSound() {
         if (MainActivity.musicon) {
-            //if(soundWallDestroyActive == true){
-            //    soundWallDestroy.stop();
-            //    soundWallDestroy.play();
-            //}else if(soundJumpActive == true){
-            //    soundJump.stop();
-            //    soundWallDestroy.play();
-            //}else{
-            //    soundWallDestroy.play();
-            //
+            soundJump.seekTo(0);
             soundJump.play();
         }
     }
@@ -441,12 +437,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         stopGame();
         displayGameOverText();
         //Log.i("STATUS: ", "GAMEOVER!");
-        /*createGameChildScene();
-        musicGameOver = ResourcesManager.getInstance().musicGameOver;
         if(MainActivity.musicon){
             musicGameOver.play();
-            gameOverMusicActive = true;
-        }*/
+        }
     }
 
     private void createGameOverButtons(){
@@ -478,13 +471,26 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
             @Override
             public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY)
             {
+                musicGameOver.stop();
                 switch(pMenuItem.getID())
                 {
                     case GAME_BACK:
                         goBack();
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                MainActivity.hideAd();
+                            }
+                        });
                         return true;
                     case GAME_PLAYAGAIN:
                         SceneManager.getInstance().loadGameScene(engine);
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                MainActivity.hideAd();
+                            }
+                        });
                         return true;
                     case GAME_SHARE:
                         SharingToSocialMedia("NOPE");
@@ -503,9 +509,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 
     private void goBack(){
         musicGame.stop();
-        if(gameOverMusicActive) {
-            musicGameOver.stop();
-        }
         if(MainActivity.musicon){
             MainScene.musicMain.resume();
         }
@@ -714,6 +717,15 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 
     private void displayGameOverText()
     {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                MainActivity.showAd();
+            }
+        });
+
+        showInterstitial();
+
         highscore = getHighscore();
 
         if(score > highscore){
@@ -811,7 +823,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
     //hammer jump function
     private void jump(){
         //Log.i("Player -> " , "Jump!");
-        wheelBody.setLinearVelocity(new Vector2(0.0f,55.0f-level));
+        wheelBody.setLinearVelocity(new Vector2(0.0f,55.0f-(level*1.1f)));
         playJumpSound();
     }
 
@@ -836,6 +848,18 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
             gameHUD.detachChildren();
             gameHUD.detachSelf();
         }
+    }
+
+    private void showInterstitial(){
+        activity.runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                if (MainActivity.interstitial.isLoaded()) {
+                    MainActivity.interstitial.show();
+                }
+            }
+        });
     }
 
     /**
@@ -906,4 +930,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
     public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
         return surfaceGestureDetectorAdapter.onManagedTouchEvent(pSceneTouchEvent);
     }
+
+
 }

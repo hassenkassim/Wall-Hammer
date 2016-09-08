@@ -5,9 +5,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 
 import net.hamoto.wallhammer.Manager.SceneManager;
 import net.hamoto.wallhammer.Manager.ResourcesManager;
@@ -23,6 +31,7 @@ import org.andengine.engine.options.ScreenOrientation;
 import org.andengine.engine.options.WakeLockOptions;
 import org.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.andengine.entity.scene.Scene;
+import org.andengine.opengl.view.RenderSurfaceView;
 import org.andengine.ui.activity.BaseGameActivity;
 
 import java.io.IOException;
@@ -38,6 +47,11 @@ import java.io.IOException;
 
 public class MainActivity extends BaseGameActivity implements GameHelper.GameHelperListener {
 
+
+
+    static public AdView adViewBanner;
+
+    static public InterstitialAd interstitial;
 
     Camera camera;
     ResourcesManager resourcesManager;
@@ -74,6 +88,7 @@ public class MainActivity extends BaseGameActivity implements GameHelper.GameHel
 
     @Override
     public EngineOptions onCreateEngineOptions() {
+
         camera = new Camera(0, 0, GAMEWIDTH, GAMEHEIGHT);
         EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE_FIXED, new RatioResolutionPolicy(GAMEWIDTH, GAMEHEIGHT), this.camera);
         engineOptions.getAudioOptions().setNeedsMusic(true).setNeedsSound(true);
@@ -210,13 +225,82 @@ public class MainActivity extends BaseGameActivity implements GameHelper.GameHel
     }
 
     @Override
-    protected void onCreate(Bundle b) {
-        super.onCreate(b);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+
         if (mHelper == null) {
             getGameHelper();
         }
         mHelper.setup(this);
     }
+
+    //Setup Ad Layout
+    @Override
+    protected void onSetContentView() {
+        loadInterstitialAd();
+
+        final RelativeLayout relativeLayout = new RelativeLayout(this);
+
+        final FrameLayout.LayoutParams relativeLayoutLayoutParams = new FrameLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+
+        this.mRenderSurfaceView = new RenderSurfaceView(this);
+        this.mRenderSurfaceView.setRenderer(this.mEngine, this);
+
+
+        final android.widget.RelativeLayout.LayoutParams surfaceViewLayoutParams = new RelativeLayout.LayoutParams(BaseGameActivity.createSurfaceViewLayoutParams());
+        surfaceViewLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+
+        relativeLayout.addView(this.mRenderSurfaceView, surfaceViewLayoutParams);
+
+        FrameLayout frameLayout = new FrameLayout(this);
+
+        FrameLayout.LayoutParams fparams=new FrameLayout.LayoutParams( FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+
+        adViewBanner = new AdView(this);
+
+
+        final FrameLayout.LayoutParams adViewBannerLayoutParams = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+
+        adViewBanner.setAdUnitId("ca-app-pub-9749532642806196/7961688467");
+        adViewBanner.setAdSize(AdSize.BANNER);
+
+        adViewBanner.refreshDrawableState();
+
+        frameLayout.addView(adViewBanner,adViewBannerLayoutParams);
+
+        relativeLayout.addView(frameLayout,fparams);
+
+        this.setContentView(relativeLayout, relativeLayoutLayoutParams);
+
+        adViewBanner.setVisibility(View.INVISIBLE);
+        adViewBanner.setEnabled(true);
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("15EFB8DEF755414218804D4A97FA7E29").build();
+        adViewBanner.loadAd(adRequest);
+    }
+
+    // ===========================================================
+    // Methods
+    // ===========================================================
+    static public void showAd() {
+        adViewBanner.setVisibility(View.VISIBLE);
+    }
+
+    static public void hideAd() {
+        adViewBanner.setVisibility(View.INVISIBLE);
+    }
+
+    private void loadInterstitialAd(){
+        interstitial = new InterstitialAd(this);
+        interstitial.setAdUnitId("ca-app-pub-9749532642806196/9100344465");
+
+        AdRequest adRequest = new AdRequest.Builder().addTestDevice("15EFB8DEF755414218804D4A97FA7E29").build();
+        interstitial.loadAd(adRequest);
+    }
+
 
     @Override
     protected void onActivityResult(int request, int response, Intent data) {

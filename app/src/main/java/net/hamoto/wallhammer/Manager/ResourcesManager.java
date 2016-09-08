@@ -374,10 +374,10 @@ public class ResourcesManager
     }
 
     public void loadDestroyWallAudio() throws IOException {
-        soundWallDestroy = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity,"mfx/soundWallDestroy.ogg");
+        soundWallDestroy = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity,"mfx/soundWallDestroy.mp3");
     }
     public void loadJumpAudio() throws IOException {
-        soundJump = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity,"mfx/soundJump.ogg");    }
+        soundJump = MusicFactory.createMusicFromAsset(engine.getMusicManager(), activity,"mfx/jump.mp3");    }
 
     public void unloadGameRecources()
     {
