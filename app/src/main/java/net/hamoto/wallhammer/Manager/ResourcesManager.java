@@ -184,7 +184,7 @@ public class ResourcesManager
         infoTextureAtlas.load();
 
 
-        infoBGTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 985, 660, TextureOptions.BILINEAR);
+        infoBGTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 989, 664, TextureOptions.BILINEAR);
         infoBG_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(infoBGTextureAtlas, activity, "infoBackground.png");
         infoBGTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         infoBGTextureAtlas.load();
@@ -262,7 +262,7 @@ public class ResourcesManager
         soundoffTextureAtlas.load();
 
 
-        scoreBackgroundTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 511, 318, TextureOptions.BILINEAR);
+        scoreBackgroundTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 513, 320, TextureOptions.BILINEAR);
         scoreBackground_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(scoreBackgroundTextureAtlas, activity, "scoreBackground.png");
         scoreBackgroundTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         scoreBackgroundTextureAtlas.load();
