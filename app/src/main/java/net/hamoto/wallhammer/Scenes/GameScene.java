@@ -14,8 +14,8 @@ import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 
 import net.hamoto.wallhammer.MainActivity;
 import net.hamoto.wallhammer.Manager.PlayGamesManager;
-import net.hamoto.wallhammer.Manager.SceneManager;
 import net.hamoto.wallhammer.Manager.ResourcesManager;
+import net.hamoto.wallhammer.Manager.SceneManager;
 
 import org.andengine.audio.music.Music;
 import org.andengine.engine.camera.hud.HUD;
@@ -25,7 +25,6 @@ import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.MoveXModifier;
 import org.andengine.entity.modifier.RotationModifier;
 import org.andengine.entity.modifier.SequenceEntityModifier;
-import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
@@ -42,9 +41,7 @@ import org.andengine.extension.physics.box2d.PhysicsFactory;
 import org.andengine.extension.physics.box2d.PhysicsWorld;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.input.touch.detector.SurfaceGestureDetectorAdapter;
-import org.andengine.opengl.texture.atlas.buildable.builder.BlackPawnTextureAtlasBuilder;
 import org.andengine.util.adt.align.HorizontalAlign;
-import org.andengine.util.adt.color.Color;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -76,7 +73,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
     final private int WALLS_Y_GROUND = 240;
     final private int WALLS_Y_GROUND2 = 175;
     final private int WALLS_Y_UP = 350;
-    final private int DELAYMS = 900;
+    final private int DELAYMS = 500;
     final private int TOUCHTIME_MIN = 300;
     final private int TOUCHTIME_MAX = 400;
     final private int LEVEL_MAX = 10;
@@ -84,8 +81,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
     final private int GAME_PLAYAGAIN = 1;
     final private int GAME_SHARE = 2;
     final private int GAME_SCORE = 3;
-    final private int GAME_PAUSE = 4;
-    final private int GAME_PLAYPAUSE = 5;
     final private String FACEBOOK = "com.facebook.katana";
     final private String TWITTER = "com.twitter.android";
 
@@ -99,9 +94,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
     private float wheelspeed;
     private Date lasttouch;
     private Date actualtouch;
+    private Date lastswipeup;
+    private Date lastswipedown;
     private static Random rand;
     private int NEXTWALL_MIN;
     private int NEXTWALL_MAX;
+    private boolean walloutsidehelper;
 
     private PhysicsWorld world;
 
@@ -124,6 +122,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
     private Sprite newTextSprite;
     private AnimatedSprite explosion;
     private ArrayList<Sprite> walls;
+    private ArrayList<Integer> walltypes;
 
     private Body wheelBody;
     private Body hammerBody;
@@ -137,13 +136,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
     public static Music musicGameOver;
     public static Music soundWallDestroy;
     public static Music soundJump;
-    public boolean soundWallDestroyActive = false;
-    public boolean soundJumpActive = false;
 
-    private MenuScene gameChildScene;
-    private MenuScene gameChildScenePauseFunction;
+    private MenuScene GameOverChildScene;
 
-    SurfaceGestureDetectorAdapter surfaceGestureDetectorAdapter;
+    private SurfaceGestureDetectorAdapter surfaceGestureDetectorAdapter;
 
 
     /*
@@ -163,15 +159,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         addSprites(); //add figures
         initWalls(COUNT_WALL); //insert walls
         createTouchFunction(); //activate touch
-        createGameOverText(); //show game over window
-        createGameChildScenePauseFunction();
-
+        createGameOverChildScene(); //Create game over window
     }
 
 
     private void initVariables(int level, long score, int speed, float wheelspeed){
         NEXTWALL_MAX = 1500;
         NEXTWALL_MIN = 1000;
+        walloutsidehelper = false;
         setLevel(level);
         setScore(score);
         setSpeed(speed);
@@ -196,6 +191,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         scoreText.setAnchorCenter(0, 0);
         gameHUD.attachChild(scoreText);
         camera.setHUD(gameHUD);
+
     }
 
     private void startBackgroundMusic(){
@@ -222,16 +218,18 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 
         /*Create coupe Walls
             Wall Types:
-                        - Standard Wall: Gross, Breakable
-                        - Klein Wall Oben: Klein, oben, unbreakable: Spieler muss sich ducken
-                        - Klein Wall Unten: Klein, unten, unbreakable: Spieler muss springen
+                        - WALL0 : Standard Wall: Gross, Breakable
+                        - WALL1 : Klein Wall Oben: Klein, oben, unbreakable: Spieler muss sich ducken
+                        - WALL2 : Klein Wall Unten: Klein, unten, unbreakable: Spieler muss springen
         */
 
         //create initial 'count' Walls
         walls = new ArrayList<Sprite>();
+        walltypes = new ArrayList<Integer>();
+        int walltype;
         int x = NEXTWALL_MAX; //X-Coordinates of current Wall
         for(int i = 0; i < count; i++){
-            int walltype = randInt(0,2);
+            walltype = randInt(0,2);
             switch (walltype){
                 case WALL0:
                     createWall(WALL0, x, WALLS_Y_GROUND);
@@ -245,7 +243,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
                 default:
                     break;
             }
-
             x = x + randInt(NEXTWALL_MIN, NEXTWALL_MAX); //set new X-Coordinate
         }
         curwall = 0;
@@ -278,7 +275,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
     }
 
     private void checkWallOutside(){
+
+        if(walloutsidehelper==false&&walls.get(curwall).getX() + walls.get(curwall).getWidth()/2 < 200){
+            walloutsidehelper = true;
+            addToScore(1);
+            checklevel();
+        }
         if(walls.get(curwall).getX() + walls.get(curwall).getWidth()/2 < - 20){
+            walloutsidehelper = false;
             float from = walls.get(lastwall).getX() + randInt(NEXTWALL_MIN,NEXTWALL_MAX);
             float to = -128;
             walls.get(curwall).clearEntityModifiers();
@@ -289,33 +293,47 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
             else curwall++;
             if(lastwall == walls.size()-1) lastwall = 0;
             else lastwall++;
-            addToScore(1);
         }
     }
 
 
     private void checkHammerWallCollision(){
-        if(lasttouch!=null){
-            if(hammer.collidesWith(walls.get(curwall))||wheel.collidesWith(walls.get(curwall))){
-                if(walls.get(curwall).getHeight()<300) gameover();
-                actualtouch = new Date();
-                long a = actualtouch.getTime() - lasttouch.getTime();
-                if(a<TOUCHTIME_MAX&&a>TOUCHTIME_MIN) {
-                    Log.i("INFO: ", "Touched " + a + "ms before collision -> Destroy Wall and continue!");
-                    destroyWall();
+        Sprite currentwall = walls.get(curwall);
+        int currentwalltype = walltypes.get(curwall).intValue();
+
+        switch (currentwalltype){
+            case WALL0:
+                if(hammer.collidesWith(currentwall)||wheel.collidesWith(currentwall)){
+                    if(lasttouch==null) {
+                        gameover();
+                    }
+                    else{
+                        actualtouch = new Date();
+                        long a = actualtouch.getTime() - lasttouch.getTime();
+                        if(a<(TOUCHTIME_MAX-3*level)&&a>(TOUCHTIME_MIN+3*level)) {
+                            //Log.i("INFO: ", "Touched " + a + "ms before collision -> Destroy Wall and continue!");
+                            destroyWall();
+                        }
+                        else {
+                            //Log.i("INFO: ", "Touched " + a + "ms before collision -> GAMEOVER! 1");
+                            gameover();
+                        }
+                        lasttouch=null;
+                    }
                 }
-                else {
-                    //Gameover
-                    Log.i("INFO: ", "Touched " + a + "ms before collision -> GAMEOVER! 1");
+                break;
+            case WALL1:
+                if(hammer.collidesWith(currentwall)){
                     gameover();
                 }
-                lasttouch=null;
-            }
-        } else {
-            if (hammer.collidesWith(walls.get(curwall))||wheel.collidesWith(walls.get(curwall))) {
-                Log.i("INFO: ", "No touch at all -> GAMEOVER! 3");
-                gameover();
-            }
+                break;
+            case WALL2:
+                if(wheel.collidesWith(currentwall)){
+                    gameover();
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -379,7 +397,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
             //}else{
             //    soundWallDestroy.play();
             //
-
             soundJump.play();
         }
     }
@@ -396,7 +413,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         incWheelSpeed(0.2f);
         setNextWallMin();
         adjustAnimations();
-        MainActivity.gameToast("LEVEL: " + level);
     }
 
     private void setNextWallMin(){
@@ -419,79 +435,51 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 
         wheel.clearEntityModifiers();
         wheel.registerEntityModifier(new LoopEntityModifier(new RotationModifier(1f/wheelspeed, 0f, 359f)));
-
     }
 
-    private void gameover() {
+    private void gameover(){
         stopGame();
         displayGameOverText();
-        Log.i("STATUS: ", "GAMEOVER!");
-        createGameChildScene();
+        //Log.i("STATUS: ", "GAMEOVER!");
+        /*createGameChildScene();
         musicGameOver = ResourcesManager.getInstance().musicGameOver;
         if(MainActivity.musicon){
             musicGameOver.play();
             gameOverMusicActive = true;
-        }
-
+        }*/
     }
 
-    private void createGameChildScenePauseFunction(){
-        gameChildScenePauseFunction = new MenuScene(camera);
-        gameChildScenePauseFunction.setPosition(0, 0);
+    private void createGameOverButtons(){
+        GameOverChildScene = new MenuScene(camera);
+        GameOverChildScene.setPosition(0, 0);
 
-        gameChildScenePauseFunction.buildAnimations();
-        gameChildScenePauseFunction.setBackgroundEnabled(false);
+        GameOverChildScene.buildAnimations();
+        GameOverChildScene.setBackgroundEnabled(false);
 
-        final IMenuItem pauseGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_PAUSE, resourcesManager.pauseButton_region, vbom), 1.5f, 1);
-        final IMenuItem playPauseGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_PLAYPAUSE, resourcesManager.playPauseButton_region, vbom), 1.5f, 1);
         final IMenuItem backGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_BACK, resourcesManager.backToMenu_region, vbom), 1.5f, 1);
         final IMenuItem playagainGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_PLAYAGAIN, resourcesManager.playAgain_region, vbom), 1.5f, 1);
         final IMenuItem shareGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_SHARE, resourcesManager.share_region, vbom), 1.5f, 1);
         final IMenuItem scoreGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_SCORE, resourcesManager.score_region, vbom), 1.5f, 1);
 
 
-        gameChildScenePauseFunction.addMenuItem(pauseGameItem);
-        gameChildScenePauseFunction.addMenuItem(playPauseGameItem);
-        gameChildScenePauseFunction.addMenuItem(backGameItem);
-        gameChildScenePauseFunction.addMenuItem(playagainGameItem);
-        gameChildScenePauseFunction.addMenuItem(shareGameItem);
-        gameChildScenePauseFunction.addMenuItem(scoreGameItem);
-
-        final float PAUSEXINVISIBLE = - 4000;
-        final float PAUSEXVISIBLE = MainActivity.GAMEWIDTH -100;
-
-        pauseGameItem.setPosition(PAUSEXVISIBLE, MainActivity.GAMEHEIGHT - 90);
-        playPauseGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT - 90);
-        backGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
-        playagainGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
-        shareGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
-        scoreGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
+        GameOverChildScene.addMenuItem(backGameItem);
+        GameOverChildScene.addMenuItem(playagainGameItem);
+        GameOverChildScene.addMenuItem(shareGameItem);
+        GameOverChildScene.addMenuItem(scoreGameItem);
 
 
-        gameChildScenePauseFunction.setOnMenuItemClickListener(new MenuScene.IOnMenuItemClickListener() {
+        backGameItem.setPosition(MainActivity.GAMEWIDTH/2 - 100, MainActivity.GAMEHEIGHT/2 - 90);
+        playagainGameItem.setPosition(MainActivity.GAMEWIDTH/2 - 300, MainActivity.GAMEHEIGHT/2 - 90);
+        shareGameItem.setPosition(MainActivity.GAMEWIDTH/2 + 300, MainActivity.GAMEHEIGHT/2 - 90);
+        scoreGameItem.setPosition(MainActivity.GAMEWIDTH/2 + 100, MainActivity.GAMEHEIGHT/2 - 90);
+
+
+        GameOverChildScene.setOnMenuItemClickListener(new MenuScene.IOnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY)
             {
                 switch(pMenuItem.getID())
                 {
-                    case GAME_PAUSE:
-                        pauseGame();
-                        pauseGameItem.setX(PAUSEXINVISIBLE);
-                        playPauseGameItem.setX(PAUSEXVISIBLE);
-                        backGameItem.setPosition(MainActivity.GAMEWIDTH/2 - 100, MainActivity.GAMEHEIGHT/2 - 90);
-                        playagainGameItem.setPosition(MainActivity.GAMEWIDTH/2 - 300, MainActivity.GAMEHEIGHT/2 - 90);
-                        shareGameItem.setPosition(MainActivity.GAMEWIDTH/2 + 300, MainActivity.GAMEHEIGHT/2 - 90);
-                        scoreGameItem.setPosition(MainActivity.GAMEWIDTH/2 + 100, MainActivity.GAMEHEIGHT/2 - 90);
-                        return true;
-                    case GAME_PLAYPAUSE:
-                        resumeGame();
-                        playPauseGameItem.setX(PAUSEXINVISIBLE);
-                        pauseGameItem.setX(PAUSEXVISIBLE);
-                        backGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
-                        playagainGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
-                        shareGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
-                        scoreGameItem.setPosition(PAUSEXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 90);
-                        return true;
                     case GAME_BACK:
                         goBack();
                         return true;
@@ -509,75 +497,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
             }
         });
 
-        setChildScene(gameChildScenePauseFunction);
-    }
-    public void pauseGame(){
-        if(MainActivity.musicon){
-             musicGame.pause();
-        }
-
-        this.setIgnoreUpdate(true);
-    }
-
-    public void resumeGame(){
-        if(MainActivity.musicon){
-            musicGame.resume();
-        }
-
-        this.setIgnoreUpdate(false);
-    }
-
-
-
-
-    private void createGameChildScene()
-        {
-        gameChildScene = new MenuScene(camera);
-        gameChildScene.setPosition(0, 0);
-
-        final IMenuItem backGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_BACK, resourcesManager.backToMenu_region, vbom), 1.5f, 1);
-        final IMenuItem playagainGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_PLAYAGAIN, resourcesManager.playAgain_region, vbom), 1.5f, 1);
-        final IMenuItem shareGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_SHARE, resourcesManager.share_region, vbom), 1.5f, 1);
-        final IMenuItem scoreGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_SCORE, resourcesManager.score_region, vbom), 1.5f, 1);
-
-        gameChildScene.addMenuItem(backGameItem);
-        gameChildScene.addMenuItem(playagainGameItem);
-        gameChildScene.addMenuItem(shareGameItem);
-        gameChildScene.addMenuItem(scoreGameItem);
-
-        gameChildScene.buildAnimations();
-        gameChildScene.setBackgroundEnabled(false);
-
-        backGameItem.setPosition(backGameItem.getX() - 100, MainActivity.GAMEHEIGHT/2 - 90);
-        playagainGameItem.setPosition(playagainGameItem.getX() - 300, MainActivity.GAMEHEIGHT/2 - 90);
-        shareGameItem.setPosition(shareGameItem.getX() + 300, MainActivity.GAMEHEIGHT/2 - 90);
-        scoreGameItem.setPosition(scoreGameItem.getX() + 100, MainActivity.GAMEHEIGHT/2 - 90);
-
-        gameChildScene.setOnMenuItemClickListener(new MenuScene.IOnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem, float pMenuItemLocalX, float pMenuItemLocalY)
-            {
-                switch(pMenuItem.getID())
-                {
-                    case GAME_BACK:
-                        goBack();
-                        return true;
-                    case GAME_PLAYAGAIN:
-                        SceneManager.getInstance().loadGameScene(engine);
-                        musicGameOver.stop();
-                        return true;
-                    case GAME_SHARE:
-                        SharingToSocialMedia("NOPE");
-                        return true;
-                    case GAME_SCORE:
-                        PlayGamesManager.showLeaderboard();
-                    default:
-                        return false;
-                }
-            }
-        });
-
-        setChildScene(gameChildScene);
+        setChildScene(GameOverChildScene);
+        GameOverChildScene.setPosition(MainActivity.GAMEWIDTH, MainActivity.GAMEHEIGHT);
     }
 
     private void goBack(){
@@ -602,7 +523,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, "Neues Highscore!");
-        intent.putExtra(Intent.EXTRA_TEXT, "Ich hab einen neuen Highscore aufgestellt: " + score + ". \n Kannst du es mit mir aufnehmen?");
+        intent.putExtra(Intent.EXTRA_TEXT, "Ich hab einen neuen Highscore aufgestellt: " + score + ". \nKannst du es mit mir aufnehmen?");
         if(application.equals("NOPE")){
             activity.startActivity(intent);
         } else{
@@ -634,7 +555,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         this.setIgnoreUpdate(true);
         musicGame.stop();
     }
-
 
     private void addToScore(int i) {
         setScore(score + i);
@@ -720,7 +640,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         wheel = new Sprite(0, 0, ResourcesManager.getInstance().wheel_region, engine.getVertexBufferObjectManager());
         wheel.setScale(0.3f);
         wheel.setPosition(250.0f, 300.0f);
-        final FixtureDef WHEEL_FIX = PhysicsFactory.createFixtureDef(1.0f, 0.0f, 0.0f);
+        final FixtureDef WHEEL_FIX = PhysicsFactory.createFixtureDef(0.7f, 0.0f, 0.0f);
         wheelBody = PhysicsFactory.createBoxBody(world, wheel, BodyDef.BodyType.DynamicBody, WHEEL_FIX);
         wheel.registerEntityModifier(new LoopEntityModifier(new RotationModifier(1f/wheelspeed, 0f, 359f)));
         attachChild(wheel);
@@ -751,26 +671,45 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
                 wall = new Sprite(x, y, WALL2_WIDTH, WALL2__HEIGHT, ResourcesManager.getInstance().wallSmall_region, engine.getVertexBufferObjectManager());
                 break;
             default:
-                MainActivity.gameToast("Fehler beim erzeugen der Wand!");
                 break;
         }
         if(wall != null) {
             walls.add(wall);
-
-            final FixtureDef WALL_FIX = PhysicsFactory.createFixtureDef(0.0f, 0.0f, 0.0f);
-            Body wallBody = PhysicsFactory.createBoxBody(world, wall, BodyDef.BodyType.DynamicBody, WALL_FIX);
-            if(walltype==WALL1) wallBody.setTransform(wallBody.getPosition().x, wallBody.getPosition().y-0.30f, 0.0f);
-
+            walltypes.add(walltype);
             wall.registerEntityModifier(new MoveXModifier((wall.getX() + 128.0f) / speed, wall.getX(), -128));
             attachChild(wall);
         }
     }
 
-    private void createGameOverText() {
-        scoreBackground = new Sprite(0, 0, 511, 318, ResourcesManager.getInstance().scoreBackground_region, engine.getVertexBufferObjectManager());        gameOverText = new Text(0, 0, resourcesManager.font, "Game Over!", vbom);
+
+
+    private void createGameOverChildScene() {
+        scoreBackground = new Sprite(0, 0, 511, 318, ResourcesManager.getInstance().scoreBackground_region, engine.getVertexBufferObjectManager());
+        gameOverText = new Text(0, 0, resourcesManager.font, "Game Over!", vbom);
         highscoreText = new Text(0, 0, resourcesManager.font, "Highscore: 0", vbom);
         scoreGameOverText = new Text(0, 0, resourcesManager.font, "Score: 0", vbom);
         newTextSprite = new Sprite(0, 0, 35, 18, ResourcesManager.getInstance().new_region, engine.getVertexBufferObjectManager());
+
+        scoreBackground.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 +180);
+        scoreBackground.setAlpha(0.95f);
+        gameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 260);
+        highscoreText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 160);
+        scoreGameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 100);
+        scoreGameOverText.setText("Score: " + score);
+        highscoreText.setText("Highscore: " + highscore);
+        attachChild(scoreBackground);
+        attachChild(gameOverText);
+        attachChild(highscoreText);
+        attachChild(scoreGameOverText);
+        attachChild(newTextSprite);
+        scoreBackground.setVisible(false);
+        gameOverText.setVisible(false);
+        highscoreText.setVisible(false);
+        scoreGameOverText.setVisible(false);
+        newTextSprite.setVisible(false);
+
+        createGameOverButtons();
+
     }
 
     private void displayGameOverText()
@@ -782,6 +721,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
             highscore = score;
             newTextSprite.setScale(1.4f);
             newTextSprite.setPosition(MainActivity.GAMEWIDTH/2 - 224, MainActivity.GAMEHEIGHT/2 + 175);
+            newTextSprite.setVisible(true);
             PlayGamesManager.postHighscore(score);
         }
 
@@ -794,21 +734,21 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         scoreGameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 100);
         scoreGameOverText.setText("Score: " + score);
         highscoreText.setText("Highscore: " + highscore);
-        gameOverText.setScale(1,2);
-        attachChild(scoreBackground);
-        attachChild(gameOverText);
-        attachChild(highscoreText);
-        attachChild(scoreGameOverText);
-        attachChild(newTextSprite);
+        scoreBackground.setVisible(true);
+        gameOverText.setVisible(true);
+        highscoreText.setVisible(true);
+        scoreGameOverText.setVisible(true);
+
+        GameOverChildScene.setPosition(0,0);
+        GameOverChildScene.setBackgroundEnabled(false);
+
         musicGame.stop();
     }
-
 
 
     @Override
     public void onBackKeyPressed()
     {
-        //pauseGame();
     }
 
     private void createTouchFunction()
@@ -820,52 +760,47 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 
             @Override
             protected boolean onSingleTap() {
-                Log.i("Touch Event" , "SINGLE_TAP");
+                //Log.i("Touch Event" , "SINGLE_TAP");
+
                 Date now = new Date();
                 if(lasttouch!=null){
                     if(now.getTime() - lasttouch.getTime()>DELAYMS){
                         hammerHit(now);
-
                     }
                     else{
-                        Log.i("INFO: ","Touched less then 2 seconds ago!!");
+                        //Log.i("INFO: ","Touched less then 2 seconds ago!!");
                     }
                 } else {
                     hammerHit(now);
-                }                return false;
+                }
+                return false;
             }
 
             @Override
             protected boolean onSwipeDown() {
-                Log.i("Touch Event" , "SWIPE_DOWN");
-                hammer.registerEntityModifier(new SequenceEntityModifier(new RotationModifier(0.2f, 0.0f, -80.0f), new DelayModifier(1.0f), new RotationModifier(0.2f,-90.0f, 5.0f),new RotationModifier(0.05f, 5.0f, 0.0f))); //0.55
-                //onSurfaceGesture("Swipe Down");
-                return false;
-            }
-
-            @Override
-            protected boolean onSwipeLeft() {
-                Log.i("Touch Event" , "SWIPE_LEFT");
-                //onSurfaceGesture("Swipe Left");
-                return false;
-            }
-
-            @Override
-            protected boolean onSwipeRight() {
-                Log.i("Touch Event" , "SWIPE_RIGHT");
-                //onSurfaceGesture("Swipe Right");
+                //Log.i("Touch Event" , "SWIPE_DOWN");
+                if(lastswipedown==null) { //initial jump
+                    lastswipedown = new Date();
+                    duck();
+                } else if((new Date().getTime())-lastswipedown.getTime()>(1000-(level*50))){ //lock swipe up for duck time
+                    lastswipedown = new Date();
+                    duck();
+                }
                 return false;
             }
 
             @Override
             protected boolean onSwipeUp() {
-                Log.i("Touch Event" , "SWIPE_UP");
-                wheelBody.applyLinearImpulse(0.0f,-100.0f,0.0f,0.0f);
-                playJumpSound();
-                //onSurfaceGesture("Swipe Up");
+                //Log.i("Touch Event" , "SWIPE_UP ");
+                if(lastswipeup==null) { //initial jump
+                    lastswipeup = new Date();
+                    jump();
+                } else if((new Date().getTime())-lastswipeup.getTime()>800){ //lock swipe up for 0.8 seconds
+                    lastswipeup = new Date();
+                    jump();
+                }
                 return false;
             }
-
         };
         surfaceGestureDetectorAdapter.setEnabled(true);
 
@@ -873,28 +808,24 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         this.setOnSceneTouchListener(this);
     }
 
+    //hammer jump function
+    private void jump(){
+        //Log.i("Player -> " , "Jump!");
+        wheelBody.setLinearVelocity(new Vector2(0.0f,55.0f-level));
+        playJumpSound();
+    }
 
-/*
-    @Override
-    public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
-        if(pSceneTouchEvent.isActionDown()) {
-            Date now = new Date();
-            if(lasttouch!=null){
-                if(now.getTime() - lasttouch.getTime()>DELAYMS){
-                    hammerHit(now);
+    //hammer duck function
+    private void duck(){
+        float factor = 0.05f;
+        float step1 = 0.2f;
+        float step2 = 0.7f-(level*factor);
+        float step3 = 0.2f;
+        float step4 = 0.05f;
+        hammer.registerEntityModifier(new SequenceEntityModifier(new RotationModifier(step1, 0.0f, -80.0f), new DelayModifier(step2), new RotationModifier(step3,-90.0f, 5.0f),new RotationModifier(step4, 5.0f, 0.0f))); //0.55
+    }
 
-                }
-                else{
-                    Log.i("INFO: ","Touched less then 2 seconds ago!!");
-                }
-            } else {
-                hammerHit(now);
-            }
-            return true;
-        }
-        return false;
-    }*/
-
+    //hammer hit function
     private void hammerHit(Date now){
         lasttouch = now;
         hammer.registerEntityModifier(new SequenceEntityModifier(new RotationModifier(0.2f, 0.0f, -22.5f), new DelayModifier(0.1f), new RotationModifier(0.05f,-22.5f, 30f),new RotationModifier(0.1f, 30f, 15.0f),  new RotationModifier(0.1f,15.0f, 0.0f))); //0.55
@@ -942,16 +873,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         this.speed += incspeed;
     }
 
-    private void decSpeed(int decspeed){
-        this.speed -= decspeed;
-    }
-
     private void incWheelSpeed(float incWheelspeed){
         this.wheelspeed += incWheelspeed;
-    }
-
-    private void decWheelSpeed(int decWheelspeed){
-        this.wheelspeed -= decWheelspeed;
     }
 
     private long getHighscore(){

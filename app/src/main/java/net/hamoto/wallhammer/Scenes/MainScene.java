@@ -2,18 +2,12 @@ package net.hamoto.wallhammer.Scenes;
 
 import android.content.Context;
 
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.google.android.gms.games.Games;
-
 import net.hamoto.wallhammer.MainActivity;
 import net.hamoto.wallhammer.Manager.PlayGamesManager;
-import net.hamoto.wallhammer.Manager.SceneManager;
 import net.hamoto.wallhammer.Manager.ResourcesManager;
+import net.hamoto.wallhammer.Manager.SceneManager;
 
 import org.andengine.audio.music.Music;
-import org.andengine.engine.handler.IUpdateHandler;
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.MoveXModifier;
 import org.andengine.entity.modifier.RotationModifier;
@@ -23,12 +17,9 @@ import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
-import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
-import org.andengine.extension.physics.box2d.PhysicsFactory;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -45,7 +36,6 @@ public class MainScene extends BaseScene
     final int MENU_SOUND_ON = 2;
     final int MENU_SOUND_OFF = 3;
     final int MENU_INFO = 4;
-    Sprite logo;
     Sprite cloud1sprite;
     Sprite cloud2sprite;
     Sprite cloud3sprite;
@@ -60,15 +50,10 @@ public class MainScene extends BaseScene
     Sprite hammer;
     Sprite rad;
     Sprite gameTitle;
-    ButtonSprite musicon;
-    ButtonSprite musicoff;
     public static Music musicMain;
     boolean infoOn = false;
     Sprite info;
     Text txt;
-
-
-
 
     @Override
     public void createScene()
@@ -78,7 +63,6 @@ public class MainScene extends BaseScene
         createMenuChildScene();
         startbackgroundmusic();
         setTouchAreaBindingOnActionDownEnabled(true);
-
     }
 
     private void createBackground()
@@ -117,7 +101,6 @@ public class MainScene extends BaseScene
         gameTitle.setScale(0.95f);
         attachChild(gameTitle);
     }
-
 
     private void addClouds(){
 
@@ -225,9 +208,7 @@ public class MainScene extends BaseScene
         final IMenuItem scoreMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SCORE, resourcesManager.score_region, vbom), 1.3f, 1);
         final IMenuItem musicOnMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SOUND_ON, resourcesManager.soundon_region, vbom), 1.3f, 1);
         final IMenuItem musicOffMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SOUND_OFF, resourcesManager.soundoff_region, vbom), 1.3f, 1);
-
         final IMenuItem infoMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_INFO, resourcesManager.info_region, vbom), 0.7f, 0.5f);
-
 
         menuChildScene.addMenuItem(playMenuItem);
         menuChildScene.addMenuItem(scoreMenuItem);
@@ -235,12 +216,11 @@ public class MainScene extends BaseScene
         menuChildScene.addMenuItem(musicOffMenuItem);
         menuChildScene.addMenuItem(infoMenuItem);
 
-
         menuChildScene.buildAnimations();
         menuChildScene.setBackgroundEnabled(false);
 
         final float SOUNDXVISIBLE = MainActivity.GAMEWIDTH/2 + 200;
-        final float SOUNDXINVISIBLE = -200;
+        final float SOUNDXINVISIBLE = MainActivity.GAMEWIDTH + 200;
 
         playMenuItem.setPosition(MainActivity.GAMEWIDTH/2 - 200, MainActivity.GAMEHEIGHT/2 - 80);
         scoreMenuItem.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 - 80);
@@ -280,26 +260,16 @@ public class MainScene extends BaseScene
                         return true;
                     case MENU_INFO:
                         if(infoOn == false) {
+                            menuChildScene.setPosition(MainActivity.GAMEWIDTH,0);
+                            infoMenuItem.setPosition(-70, 70);
                             showInfo();
                             infoOn = true;
-                            playMenuItem.setPosition(MainActivity.GAMEWIDTH/2 - 200, MainActivity.GAMEHEIGHT/2 - 8000);
-                            scoreMenuItem.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 - 8000);
-                            if(MainActivity.musicon){
-                                musicOnMenuItem.setPosition(SOUNDXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
-                            }else{
-                                musicOffMenuItem.setPosition(SOUNDXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
-                            }
                         }else{
                             detachChild(info);
                             detachChild(txt);
+                            menuChildScene.setPosition(0,0);
+                            infoMenuItem.setPosition(MainActivity.GAMEWIDTH - 70, 70);
                             infoOn = false;
-                            playMenuItem.setPosition(MainActivity.GAMEWIDTH/2 - 200, MainActivity.GAMEHEIGHT/2 - 80);
-                            scoreMenuItem.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 - 80);
-                            if(MainActivity.musicon){
-                                musicOnMenuItem.setPosition(SOUNDXVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
-                            }else{
-                                musicOnMenuItem.setPosition(SOUNDXINVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
-                            }
                         }
                         return true;
                     default:
@@ -348,6 +318,4 @@ public class MainScene extends BaseScene
 
         return randomNum;
     }
-
-
 }

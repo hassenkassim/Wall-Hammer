@@ -57,7 +57,6 @@ public class ResourcesManager
     public Music soundJump;
 
     public Font font;
-    public Font fontLogo;
 
     //---------------------------------------------
     // TEXTURES & TEXTURE REGIONS
@@ -210,12 +209,12 @@ public class ResourcesManager
         scoreTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         scoreTextureAtlas.load();
 
-        pauseButtonTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 172, 172, TextureOptions.BILINEAR);
+        pauseButtonTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 88, 88, TextureOptions.BILINEAR);
         pauseButton_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(pauseButtonTextureAtlas, activity, "pause.png");
         pauseButtonTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         pauseButtonTextureAtlas.load();
 
-        playPauseButtonTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 172, 172, TextureOptions.BILINEAR);
+        playPauseButtonTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 88, 88, TextureOptions.BILINEAR);
         playPauseButton_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playPauseButtonTextureAtlas, activity, "playPause.png");
         playPauseButtonTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         playPauseButtonTextureAtlas.load();
@@ -404,9 +403,7 @@ public class ResourcesManager
     public void unloadSplashScreen()
     {
         splashTextTextureAtlas.unload();
-        //splashLogoTextureAtlas.unload( );
         splashText_region = null;
-        //splashLogo_region = null;
     }
 
 

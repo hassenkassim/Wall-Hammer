@@ -1,16 +1,12 @@
 package net.hamoto.wallhammer.Scenes;
 
+import net.hamoto.wallhammer.MainActivity;
 import net.hamoto.wallhammer.Manager.SceneManager;
 
-import org.andengine.entity.modifier.DelayModifier;
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.RotationModifier;
-import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
-import org.andengine.util.adt.color.Color;
-
-import net.hamoto.wallhammer.MainActivity;
 
 public class LoadingScene extends BaseScene
 {
