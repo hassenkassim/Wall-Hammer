@@ -600,7 +600,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         cloud9sprite.clearEntityModifiers();
         cloud10sprite.clearEntityModifiers();
         if(disturbance!=null){
-            disturbance.clearEntityModifiers();
+            detachChild(disturbance);
         }
 
         musicGame.stop();
