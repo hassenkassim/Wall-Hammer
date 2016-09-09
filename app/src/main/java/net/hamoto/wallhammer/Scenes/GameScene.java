@@ -23,11 +23,16 @@ import net.hamoto.wallhammer.Manager.SceneManager;
 import org.andengine.audio.music.Music;
 import org.andengine.engine.camera.hud.HUD;
 import org.andengine.engine.handler.IUpdateHandler;
+import org.andengine.entity.IEntity;
+import org.andengine.entity.modifier.AlphaModifier;
 import org.andengine.entity.modifier.DelayModifier;
+import org.andengine.entity.modifier.FadeInModifier;
+import org.andengine.entity.modifier.FadeOutModifier;
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.MoveXModifier;
 import org.andengine.entity.modifier.RotationModifier;
 import org.andengine.entity.modifier.SequenceEntityModifier;
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.IOnSceneTouchListener;
 import org.andengine.entity.scene.Scene;
 import org.andengine.entity.scene.background.Background;
@@ -49,6 +54,8 @@ import org.andengine.util.adt.align.HorizontalAlign;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
+
+import javax.microedition.khronos.opengles.GL10;
 
 /**
  * @author Hassen Kassim
@@ -123,6 +130,12 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
     private Sprite wheel;
     private Sprite scoreBackground;
     private Sprite newTextSprite;
+
+    private Rectangle gameoverBackground;
+
+    private Rectangle disturbance;
+
+
     private AnimatedSprite explosion;
     private ArrayList<Sprite> walls;
     private ArrayList<Integer> walltypes;
@@ -144,6 +157,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 
     private SurfaceGestureDetectorAdapter surfaceGestureDetectorAdapter;
 
+    private Scene scene;
     /*
     *
     *    METHODS
@@ -166,6 +180,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 
 
     private void initVariables(int level, long score, int speed, float wheelspeed){
+        scene = this;
         NEXTWALL_MAX = 1500;
         NEXTWALL_MIN = 1000;
         walloutsidehelper = false;
@@ -398,17 +413,28 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
     }
 
     private void checklevel(){
-        if(score%3 == 0&&level<LEVEL_MAX){
+        if(score%3 == 0){
             levelup();
         }
     }
 
     private void levelup(){
-        setLevel(level+1);
-        incSpeed(50);
-        incWheelSpeed(0.2f);
-        setNextWallMin();
-        adjustAnimations();
+        if(level<LEVEL_MAX){
+            setLevel(level+1);
+            incSpeed(50);
+            incWheelSpeed(0.2f);
+            setNextWallMin();
+            adjustAnimations();
+
+            if(level == 7){
+                //start distrubance
+                disturbance = new Rectangle(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2, MainActivity.GAMEWIDTH, MainActivity.GAMEHEIGHT, engine.getVertexBufferObjectManager());
+                disturbance.setColor(0.0f, 0.0f, 0.0f);
+                disturbance.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new FadeInModifier(1),new FadeOutModifier(1))));
+                attachChild(disturbance);
+            }
+
+        }
     }
 
     private void setNextWallMin(){
@@ -449,10 +475,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         GameOverChildScene.buildAnimations();
         GameOverChildScene.setBackgroundEnabled(false);
 
-        final IMenuItem backGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_BACK, resourcesManager.backToMenu_region, vbom), 1.5f, 1);
-        final IMenuItem playagainGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_PLAYAGAIN, resourcesManager.playAgain_region, vbom), 1.5f, 1);
-        final IMenuItem shareGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_SHARE, resourcesManager.share_region, vbom), 1.5f, 1);
-        final IMenuItem scoreGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_SCORE, resourcesManager.score_region, vbom), 1.5f, 1);
+        final IMenuItem backGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_BACK, resourcesManager.backToMenu_region, vbom), 0.7f, 0.5f);
+        final IMenuItem playagainGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_PLAYAGAIN, resourcesManager.playAgain_region, vbom), 0.7f, 0.5f);
+        final IMenuItem shareGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_SHARE, resourcesManager.share_region, vbom), 0.7f, 0.5f);
+        final IMenuItem scoreGameItem = new ScaleMenuItemDecorator(new SpriteMenuItem(GAME_SCORE, resourcesManager.score_region, vbom), 0.7f, 0.5f);
 
 
         GameOverChildScene.addMenuItem(backGameItem);
@@ -461,10 +487,10 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         GameOverChildScene.addMenuItem(scoreGameItem);
 
 
-        backGameItem.setPosition(MainActivity.GAMEWIDTH/2 - 100, MainActivity.GAMEHEIGHT/2 - 90);
-        playagainGameItem.setPosition(MainActivity.GAMEWIDTH/2 - 300, MainActivity.GAMEHEIGHT/2 - 90);
-        shareGameItem.setPosition(MainActivity.GAMEWIDTH/2 + 300, MainActivity.GAMEHEIGHT/2 - 90);
-        scoreGameItem.setPosition(MainActivity.GAMEWIDTH/2 + 100, MainActivity.GAMEHEIGHT/2 - 90);
+        backGameItem.setPosition(MainActivity.GAMEWIDTH/2 - 100, MainActivity.GAMEHEIGHT/2 - 130);
+        playagainGameItem.setPosition(MainActivity.GAMEWIDTH/2 - 300, MainActivity.GAMEHEIGHT/2 - 130);
+        shareGameItem.setPosition(MainActivity.GAMEWIDTH/2 + 300, MainActivity.GAMEHEIGHT/2 - 130);
+        scoreGameItem.setPosition(MainActivity.GAMEWIDTH/2 + 100, MainActivity.GAMEHEIGHT/2 - 130);
 
 
         GameOverChildScene.setOnMenuItemClickListener(new MenuScene.IOnMenuItemClickListener() {
@@ -484,6 +510,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
                         });
                         return true;
                     case GAME_PLAYAGAIN:
+                        SceneManager.counter++;
                         SceneManager.getInstance().loadGameScene(engine);
                         activity.runOnUiThread(new Runnable() {
                             @Override
@@ -555,7 +582,27 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 
 
     private void stopGame(){
-        this.setIgnoreUpdate(true);
+        //this.setIgnoreUpdate(true);
+        hammer.clearEntityModifiers();
+        for(int i = 0; i<walls.size();i++){
+            walls.get(i).clearEntityModifiers();
+        }
+        groundsprite.clearEntityModifiers();
+        wheel.clearEntityModifiers();
+        cloud1sprite.clearEntityModifiers();
+        cloud2sprite.clearEntityModifiers();
+        cloud3sprite.clearEntityModifiers();
+        cloud4sprite.clearEntityModifiers();
+        cloud5sprite.clearEntityModifiers();
+        cloud6sprite.clearEntityModifiers();
+        cloud7sprite.clearEntityModifiers();
+        cloud8sprite.clearEntityModifiers();
+        cloud9sprite.clearEntityModifiers();
+        cloud10sprite.clearEntityModifiers();
+        if(disturbance!=null){
+            disturbance.clearEntityModifiers();
+        }
+
         musicGame.stop();
     }
 
@@ -577,47 +624,47 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         float a = 2698;
         float duration = 30;
 
-        cloud1sprite = new Sprite(450, 0, 285, 156, ResourcesManager.getInstance().cloud4_region, engine.getVertexBufferObjectManager());
+        cloud1sprite = new Sprite(450, 20, 285, 156, ResourcesManager.getInstance().cloud4_region, engine.getVertexBufferObjectManager());
         cloud1sprite.setY(600f);
         cloud1sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud1sprite.getX(), -a + cloud1sprite.getX()))));
         attachChild(cloud1sprite);
 
-        cloud2sprite = new Sprite(cloud1sprite.getX() + 500, 0, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
+        cloud2sprite = new Sprite(cloud1sprite.getX() + 500, 10, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
         cloud2sprite.setY(600f);
         cloud2sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud2sprite.getX(), -a + cloud2sprite.getX()))));
         attachChild(cloud2sprite);
 
-        cloud3sprite = new Sprite(cloud2sprite.getX() + 600, 0, 285, 156, ResourcesManager.getInstance().cloud1_region, engine.getVertexBufferObjectManager());
+        cloud3sprite = new Sprite(cloud2sprite.getX() + 600, 5, 285, 156, ResourcesManager.getInstance().cloud1_region, engine.getVertexBufferObjectManager());
         cloud3sprite.setY(600f);
         cloud3sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud3sprite.getX(), -a + cloud3sprite.getX()))));
         attachChild(cloud3sprite);
 
-        cloud4sprite = new Sprite(cloud3sprite.getX() + 550, 0, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
+        cloud4sprite = new Sprite(cloud3sprite.getX() + 550, -10, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
         cloud4sprite.setY(600f);
         cloud4sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud4sprite.getX(), -a + cloud4sprite.getX()))));
         attachChild(cloud4sprite);
 
-        cloud5sprite = new Sprite(cloud4sprite.getX() + 450, 0, 285, 156, ResourcesManager.getInstance().cloud2_region, engine.getVertexBufferObjectManager());
+        cloud5sprite = new Sprite(cloud4sprite.getX() + 450, 20, 285, 156, ResourcesManager.getInstance().cloud2_region, engine.getVertexBufferObjectManager());
         cloud5sprite.setY(600f);
         cloud5sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud5sprite.getX(), -a + cloud5sprite.getX()))));
         attachChild(cloud5sprite);
 
-        cloud6sprite = new Sprite(cloud5sprite.getX() + 600, 0, 285, 156, ResourcesManager.getInstance().cloud4_region, engine.getVertexBufferObjectManager());
+        cloud6sprite = new Sprite(cloud5sprite.getX() + 600, -5, 285, 156, ResourcesManager.getInstance().cloud4_region, engine.getVertexBufferObjectManager());
         cloud6sprite.setY(600f);
         cloud6sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud6sprite.getX(), -a + cloud6sprite.getX()))));
         attachChild(cloud6sprite);
 
-        cloud7sprite = new Sprite(cloud6sprite.getX() + 500, 0, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
+        cloud7sprite = new Sprite(cloud6sprite.getX() + 500, 15, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
         cloud7sprite.setY(600f);
         cloud7sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud7sprite.getX(), -a + cloud7sprite.getX()))));
         attachChild(cloud7sprite);
 
-        cloud8sprite = new Sprite(cloud7sprite.getX() + 600, 0, 285, 156, ResourcesManager.getInstance().cloud1_region, engine.getVertexBufferObjectManager());
+        cloud8sprite = new Sprite(cloud7sprite.getX() + 600, -20, 285, 156, ResourcesManager.getInstance().cloud1_region, engine.getVertexBufferObjectManager());
         cloud8sprite.setY(600f);
         cloud8sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud8sprite.getX(), -a + cloud8sprite.getX()))));
         attachChild(cloud8sprite);
 
-        cloud9sprite = new Sprite(cloud8sprite.getX() + 550, 0, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
+        cloud9sprite = new Sprite(cloud8sprite.getX() + 550, 10, 285, 156, ResourcesManager.getInstance().cloud3_region, engine.getVertexBufferObjectManager());
         cloud9sprite.setY(600f);
         cloud9sprite.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new MoveXModifier(duration, cloud9sprite.getX(), -a + cloud9sprite.getX()))));
         attachChild(cloud9sprite);
@@ -687,74 +734,95 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 
 
     private void createGameOverChildScene() {
-        scoreBackground = new Sprite(0, 0, 511, 318, ResourcesManager.getInstance().scoreBackground_region, engine.getVertexBufferObjectManager());
-        gameOverText = new Text(0, 0, resourcesManager.font, "Game Over!", vbom);
-        highscoreText = new Text(0, 0, resourcesManager.font, "Highscore: 0", vbom);
-        scoreGameOverText = new Text(0, 0, resourcesManager.font, "Score: 0", vbom);
-        newTextSprite = new Sprite(0, 0, 35, 18, ResourcesManager.getInstance().new_region, engine.getVertexBufferObjectManager());
 
-        scoreBackground.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 +180);
-        scoreBackground.setAlpha(0.95f);
-        gameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 260);
-        highscoreText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 160);
-        scoreGameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 100);
-        scoreGameOverText.setText("Score: " + score);
-        highscoreText.setText("Highscore: " + highscore);
-        attachChild(scoreBackground);
-        attachChild(gameOverText);
-        attachChild(highscoreText);
-        attachChild(scoreGameOverText);
-        attachChild(newTextSprite);
-        scoreBackground.setVisible(false);
+        gameoverBackground = new Rectangle(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2, MainActivity.GAMEWIDTH, MainActivity.GAMEHEIGHT, engine.getVertexBufferObjectManager());
+        gameoverBackground.setColor(0.0f, 0.0f, 0.0f);
+        gameOverText = new Text(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 260, resourcesManager.font2, "Game Over!", vbom);
+        highscoreText = new Text(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 40, resourcesManager.font, "Highscore: 0", vbom);
+        scoreGameOverText = new Text(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 100, resourcesManager.font, "Score: 0", vbom);
+        newTextSprite = new Sprite(MainActivity.GAMEWIDTH/2 - 224, MainActivity.GAMEHEIGHT/2 + 175, 35, 18, ResourcesManager.getInstance().new_region, engine.getVertexBufferObjectManager());
+
+        gameoverBackground.setVisible(false);
+        newTextSprite.setVisible(false);
         gameOverText.setVisible(false);
         highscoreText.setVisible(false);
         scoreGameOverText.setVisible(false);
-        newTextSprite.setVisible(false);
+
+        attachChild(gameoverBackground);
+        attachChild(newTextSprite);
+        attachChild(gameOverText);
+        attachChild(highscoreText);
+        attachChild(scoreGameOverText);
 
         createGameOverButtons();
-
     }
 
     private void displayGameOverText()
     {
+        //show Ads
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 MainActivity.showAd();
             }
         });
-
         showInterstitial();
 
+
+        /*if(SceneManager.counter%3==0){
+            MainActivity.gameToast(SceneManager.counter + " - ShowInterstitial");
+        }*/
+
+        //get highscore
         highscore = getHighscore();
 
+        //post highscore in Leaderboard
         if(score > highscore){
             activity.getSharedPreferences(MainActivity.HIGHSCORE, Context.MODE_PRIVATE).edit().putLong(MainActivity.HIGHSCORE, score).apply();
             highscore = score;
-            newTextSprite.setScale(1.4f);
-            newTextSprite.setPosition(MainActivity.GAMEWIDTH/2 - 224, MainActivity.GAMEHEIGHT/2 + 175);
-            newTextSprite.setVisible(true);
             PlayGamesManager.postHighscore(score);
+
+            newTextSprite.registerEntityModifier(new FadeInModifier(0.7f));
         }
+
+
 
         clearHUD();
         camera.setChaseEntity(null);
-        scoreBackground.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 +180);
-        scoreBackground.setAlpha(0.95f);
-        gameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 260);
-        highscoreText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 160);
-        scoreGameOverText.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 100);
         scoreGameOverText.setText("Score: " + score);
         highscoreText.setText("Highscore: " + highscore);
-        scoreBackground.setVisible(true);
+
+        gameoverBackground.setVisible(true);
+        newTextSprite.setVisible(true);
         gameOverText.setVisible(true);
         highscoreText.setVisible(true);
         scoreGameOverText.setVisible(true);
+
+        gameoverBackground.registerEntityModifier(new AlphaModifier(0.7f,0.0f,0.7f){
+            @Override
+            protected void onModifierStarted(IEntity pItem)
+            {
+                super.onModifierStarted(pItem);
+                // Your action after starting modifier
+            }
+
+            @Override
+            protected void onModifierFinished(IEntity pItem)
+            {
+                super.onModifierFinished(pItem);
+                scene.setIgnoreUpdate(true);
+            }
+        });
+        gameOverText.registerEntityModifier(new FadeInModifier(0.7f));
+        highscoreText.registerEntityModifier(new FadeInModifier(0.7f));
+        scoreGameOverText.registerEntityModifier(new FadeInModifier(0.7f));
+
 
         GameOverChildScene.setPosition(0,0);
         GameOverChildScene.setBackgroundEnabled(false);
 
         musicGame.stop();
+
     }
 
 
