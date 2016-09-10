@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="/Users/HassenKassim/StudioProjects/wall-hammer/andEngine/src/main/shaders"/></dataSet><dataSet config="debug"><source path="/Users/HassenKassim/StudioProjects/wall-hammer/andEngine/src/debug/shaders"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="/Users/tolgaguzay/StudioProjects/wall-hammer/andEngine/src/main/shaders"/></dataSet><dataSet config="debug"><source path="/Users/tolgaguzay/StudioProjects/wall-hammer/andEngine/src/debug/shaders"/></dataSet></merger>

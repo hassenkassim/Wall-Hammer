@@ -54,6 +54,7 @@ public class MainScene extends BaseScene
     Sprite hammer;
     Sprite rad;
     Sprite gameTitle;
+    Sprite gameDescription;
     public static Music musicMain;
     Text txt;
 
@@ -210,14 +211,22 @@ public class MainScene extends BaseScene
             if(txt!=null&&txt.isVisible()==false){
                 detachChild(txt);
             }
+            if(gameDescription!=null&&gameDescription.isVisible()==false){
+                detachChild(gameDescription);
+            }
 
             infoBackground = new Rectangle(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2, MainActivity.GAMEWIDTH, MainActivity.GAMEHEIGHT, engine.getVertexBufferObjectManager());
             infoBackground.setColor(0.0f, 0.0f, 0.0f);
             infoBackground.registerEntityModifier(new AlphaModifier(1f,0.0f,0.8f));
 
+            gameDescription = new Sprite(0, 0, 2524, 1092, ResourcesManager.getInstance().gameDescription_region, engine.getVertexBufferObjectManager());
+            gameDescription.setScale(0.39f);
+            gameDescription.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2);
+            attachChild(gameDescription);
+
             String str = "Wallhammer\nProduced with AndEngine and AndEnginePhysics";
             txt = new Text(0, 0, resourcesManager.font, str, vbom);
-            txt.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2);
+            txt.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2- 280);
             txt.setScale(0.5f);
             txt.registerEntityModifier(new FadeInModifier(1));
             attachChild(infoBackground);
@@ -226,6 +235,7 @@ public class MainScene extends BaseScene
         }else{
             infoBackground.registerEntityModifier(new AlphaModifier(1,0.8f,0.0f));
             txt.registerEntityModifier(new FadeOutModifier(1));
+            gameDescription.registerEntityModifier(new FadeOutModifier(1));
 
             playMenuItem.registerEntityModifier(new FadeInModifier(1));
             scoreMenuItem.registerEntityModifier(new FadeInModifier(1));

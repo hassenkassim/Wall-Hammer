@@ -92,7 +92,9 @@ public class ResourcesManager
     public ITextureRegion pauseButton_region;
     public ITextureRegion playPauseButton_region;
     public ITextureRegion gameTitle_region;
+    public ITextureRegion gameDescription_region;
     public TiledTextureRegion explosion_region;
+
 
     BitmapTextureAtlas splashTextTextureAtlas;
     BitmapTextureAtlas splashLogoTextureAtlas;
@@ -124,6 +126,7 @@ public class ResourcesManager
     BuildableBitmapTextureAtlas pauseButtonTextureAtlas;
     BuildableBitmapTextureAtlas playPauseButtonTextureAtlas;
     BuildableBitmapTextureAtlas gameTitleTextureAtlas;
+    BuildableBitmapTextureAtlas gameDescriptionTextureAtlas;
     BitmapTextureAtlas explosionTextureAtlas;
 
 
@@ -170,6 +173,11 @@ public class ResourcesManager
     private void loadMainGraphics() throws ITextureAtlasBuilder.TextureAtlasBuilderException {
         texmng = engine.getTextureManager();
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/menu/");
+
+        gameDescriptionTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 2524, 1092, TextureOptions.BILINEAR);
+        gameDescription_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(gameDescriptionTextureAtlas, activity, "gameDescription.png");
+        gameDescriptionTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
+        gameDescriptionTextureAtlas.load();
 
         playTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 356, 356, TextureOptions.BILINEAR);
         play_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playTextureAtlas, activity, "playButton3.png");
