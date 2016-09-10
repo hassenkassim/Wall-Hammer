@@ -553,7 +553,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, "Neues Highscore!");
-        intent.putExtra(Intent.EXTRA_TEXT, "Ich hab einen neuen Highscore aufgestellt: " + score + ". \nKannst du es mit mir aufnehmen?");
+        intent.putExtra(Intent.EXTRA_TEXT, "Ich hab einen neuen Highscore aufgestellt: " + score + ".\nKannst du es mit mir aufnehmen?");
         if(application.equals("NOPE")){
             activity.startActivity(intent);
         } else{
