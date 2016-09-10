@@ -29,6 +29,8 @@ public class SceneManager
     private BaseScene gameScene;
     private BaseScene loadingScene;
 
+    public static int counter = 0;
+
     //---------------------------------------------
     // VARIABLES
     //---------------------------------------------

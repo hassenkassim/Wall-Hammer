@@ -8,10 +8,14 @@ import net.hamoto.wallhammer.Manager.ResourcesManager;
 import net.hamoto.wallhammer.Manager.SceneManager;
 
 import org.andengine.audio.music.Music;
+import org.andengine.entity.modifier.AlphaModifier;
+import org.andengine.entity.modifier.FadeInModifier;
+import org.andengine.entity.modifier.FadeOutModifier;
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.MoveXModifier;
 import org.andengine.entity.modifier.RotationModifier;
 import org.andengine.entity.modifier.SequenceEntityModifier;
+import org.andengine.entity.primitive.Rectangle;
 import org.andengine.entity.scene.background.Background;
 import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.item.IMenuItem;
@@ -51,13 +55,24 @@ public class MainScene extends BaseScene
     Sprite rad;
     Sprite gameTitle;
     public static Music musicMain;
-    boolean infoOn = false;
-    Sprite info;
     Text txt;
+
+
+    private Rectangle infoBackground;
+    private boolean infoanzeige;
+
+
+    IMenuItem playMenuItem;
+    IMenuItem scoreMenuItem;
+    IMenuItem musicOnMenuItem;
+    IMenuItem musicOffMenuItem;
+    IMenuItem infoMenuItem;
+
 
     @Override
     public void createScene()
     {
+        infoanzeige = false;
         createBackground();
         addSprites();
         createMenuChildScene();
@@ -188,14 +203,37 @@ public class MainScene extends BaseScene
     }
 
     private void showInfo(){
-        info = new Sprite(0, 0, ResourcesManager.getInstance().infoBG_region, engine.getVertexBufferObjectManager());
-        info.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2);
-        String str = "Wallhammer\nProduced with AndEngine and AndEnginePhysics";
-        txt = new Text(0, 0, resourcesManager.font, str, vbom);
-        txt.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2);
-        txt.setScale(0.5f);
-        attachChild(info);
-        attachChild(txt);
+        if(infoanzeige==false){
+            if(infoBackground!=null&&infoBackground.isVisible()==false){
+                detachChild(infoBackground);
+            }
+            if(txt!=null&&txt.isVisible()==false){
+                detachChild(txt);
+            }
+
+            infoBackground = new Rectangle(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2, MainActivity.GAMEWIDTH, MainActivity.GAMEHEIGHT, engine.getVertexBufferObjectManager());
+            infoBackground.setColor(0.0f, 0.0f, 0.0f);
+            infoBackground.registerEntityModifier(new AlphaModifier(1f,0.0f,0.8f));
+
+            String str = "Wallhammer\nProduced with AndEngine and AndEnginePhysics";
+            txt = new Text(0, 0, resourcesManager.font, str, vbom);
+            txt.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2);
+            txt.setScale(0.5f);
+            txt.registerEntityModifier(new FadeInModifier(1));
+            attachChild(infoBackground);
+            attachChild(txt);
+            infoanzeige=true;
+        }else{
+            infoBackground.registerEntityModifier(new AlphaModifier(1,0.8f,0.0f));
+            txt.registerEntityModifier(new FadeOutModifier(1));
+
+            playMenuItem.registerEntityModifier(new FadeInModifier(1));
+            scoreMenuItem.registerEntityModifier(new FadeInModifier(1));
+            musicOnMenuItem.registerEntityModifier(new FadeInModifier(1));
+            musicOffMenuItem.registerEntityModifier(new FadeInModifier(1));
+
+            infoanzeige=false;
+        }
     }
 
 
@@ -204,11 +242,11 @@ public class MainScene extends BaseScene
         menuChildScene = new MenuScene(camera);
         menuChildScene.setPosition(0, 0);
 
-        final IMenuItem playMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_PLAY, resourcesManager.play_region, vbom), 1.3f, 1);
-        final IMenuItem scoreMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SCORE, resourcesManager.score_region, vbom), 1.3f, 1);
-        final IMenuItem musicOnMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SOUND_ON, resourcesManager.soundon_region, vbom), 1.3f, 1);
-        final IMenuItem musicOffMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SOUND_OFF, resourcesManager.soundoff_region, vbom), 1.3f, 1);
-        final IMenuItem infoMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_INFO, resourcesManager.info_region, vbom), 0.7f, 0.5f);
+        playMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_PLAY, resourcesManager.play_region, vbom), 0.7f, 0.5f);
+        scoreMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SCORE, resourcesManager.score_region2, vbom), 0.7f, 0.5f);
+        musicOnMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SOUND_ON, resourcesManager.soundon_region, vbom), 0.7f, 0.5f);
+        musicOffMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SOUND_OFF, resourcesManager.soundoff_region, vbom), 0.7f, 0.5f);
+        infoMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_INFO, resourcesManager.info_region, vbom), 0.25f, 0.2f);
 
         menuChildScene.addMenuItem(playMenuItem);
         menuChildScene.addMenuItem(scoreMenuItem);
@@ -259,18 +297,14 @@ public class MainScene extends BaseScene
                         musicOffMenuItem.setX(SOUNDXINVISIBLE);
                         return true;
                     case MENU_INFO:
-                        if(infoOn == false) {
-                            menuChildScene.setPosition(MainActivity.GAMEWIDTH,0);
+                        if(infoanzeige == false) {
+                            menuChildScene.setPosition(MainActivity.GAMEWIDTH, 0);
                             infoMenuItem.setPosition(-70, 70);
-                            showInfo();
-                            infoOn = true;
-                        }else{
-                            detachChild(info);
-                            detachChild(txt);
+                        } else {
                             menuChildScene.setPosition(0,0);
                             infoMenuItem.setPosition(MainActivity.GAMEWIDTH - 70, 70);
-                            infoOn = false;
                         }
+                            showInfo();
                         return true;
                     default:
                         return false;
