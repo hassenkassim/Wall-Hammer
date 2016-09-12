@@ -2,6 +2,8 @@ package net.hamoto.wallhammer.Scenes;
 
 import android.content.Context;
 
+import com.google.android.gms.games.Game;
+
 import net.hamoto.wallhammer.MainActivity;
 import net.hamoto.wallhammer.Manager.PlayGamesManager;
 import net.hamoto.wallhammer.Manager.ResourcesManager;
@@ -21,9 +23,12 @@ import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
+import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
+import org.andengine.input.touch.detector.SurfaceGestureDetectorAdapter;
 
+import java.util.Date;
 import java.util.Random;
 
 /**
@@ -40,6 +45,8 @@ public class MainScene extends BaseScene
     final int MENU_SOUND_ON = 2;
     final int MENU_SOUND_OFF = 3;
     final int MENU_INFO = 4;
+    final int MENU_CLOSE = 5;
+
     Sprite cloud1sprite;
     Sprite cloud2sprite;
     Sprite cloud3sprite;
@@ -57,6 +64,9 @@ public class MainScene extends BaseScene
     Sprite gameDescription;
     public static Music musicMain;
     Text txt;
+    private SurfaceGestureDetectorAdapter surfaceGestureDetectorAdapter;
+
+    boolean gamedescriptionshown;
 
 
     private Rectangle infoBackground;
@@ -68,7 +78,7 @@ public class MainScene extends BaseScene
     IMenuItem musicOnMenuItem;
     IMenuItem musicOffMenuItem;
     IMenuItem infoMenuItem;
-
+    IMenuItem closeDescriptionItem;
 
     @Override
     public void createScene()
@@ -221,12 +231,12 @@ public class MainScene extends BaseScene
 
             gameDescription = new Sprite(0, 0, 2524, 1092, ResourcesManager.getInstance().gameDescription_region, engine.getVertexBufferObjectManager());
             gameDescription.setScale(0.44f);
-            gameDescription.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2);
+            gameDescription.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 40);
 
 
             String str = "Wallhammer\nProduced with AndEngine and AndEnginePhysics";
             txt = new Text(0, 0, resourcesManager.font, str, vbom);
-            txt.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2- 300);
+            txt.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 - 260);
             txt.setScale(0.5f);
             txt.registerEntityModifier(new FadeInModifier(1));
             attachChild(infoBackground);
@@ -248,6 +258,7 @@ public class MainScene extends BaseScene
     }
 
 
+
     private void createMenuChildScene()
     {
         menuChildScene = new MenuScene(camera);
@@ -258,12 +269,15 @@ public class MainScene extends BaseScene
         musicOnMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SOUND_ON, resourcesManager.soundon_region, vbom), 0.7f, 0.5f);
         musicOffMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_SOUND_OFF, resourcesManager.soundoff_region, vbom), 0.7f, 0.5f);
         infoMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_INFO, resourcesManager.info_region, vbom), 0.25f, 0.2f);
+        closeDescriptionItem = new ScaleMenuItemDecorator(new SpriteMenuItem(MENU_CLOSE, resourcesManager.cancelButton_region, vbom), 0.25f, 0.2f);
 
         menuChildScene.addMenuItem(playMenuItem);
         menuChildScene.addMenuItem(scoreMenuItem);
         menuChildScene.addMenuItem(musicOnMenuItem);
         menuChildScene.addMenuItem(musicOffMenuItem);
         menuChildScene.addMenuItem(infoMenuItem);
+        menuChildScene.addMenuItem(closeDescriptionItem);
+
 
         menuChildScene.buildAnimations();
         menuChildScene.setBackgroundEnabled(false);
@@ -271,10 +285,15 @@ public class MainScene extends BaseScene
         final float SOUNDXVISIBLE = MainActivity.GAMEWIDTH/2 + 200;
         final float SOUNDXINVISIBLE = MainActivity.GAMEWIDTH + 200;
 
+        final float CLOSEINFOXVISIBLE = MainActivity.GAMEWIDTH/2 + 548;
+        final float CLOSEINFOXINVISIBLE = MainActivity.GAMEWIDTH + 400;
+
         playMenuItem.setPosition(MainActivity.GAMEWIDTH/2 - 200, MainActivity.GAMEHEIGHT/2 - 80);
         scoreMenuItem.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 - 80);
 
         infoMenuItem.setPosition(MainActivity.GAMEWIDTH - 70, 70);
+
+        closeDescriptionItem.setPosition(CLOSEINFOXINVISIBLE, MainActivity.GAMEHEIGHT/2 + 240);
 
         if(MainActivity.musicon){
             musicOnMenuItem.setPosition(SOUNDXVISIBLE, MainActivity.GAMEHEIGHT/2 - 80);
@@ -291,8 +310,41 @@ public class MainScene extends BaseScene
                 switch(pMenuItem.getID())
                 {
                     case MENU_PLAY:
-                        musicMain.pause();
-                        SceneManager.getInstance().setScene(SceneManager.SceneType.SCENE_GAME);
+                        gamedescriptionshown = getgamedescriptionshown();
+
+                        if (gamedescriptionshown == false) {
+                            playMenuItem.registerEntityModifier(new FadeOutModifier(1));
+                            scoreMenuItem.registerEntityModifier(new FadeOutModifier(1));
+                            musicOnMenuItem.registerEntityModifier(new FadeOutModifier(1));
+                            musicOffMenuItem.registerEntityModifier(new FadeOutModifier(1));
+                            infoMenuItem.registerEntityModifier(new FadeOutModifier(1));
+
+                            infoBackground = new Rectangle(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2, MainActivity.GAMEWIDTH, MainActivity.GAMEHEIGHT, engine.getVertexBufferObjectManager());
+                            infoBackground.setColor(0.0f, 0.0f, 0.0f);
+                            infoBackground.registerEntityModifier(new AlphaModifier(1f,0.0f,0.98f));
+
+                            gameDescription = new Sprite(0, 0, 2524, 1092, ResourcesManager.getInstance().gameDescription_region, engine.getVertexBufferObjectManager());
+                            gameDescription.setScale(0.44f);
+                            gameDescription.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 40);
+
+
+                            String str = "Wallhammer\nProduced with AndEngine and AndEnginePhysics";
+                            txt = new Text(0, 0, resourcesManager.font, str, vbom);
+                            txt.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 - 260);
+                            txt.setScale(0.5f);
+                            txt.registerEntityModifier(new FadeInModifier(1));
+                            attachChild(infoBackground);
+                            attachChild(txt);
+                            attachChild(gameDescription);
+
+                            activity.getSharedPreferences(MainActivity.GAMEDESCRIPTION, Context.MODE_PRIVATE).edit().putBoolean(MainActivity.GAMEDESCRIPTION, true).apply();
+                            closeDescriptionItem.setPosition(CLOSEINFOXVISIBLE, MainActivity.GAMEHEIGHT/2 + 277);
+                        }
+
+                        if (gamedescriptionshown == true) {
+                            musicMain.pause();
+                            SceneManager.getInstance().setScene(SceneManager.SceneType.SCENE_GAME);
+                        }
                         return true;
                     case MENU_SCORE:
                         PlayGamesManager.showLeaderboard();
@@ -317,6 +369,23 @@ public class MainScene extends BaseScene
                         }
                             showInfo();
                         return true;
+                    case MENU_CLOSE:
+
+                        musicMain.pause();
+                        SceneManager.getInstance().setScene(SceneManager.SceneType.SCENE_GAME);
+                        closeDescriptionItem.setPosition(CLOSEINFOXINVISIBLE, MainActivity.GAMEHEIGHT/2 + 240);
+
+                        infoBackground.registerEntityModifier(new AlphaModifier(1,0.8f,0.0f));
+                        txt.registerEntityModifier(new FadeOutModifier(1));
+                        gameDescription.registerEntityModifier(new FadeOutModifier(1));
+
+                        playMenuItem.registerEntityModifier(new FadeInModifier(1));
+                        scoreMenuItem.registerEntityModifier(new FadeInModifier(1));
+                        musicOnMenuItem.registerEntityModifier(new FadeInModifier(1));
+                        musicOffMenuItem.registerEntityModifier(new FadeInModifier(1));
+                        infoMenuItem.registerEntityModifier(new FadeInModifier(1));
+
+
                     default:
                         return false;
                 }
@@ -324,6 +393,10 @@ public class MainScene extends BaseScene
         });
 
         setChildScene(menuChildScene);
+    }
+
+    private boolean getgamedescriptionshown(){
+        return activity.getSharedPreferences(MainActivity.GAMEDESCRIPTION, Context.MODE_PRIVATE).getBoolean(MainActivity.GAMEDESCRIPTION, MainActivity.gamedescriptionshown);
     }
 
     @Override

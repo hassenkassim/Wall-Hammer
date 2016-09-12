@@ -61,10 +61,13 @@ public class MainActivity extends BaseGameActivity implements GameHelper.GameHel
     public final static String SETTING = "PREFS";
     public final static String SETTING_MUSIC = "MUSICON";
     public final static String HIGHSCORE = "HIGHSCORE";
+    public final static String GAMEDESCRIPTION = "GAMEDESCRIPTIONSHOWN";
 
 
     public static boolean musicon;
+    public static boolean gamedescriptionshown;
     SharedPreferences prefs;
+    SharedPreferences prefs2;
     public static long highscore;
 
 
@@ -109,7 +112,10 @@ public class MainActivity extends BaseGameActivity implements GameHelper.GameHel
         SceneManager.getInstance().createSplashScene(pOnCreateSceneCallback);
     }
 
-
+    private void setGameDescription(){
+        prefs2 = getSharedPreferences(GAMEDESCRIPTION, MODE_PRIVATE);
+        gamedescriptionshown = prefs.getBoolean(GAMEDESCRIPTION, false);
+    }
 
     private void setHighscore(){
         highscore = getSharedPreferences(HIGHSCORE, MODE_PRIVATE).getLong(HIGHSCORE, 0);

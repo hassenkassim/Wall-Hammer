@@ -793,7 +793,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         highscoreText.setText("Highscore: " + highscore);
 
         gameoverBackground.setVisible(true);
-        newTextSprite.setVisible(true);
+        //newTextSprite.setVisible(true);
         gameOverText.setVisible(true);
         highscoreText.setVisible(true);
         scoreGameOverText.setVisible(true);

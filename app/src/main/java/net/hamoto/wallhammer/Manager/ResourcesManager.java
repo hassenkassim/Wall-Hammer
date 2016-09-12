@@ -93,6 +93,7 @@ public class ResourcesManager
     public ITextureRegion playPauseButton_region;
     public ITextureRegion gameTitle_region;
     public ITextureRegion gameDescription_region;
+    public ITextureRegion cancelButton_region;
     public TiledTextureRegion explosion_region;
 
 
@@ -127,6 +128,7 @@ public class ResourcesManager
     BuildableBitmapTextureAtlas playPauseButtonTextureAtlas;
     BuildableBitmapTextureAtlas gameTitleTextureAtlas;
     BuildableBitmapTextureAtlas gameDescriptionTextureAtlas;
+    BuildableBitmapTextureAtlas cancelButtonTextureAtlas;
     BitmapTextureAtlas explosionTextureAtlas;
 
 
@@ -234,6 +236,11 @@ public class ResourcesManager
         playPauseButton_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(playPauseButtonTextureAtlas, activity, "playPause.png");
         playPauseButtonTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
         playPauseButtonTextureAtlas.load();
+
+        cancelButtonTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 356, 356, TextureOptions.BILINEAR);
+        cancelButton_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(cancelButtonTextureAtlas, activity, "cancelButton.png");
+        cancelButtonTextureAtlas.build(new BlackPawnTextureAtlasBuilder<IBitmapTextureAtlasSource, BitmapTextureAtlas>(0, 0, 0));
+        cancelButtonTextureAtlas.load();
 
         groundTextureAtlas = new BuildableBitmapTextureAtlas(texmng, 256, 256, TextureOptions.REPEATING_BILINEAR);
         ground_region = BitmapTextureAtlasTextureRegionFactory.createFromAsset(groundTextureAtlas, activity, "ground.png");
