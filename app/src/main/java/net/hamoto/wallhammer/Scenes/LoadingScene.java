@@ -5,13 +5,20 @@ import net.hamoto.wallhammer.Manager.SceneManager;
 
 import org.andengine.entity.modifier.LoopEntityModifier;
 import org.andengine.entity.modifier.RotationModifier;
+import org.andengine.entity.scene.IOnSceneTouchListener;
+import org.andengine.entity.scene.Scene;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
+import org.andengine.input.touch.TouchEvent;
+import org.andengine.input.touch.detector.SurfaceGestureDetectorAdapter;
 
-public class LoadingScene extends BaseScene
+public class LoadingScene extends BaseScene implements IOnSceneTouchListener
 {
     private Sprite loadingBackground;
     private Sprite loadingLogo;
+
+    private SurfaceGestureDetectorAdapter surfaceGestureDetectorAdapter;
+
 
     @Override
     public void createScene()
@@ -27,7 +34,6 @@ public class LoadingScene extends BaseScene
     }
 
     private void createBackground(){
-        //setBackground(new Background(Color.WHITE));
         loadingBackground = new Sprite(0, 0, resourcesManager.splashBackground_region, vbom);
         loadingBackground.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2);
         attachChild(loadingBackground);
@@ -60,5 +66,17 @@ public class LoadingScene extends BaseScene
     public void disposeScene()
     {
 
+    }
+
+    /**
+     * Called when a {@link TouchEvent} is dispatched to a {@link Scene}.
+     *
+     * @param pScene           The {@link Scene} that the {@link TouchEvent} has been dispatched to.
+     * @param pSceneTouchEvent The {@link TouchEvent} object containing full information about the event.
+     * @return <code>true</code> if this {@link IOnSceneTouchListener} has consumed the {@link TouchEvent}, <code>false</code> otherwise.
+     */
+    @Override
+    public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
+        return surfaceGestureDetectorAdapter.onManagedTouchEvent(pSceneTouchEvent);
     }
 }

@@ -382,8 +382,6 @@ public class ResourcesManager
         explosionTextureAtlas = new BitmapTextureAtlas(texmng, 1134, 189, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         explosion_region = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(explosionTextureAtlas, activity, "explosion.png",0,0,6,1);
         explosionTextureAtlas.load();
-
-        //TODO: Load new Sprites for GameGaphics like the walls...
     }
 
     public void loadMainAudio() throws IOException {

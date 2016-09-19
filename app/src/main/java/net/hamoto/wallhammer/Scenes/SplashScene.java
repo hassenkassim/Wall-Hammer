@@ -29,7 +29,6 @@ import org.andengine.util.adt.color.Color;
  */
 public class SplashScene extends BaseScene
 {
-    private Sprite splashBackground;
     private Sprite splashLogo;
     private Sprite splashText;
     private PhysicsWorld world;
@@ -53,7 +52,7 @@ public class SplashScene extends BaseScene
         Rectangle background = new Rectangle(MainActivity.GAMEWIDTH/2,MainActivity.GAMEHEIGHT/2,MainActivity.GAMEWIDTH, MainActivity.GAMEHEIGHT, this.engine.getVertexBufferObjectManager());
         background.setColor(Color.BLACK);
         attachChild(background);
-        splashBackground = new Sprite(0, 0, resourcesManager.splashBackground_region, vbom);
+        Sprite splashBackground = new Sprite(0, 0, resourcesManager.splashBackground_region, vbom);
         splashBackground.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2);
         splashBackground.setAlpha(0.0f);
         attachChild(splashBackground);

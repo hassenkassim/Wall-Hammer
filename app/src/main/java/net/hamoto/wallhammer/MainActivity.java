@@ -149,7 +149,6 @@ public class MainActivity extends BaseGameActivity implements GameHelper.GameHel
         });
     }
 
-    //TODO: Testen mit verschiedenen Handys
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -284,7 +283,7 @@ public class MainActivity extends BaseGameActivity implements GameHelper.GameHel
 
         adViewBanner.setVisibility(View.INVISIBLE);
         adViewBanner.setEnabled(true);
-        AdRequest adRequest = new AdRequest.Builder().addTestDevice("15EFB8DEF755414218804D4A97FA7E29").build();
+        AdRequest adRequest = new AdRequest.Builder().build();
         adViewBanner.loadAd(adRequest);
     }
 

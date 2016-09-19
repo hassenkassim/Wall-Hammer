@@ -4,16 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Looper;
-import android.util.Log;
-import android.view.View;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 
 import net.hamoto.wallhammer.MainActivity;
 import net.hamoto.wallhammer.Manager.PlayGamesManager;
@@ -55,8 +51,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
-import javax.microedition.khronos.opengles.GL10;
-
 /**
  * @author Hassen Kassim
  * @version 1.0
@@ -91,10 +85,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
     final private int GAME_PLAYAGAIN = 1;
     final private int GAME_SHARE = 2;
     final private int GAME_SCORE = 3;
-    final private String FACEBOOK = "com.facebook.katana";
-    final private String TWITTER = "com.twitter.android";
 
-    private boolean gameOverMusicActive = false;
     private int level;
     private int curwall;
     private int lastwall;
@@ -128,7 +119,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
     private Sprite groundsprite;
     private Sprite hammer;
     private Sprite wheel;
-    private Sprite scoreBackground;
     private Sprite newTextSprite;
 
     private Rectangle gameoverBackground;
@@ -430,8 +420,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
                 //start distrubance
                 disturbance = new Rectangle(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2, MainActivity.GAMEWIDTH, MainActivity.GAMEHEIGHT, engine.getVertexBufferObjectManager());
                 disturbance.setColor(0.0f, 0.0f, 0.0f);
-                disturbance.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new FadeInModifier(1),new FadeOutModifier(1))));
                 attachChild(disturbance);
+                disturbance.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new AlphaModifier(0.5f, 0.0f, 0.9f), new AlphaModifier(0.5f, 0.9f, 0.0f), new DelayModifier(0.2f))));
             }
 
         }
@@ -610,6 +600,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         setScore(score + i);
         scoreText.setText("Score: " + score);
     }
+
     private void addGround(){
         groundsprite = new Sprite(0, 0, 3000, 256, ResourcesManager.getInstance().ground_region, engine.getVertexBufferObjectManager());
         groundsprite.setY(-25f);
@@ -618,8 +609,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         Body groundBody = PhysicsFactory.createBoxBody(world, groundsprite, BodyDef.BodyType.StaticBody, GROUND_FIX);
         groundBody.setTransform(groundBody.getPosition().x, groundBody.getPosition().y-0.85f, 0.0f);
         attachChild(groundsprite);
-
     }
+
     private void addCloud(){
         float a = 2698;
         float duration = 30;

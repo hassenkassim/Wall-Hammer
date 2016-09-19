@@ -2,8 +2,6 @@ package net.hamoto.wallhammer.Scenes;
 
 import android.content.Context;
 
-import com.google.android.gms.games.Game;
-
 import net.hamoto.wallhammer.MainActivity;
 import net.hamoto.wallhammer.Manager.PlayGamesManager;
 import net.hamoto.wallhammer.Manager.ResourcesManager;
@@ -23,12 +21,10 @@ import org.andengine.entity.scene.menu.MenuScene;
 import org.andengine.entity.scene.menu.item.IMenuItem;
 import org.andengine.entity.scene.menu.item.SpriteMenuItem;
 import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
-import org.andengine.entity.sprite.ButtonSprite;
 import org.andengine.entity.sprite.Sprite;
 import org.andengine.entity.text.Text;
 import org.andengine.input.touch.detector.SurfaceGestureDetectorAdapter;
 
-import java.util.Date;
 import java.util.Random;
 
 /**
@@ -214,14 +210,14 @@ public class MainScene extends BaseScene
     }
 
     private void showInfo(){
-        if(infoanzeige==false){
-            if(infoBackground!=null&&infoBackground.isVisible()==false){
+        if(!infoanzeige){
+            if(infoBackground!=null&&!infoBackground.isVisible()){
                 detachChild(infoBackground);
             }
-            if(txt!=null&&txt.isVisible()==false){
+            if(txt!=null&&!txt.isVisible()){
                 detachChild(txt);
             }
-            if(gameDescription!=null&&gameDescription.isVisible()==false){
+            if(gameDescription!=null&&!gameDescription.isVisible()){
                 detachChild(gameDescription);
             }
 
@@ -312,7 +308,7 @@ public class MainScene extends BaseScene
                     case MENU_PLAY:
                         gamedescriptionshown = getgamedescriptionshown();
 
-                        if (gamedescriptionshown == false) {
+                        if (!gamedescriptionshown) {
                             playMenuItem.registerEntityModifier(new FadeOutModifier(1));
                             scoreMenuItem.registerEntityModifier(new FadeOutModifier(1));
                             musicOnMenuItem.registerEntityModifier(new FadeOutModifier(1));
@@ -341,7 +337,7 @@ public class MainScene extends BaseScene
                             closeDescriptionItem.setPosition(CLOSEINFOXVISIBLE, MainActivity.GAMEHEIGHT/2 + 277);
                         }
 
-                        if (gamedescriptionshown == true) {
+                        if (gamedescriptionshown) {
                             musicMain.pause();
                             SceneManager.getInstance().setScene(SceneManager.SceneType.SCENE_GAME);
                         }
@@ -360,7 +356,7 @@ public class MainScene extends BaseScene
                         musicOffMenuItem.setX(SOUNDXINVISIBLE);
                         return true;
                     case MENU_INFO:
-                        if(infoanzeige == false) {
+                        if(!infoanzeige) {
                             menuChildScene.setPosition(MainActivity.GAMEWIDTH, 0);
                             infoMenuItem.setPosition(-70, 70);
                         } else {
@@ -418,22 +414,5 @@ public class MainScene extends BaseScene
         menuChildScene.dispose();
         this.detachSelf();
         this.dispose();
-    }
-
-    public static int randInt(int min, int max) {
-
-        // NOTE: This will (intentionally) not run as written so that folks
-        // copy-pasting have to think about how to initialize their
-        // Random instance.  Initialization of the Random instance is outside
-        // the main scope of the question, but some decent options are to have
-        // a field that is initialized once and then re-used as needed or to
-        // use ThreadLocalRandom (if using at least Java 1.7).
-        Random rand = new Random();
-
-        // nextInt is normally exclusive of the top value,
-        // so add 1 to make it inclusive
-        int randomNum = rand.nextInt((max - min) + 1) + min;
-
-        return randomNum;
     }
 }

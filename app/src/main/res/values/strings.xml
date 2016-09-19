@@ -2,4 +2,8 @@
     <string name="app_name">Wallhammer</string>
     <string name="app_id">98672507844</string>
     <string name="banner_ad_unit_id">ca-app-pub-9749532642806196/7961688467</string>
+    <string name="infotxt">Wallhammer\nProduced with AndEngine and AndEnginePhysics</string>
+    <string name="newhs">New Highscore!</string>
+    <string name="newhs2">I made a new highscore: </string>
+    <string name="newhs3">.\nCan you get a better highscore?</string>
 </resources>
