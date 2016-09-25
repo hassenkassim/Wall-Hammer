@@ -231,7 +231,7 @@ public class MainScene extends BaseScene
             gameDescription.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 40);
 
 
-            String str = "Wallhammer\nProduced with AndEngine and AndEnginePhysics";
+            String str = MainActivity.getActivity().getResources().getString(R.string.infotxt);
             txt = new Text(0, 0, resourcesManager.font, str, vbom);
             txt.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 - 260);
             txt.setScale(0.5f);

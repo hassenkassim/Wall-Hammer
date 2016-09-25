@@ -20,7 +20,7 @@ public abstract class SurfaceGestureDetector extends BaseDetector {
 	// Constants
 	// ===========================================================
 
-	private static final float SWIPE_MIN_DISTANCE_DEFAULT = 60;
+	private static final float SWIPE_MIN_DISTANCE_DEFAULT = 20;
 
 	// ===========================================================
 	// Fields

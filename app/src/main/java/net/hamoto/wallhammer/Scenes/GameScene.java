@@ -158,6 +158,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
     @Override
     public void createScene()
     {
+
+
         initVariables(0,0,500, 1.6f);//init variablen
         initPhysics(); //init physics
         createBackground(); //set the background color
@@ -165,6 +167,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         startBackgroundMusic(); //start background music
         addSprites(); //add figures
         initWalls(COUNT_WALL); //insert walls
+        addDisturbance();
         createTouchFunction(); //activate touch
         createGameOverChildScene(); //Create game over window
     }
@@ -277,12 +280,6 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         });
     }
 
-    private void checkExplosionDetach(){
-        if(explosion!=null&&explosion.getCurrentTileIndex() == explosion.getTileCount()-1){
-            detachChild(explosion);
-        }
-    }
-
     private void checkWallOutside(){
 
         if(walloutsidehelper==false&&walls.get(curwall).getX() + walls.get(curwall).getWidth()/2 < 200){
@@ -369,7 +366,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 
             @Override
             public void onAnimationFinished(AnimatedSprite pAnimatedSprite) {
-                detachChild(explosion);
+                explosion.setVisible(false);
+                //detachChild(explosion);
             }
         });
 
@@ -417,14 +415,17 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
             setNextWallMin();
             adjustAnimations();
 
-            /*if(level == 7){
+            if(level == 7){
                 //start distrubance
-                disturbance = new Rectangle(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2, MainActivity.GAMEWIDTH, MainActivity.GAMEHEIGHT, engine.getVertexBufferObjectManager());
+                disturbance.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new AlphaModifier(0.5f, 0.0f, 0.9f), new AlphaModifier(0.5f, 0.9f, 0.0f), new DelayModifier(0.2f))));
+
+                /*disturbance = new Rectangle(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2, MainActivity.GAMEWIDTH, MainActivity.GAMEHEIGHT, engine.getVertexBufferObjectManager());
                 disturbance.setColor(0.0f, 0.0f, 0.0f);
                 attachChild(disturbance);
                 disturbance.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new AlphaModifier(0.5f, 0.0f, 0.9f), new AlphaModifier(0.5f, 0.9f, 0.0f), new DelayModifier(0.2f))));
+            */
             }
-*/
+
         }
     }
 
@@ -544,7 +545,7 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, MainActivity.ctx.getResources().getString(R.string.newhs));
-        intent.putExtra(Intent.EXTRA_TEXT, MainActivity.ctx.getResources().getString(R.string.newhs2) + score + MainActivity.ctx.getResources().getString(R.string.newhs3) + " https://play.google.com/store/apps/details?id=net.hamoto.wallhammer");
+        intent.putExtra(Intent.EXTRA_TEXT, MainActivity.ctx.getResources().getString(R.string.newhs2) +" " + score + MainActivity.ctx.getResources().getString(R.string.newhs3) + " https://play.google.com/store/apps/details?id=net.hamoto.wallhammer");
         if(application.equals("NOPE")){
             activity.startActivity(intent);
         } else{
@@ -700,6 +701,13 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         revoluteJointDef.lowerAngle = -10.0f;
         revoluteJointDef.upperAngle = 10.0f;
         world.createJoint(revoluteJointDef);
+    }
+
+    private void addDisturbance() {
+        disturbance = new Rectangle(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2, MainActivity.GAMEWIDTH, MainActivity.GAMEHEIGHT, engine.getVertexBufferObjectManager());
+        disturbance.setColor(0.0f, 0.0f, 0.0f);
+        disturbance.setAlpha(0.0f);
+        attachChild(disturbance);
     }
 
     private void createWall(int walltype, int x, int y){
