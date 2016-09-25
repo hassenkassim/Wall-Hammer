@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">Wallhammer</string>
-    <string name="app_id">98672507844</string>
-    <string name="banner_ad_unit_id">ca-app-pub-9749532642806196/7961688467</string>
+    <string name="app_id" translatable="false">536847650509</string>
+    <string name="banner_ad_unit_id">ca-app-pub-1748776914234567/9128462337</string>
+    <string name="Interstitial_ad_unit_id">ca-app-pub-1748776914234567/3081928731</string>
     <string name="infotxt">Wallhammer\nProduced with AndEngine and AndEnginePhysics</string>
     <string name="newhs">New Highscore!</string>
     <string name="newhs2">I made a new highscore: </string>
     <string name="newhs3">.\nCan you get a better highscore?</string>
+    <string name="leaderboard_ID">CgkIzZ309M8PEAIQAQ</string>
 </resources>

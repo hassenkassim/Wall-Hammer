@@ -317,7 +317,7 @@ public class ResourcesManager
     private void loadFonts()
     {
         FontFactory.setAssetBasePath("fonts/");
-        final ITexture mainFontTexture = new BitmapTextureAtlas(activity.getTextureManager(), 256, 256, TextureOptions.BILINEAR);
+        final ITexture mainFontTexture = new BitmapTextureAtlas(activity.getTextureManager(), 500, 500, TextureOptions.BILINEAR);
         font = FontFactory.createStrokeFromAsset(activity.getFontManager(), mainFontTexture, activity.getAssets(), "fontWallhammer.ttf", 50, true, Color.WHITE, 2, Color.BLACK);
         font.load();
 

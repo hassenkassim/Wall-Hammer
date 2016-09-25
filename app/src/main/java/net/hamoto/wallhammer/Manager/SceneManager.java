@@ -101,13 +101,13 @@ public class SceneManager
         mainScene = new MainScene();
         loadingScene = new LoadingScene();
         setScene(mainScene);
-        disposeSplashScene();
+        //disposeSplashScene();
     }
 
     public void loadMainScene(final Engine mEngine)
     {
         setScene(loadingScene);
-        gameScene.disposeScene();
+        //gameScene.disposeScene();
         ResourcesManager.getInstance().unloadGameRecources();
         mEngine.registerUpdateHandler(new TimerHandler(1.0f, new ITimerCallback()
         {

@@ -1,43 +1,27 @@
 {
   "project_info": {
-    "project_number": "98672507844",
-    "firebase_url": "https://wall-hammer-79394408.firebaseio.com",
-    "project_id": "wall-hammer-79394408",
-    "storage_bucket": "wall-hammer-79394408.appspot.com"
+    "project_number": "399438438313",
+    "firebase_url": "https://admob-app-id-7651729138.firebaseio.com",
+    "project_id": "admob-app-id-7651729138",
+    "storage_bucket": "admob-app-id-7651729138.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:98672507844:android:22b07e441f5ee497",
+        "mobilesdk_app_id": "1:399438438313:android:22b07e441f5ee497",
         "android_client_info": {
           "package_name": "net.hamoto.wallhammer"
         }
       },
       "oauth_client": [
         {
-          "client_id": "98672507844-48giuvb76e8s85mer2c3ravdl3724i7v.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "net.hamoto.wallhammer",
-            "certificate_hash": "3C717F534919EDCB0E46224AE23CA0722060CF5E"
-          }
-        },
-        {
-          "client_id": "98672507844-vi4qpt3pf2n3ujtgtmnf5adf0mtojkka.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "net.hamoto.wallhammer",
-            "certificate_hash": "7C3BFFC6993C80FD14EDC8E97D0A9307038926E0"
-          }
-        },
-        {
-          "client_id": "98672507844-od8ef8qq3i3i3qabrsmj7hhb1r695lo2.apps.googleusercontent.com",
+          "client_id": "399438438313-gueu6tfkhrrqqm7r22glo09p5n4q32n9.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAs7yVmj7wTJs5xzZ1GobbSiRIzktUfwEs"
+          "current_key": "AIzaSyD2LX-iBVZPV4ksaHQPFgFczpRXtBKFta0"
         }
       ],
       "services": {
@@ -45,13 +29,8 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "98672507844-od8ef8qq3i3i3qabrsmj7hhb1r695lo2.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "status": 1,
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

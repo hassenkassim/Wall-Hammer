@@ -15,6 +15,7 @@ import net.hamoto.wallhammer.MainActivity;
 import net.hamoto.wallhammer.Manager.PlayGamesManager;
 import net.hamoto.wallhammer.Manager.ResourcesManager;
 import net.hamoto.wallhammer.Manager.SceneManager;
+import net.hamoto.wallhammer.R;
 
 import org.andengine.audio.music.Music;
 import org.andengine.engine.camera.hud.HUD;
@@ -416,14 +417,14 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
             setNextWallMin();
             adjustAnimations();
 
-            if(level == 7){
+            /*if(level == 7){
                 //start distrubance
                 disturbance = new Rectangle(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2, MainActivity.GAMEWIDTH, MainActivity.GAMEHEIGHT, engine.getVertexBufferObjectManager());
                 disturbance.setColor(0.0f, 0.0f, 0.0f);
                 attachChild(disturbance);
                 disturbance.registerEntityModifier(new LoopEntityModifier(new SequenceEntityModifier(new AlphaModifier(0.5f, 0.0f, 0.9f), new AlphaModifier(0.5f, 0.9f, 0.0f), new DelayModifier(0.2f))));
             }
-
+*/
         }
     }
 
@@ -542,8 +543,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Neues Highscore!");
-        intent.putExtra(Intent.EXTRA_TEXT, "Ich hab einen neuen Highscore aufgestellt: " + score + ".\nKannst du es mit mir aufnehmen?");
+        intent.putExtra(Intent.EXTRA_SUBJECT, MainActivity.ctx.getResources().getString(R.string.newhs));
+        intent.putExtra(Intent.EXTRA_TEXT, MainActivity.ctx.getResources().getString(R.string.newhs2) + score + MainActivity.ctx.getResources().getString(R.string.newhs3) + " https://play.google.com/store/apps/details?id=net.hamoto.wallhammer");
         if(application.equals("NOPE")){
             activity.startActivity(intent);
         } else{
@@ -590,7 +591,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
         cloud9sprite.clearEntityModifiers();
         cloud10sprite.clearEntityModifiers();
         if(disturbance!=null){
-            detachChild(disturbance);
+            disturbance.clearEntityModifiers();
+            disturbance.setAlpha(0.0f);
+            //detachChild(disturbance);
         }
 
         musicGame.stop();
@@ -904,8 +907,9 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
 
     private void clearHUD(){
         if(gameHUD!=null){
-            gameHUD.detachChildren();
-            gameHUD.detachSelf();
+            gameHUD.setPosition(-1000.0f, -1000.0f);
+            //gameHUD.detachChildren();
+            //gameHUD.detachSelf();
         }
     }
 
@@ -974,8 +978,8 @@ public class GameScene extends BaseScene implements IOnSceneTouchListener{
     public void disposeScene()
     {
         clearHUD();
-        this.detachSelf();
-        this.dispose();
+        //this.detachSelf();
+        //this.dispose();
     }
 
     /**

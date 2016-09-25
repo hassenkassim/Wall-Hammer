@@ -1,6 +1,7 @@
 package net.hamoto.wallhammer;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -48,7 +49,7 @@ import java.io.IOException;
 public class MainActivity extends BaseGameActivity implements GameHelper.GameHelperListener {
 
 
-
+    FrameLayout frameLayout;
     static public AdView adViewBanner;
 
     static public InterstitialAd interstitial;
@@ -56,6 +57,7 @@ public class MainActivity extends BaseGameActivity implements GameHelper.GameHel
     Camera camera;
     ResourcesManager resourcesManager;
     static Activity main;
+    public static Context ctx;
     public final static int GAMEWIDTH = 1280;
     public final static int GAMEHEIGHT = 720;
     public final static String SETTING = "PREFS";
@@ -258,33 +260,17 @@ public class MainActivity extends BaseGameActivity implements GameHelper.GameHel
 
         relativeLayout.addView(this.mRenderSurfaceView, surfaceViewLayoutParams);
 
-        FrameLayout frameLayout = new FrameLayout(this);
+        frameLayout = new FrameLayout(this);
 
         FrameLayout.LayoutParams fparams=new FrameLayout.LayoutParams( FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
 
-        adViewBanner = new AdView(this);
-
-
-        final FrameLayout.LayoutParams adViewBannerLayoutParams = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
-
-        adViewBanner.setAdUnitId("ca-app-pub-9749532642806196/7961688467");
-        adViewBanner.setAdSize(AdSize.BANNER);
-
-        adViewBanner.refreshDrawableState();
-
-        frameLayout.addView(adViewBanner,adViewBannerLayoutParams);
+        loadBannerAd();
 
         relativeLayout.addView(frameLayout,fparams);
 
         this.setContentView(relativeLayout, relativeLayoutLayoutParams);
 
-        adViewBanner.setVisibility(View.INVISIBLE);
-        adViewBanner.setEnabled(true);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adViewBanner.loadAd(adRequest);
+
     }
 
     // ===========================================================
@@ -300,10 +286,34 @@ public class MainActivity extends BaseGameActivity implements GameHelper.GameHel
 
     private void loadInterstitialAd(){
         interstitial = new InterstitialAd(this);
-        interstitial.setAdUnitId("ca-app-pub-9749532642806196/9100344465");
+        interstitial.setAdUnitId(getResources().getString(R.string.Interstitial_ad_unit_id));
 
         AdRequest adRequest = new AdRequest.Builder().addTestDevice("15EFB8DEF755414218804D4A97FA7E29").build();
         interstitial.loadAd(adRequest);
+    }
+
+
+    private void loadBannerAd(){
+        adViewBanner = new AdView(this);
+
+        adViewBanner.setAdUnitId(getResources().getString(R.string.banner_ad_unit_id));
+        adViewBanner.setAdSize(AdSize.BANNER);
+
+        adViewBanner.refreshDrawableState();
+
+        final FrameLayout.LayoutParams adViewBannerLayoutParams = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+
+        frameLayout.addView(adViewBanner,adViewBannerLayoutParams);
+
+
+        adViewBanner.setVisibility(View.INVISIBLE);
+        adViewBanner.setEnabled(true);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adViewBanner.loadAd(adRequest);
+
     }
 
 
@@ -316,6 +326,7 @@ public class MainActivity extends BaseGameActivity implements GameHelper.GameHel
     @Override
     protected void onStart() {
         super.onStart();
+        ctx=getApplicationContext();
         main = this;
         musicsetting();
         setHighscore();

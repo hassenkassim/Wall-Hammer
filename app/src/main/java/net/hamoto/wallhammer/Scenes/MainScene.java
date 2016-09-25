@@ -6,6 +6,7 @@ import net.hamoto.wallhammer.MainActivity;
 import net.hamoto.wallhammer.Manager.PlayGamesManager;
 import net.hamoto.wallhammer.Manager.ResourcesManager;
 import net.hamoto.wallhammer.Manager.SceneManager;
+import net.hamoto.wallhammer.R;
 
 import org.andengine.audio.music.Music;
 import org.andengine.entity.modifier.AlphaModifier;
@@ -324,7 +325,7 @@ public class MainScene extends BaseScene
                             gameDescription.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 + 40);
 
 
-                            String str = "Wallhammer\nProduced with AndEngine and AndEnginePhysics";
+                            String str = MainActivity.ctx.getResources().getString(R.string.infotxt);
                             txt = new Text(0, 0, resourcesManager.font, str, vbom);
                             txt.setPosition(MainActivity.GAMEWIDTH/2, MainActivity.GAMEHEIGHT/2 - 260);
                             txt.setScale(0.5f);
@@ -410,9 +411,9 @@ public class MainScene extends BaseScene
     @Override
     public void disposeScene()
     {
-        menuChildScene.detachSelf();
-        menuChildScene.dispose();
-        this.detachSelf();
-        this.dispose();
+        //menuChildScene.detachSelf();
+        //menuChildScene.dispose();
+        //this.detachSelf();
+        //this.dispose();
     }
 }
