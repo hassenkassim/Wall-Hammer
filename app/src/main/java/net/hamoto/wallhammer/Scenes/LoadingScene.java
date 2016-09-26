@@ -12,12 +12,11 @@ import org.andengine.entity.text.Text;
 import org.andengine.input.touch.TouchEvent;
 import org.andengine.input.touch.detector.SurfaceGestureDetectorAdapter;
 
-public class LoadingScene extends BaseScene implements IOnSceneTouchListener
+public class LoadingScene extends BaseScene
 {
     private Sprite loadingBackground;
     private Sprite loadingLogo;
 
-    private SurfaceGestureDetectorAdapter surfaceGestureDetectorAdapter;
 
 
     @Override
@@ -68,15 +67,5 @@ public class LoadingScene extends BaseScene implements IOnSceneTouchListener
 
     }
 
-    /**
-     * Called when a {@link TouchEvent} is dispatched to a {@link Scene}.
-     *
-     * @param pScene           The {@link Scene} that the {@link TouchEvent} has been dispatched to.
-     * @param pSceneTouchEvent The {@link TouchEvent} object containing full information about the event.
-     * @return <code>true</code> if this {@link IOnSceneTouchListener} has consumed the {@link TouchEvent}, <code>false</code> otherwise.
-     */
-    @Override
-    public boolean onSceneTouchEvent(Scene pScene, TouchEvent pSceneTouchEvent) {
-        return surfaceGestureDetectorAdapter.onManagedTouchEvent(pSceneTouchEvent);
-    }
+
 }
